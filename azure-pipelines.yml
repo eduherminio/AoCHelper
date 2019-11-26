@@ -24,7 +24,7 @@ steps:
 - task: DotNetCoreInstaller@1
   displayName: 'Install .NET Core 3.0'
   inputs:
-    version: '3.0.1'
+    version: '3.0.101'
 
 - bash: dotnet build ./AoCHelperSolution.sln --configuration Release --force --no-incremental
   displayName: 'Build'
