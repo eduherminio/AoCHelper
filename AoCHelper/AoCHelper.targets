@@ -1,0 +1,93 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <AssemblyName>AoCHelper</AssemblyName>
+    <PublishDir>PublishOutput\</PublishDir>
+    <NugetPackagesDir>$(MSBuildProjectDirectory)\..\..\Artifacts\</NugetPackagesDir>
+  </PropertyGroup>
+
+  <Target Name="PushNugetPackage" Condition="$(VersionTag) != '' AND $(ApiKey) != ''">
+    <Message Text="***Preparing to push Nuget Package...***" Importance="high"></Message>
+    <CallTarget Targets="PrepareNugetPackage" ContinueOnError="false"></CallTarget>
+    <CallTarget Targets="TestNugetPackageLocally"></CallTarget>
+    <CallTarget Targets="PushToNuget"></CallTarget>
+  </Target>
+
+  <!--Dependency rather than direct call to ensure path update. -->
+  <!--See https://stackoverflow.com/questions/7534390/msbuild-property-scope -->
+  <Target Name="PrepareNugetPackage" DependsOnTargets="EnsureTrailingSlash">
+    <Message Text="***Preparing Nuget Package***" Importance="high"></Message>
+    <CallTarget Targets="Cleaning"></CallTarget>
+    <Exec Command="dotnet build /t:ReplaceVersion /p:VersionTag=$(VersionTag) /p:TargetFramework=netstandard2.0"></Exec>
+    <CallTarget Targets="FreshBuilding" ContinueOnError="false"></CallTarget>
+    <CallTarget Targets="Tests" ContinueOnError="false"></CallTarget>
+    <CallTarget Targets="DotnetPublish" ContinueOnError="false"></CallTarget>
+    <CallTarget Targets="DotnetPack" ContinueOnError="false"></CallTarget>
+  </Target>
+
+  <Target Name="EnsureTrailingSlash">
+    <PropertyGroup>
+      <!--Ensure paths have a trailing slash, so they can be concatenated-->
+      <PublishDir Condition="!HasTrailingSlash('$(PublishDir)')">$(PublishDir)\</PublishDir>
+      <NugetPackagesDir Condition="!HasTrailingSlash('$(NugetPackagesDir)')">$(NugetPackagesDir)\</NugetPackagesDir>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="Cleaning">
+    <Message Text="***Cleaning***" Importance="high"></Message>
+    <Exec Command="dotnet clean" />
+    <RemoveDir Directories=".\bin" Condition="Exists('.\bin')"></RemoveDir>
+    <RemoveDir Directories=".\obj" Condition="Exists('.\obj')"></RemoveDir>
+    <RemoveDir Directories=".\$(PublishDir)" Condition="Exists('.\$(PublishDir)')"></RemoveDir>
+    <Exec Command="dotnet restore --force"></Exec>
+  </Target>
+
+  <Target Name="FreshBuilding">
+    <Message Text="***Fresh-building***" Importance="high"></Message>
+    <Exec Command="dotnet restore" />
+    <Exec Command="dotnet build --configuration Release --force --no-incremental " ContinueOnError="false"></Exec>
+  </Target>
+
+  <Target Name="Tests">
+    <Message Text="***Running $(AssemblyName) tests***" Importance="high"></Message>
+    <Exec Command="dotnet test ../AoCHelper.Test/AoCHelper.Test.csproj -c Release" ContinueOnError="false" />
+  </Target>
+
+  <Target Name ="DotnetPublish">
+    <PropertyGroup>
+      <RootPath>$(PublishDir)\$(AssemblyName).$(Version)\</RootPath>
+    </PropertyGroup>
+    <Message Text="***Publishing package***" Importance="high"></Message>
+    <Exec Command="dotnet publish -c Release -f netstandard2.1  -o $(RootPath)\netstandard2.1\"></Exec>
+    <Exec Command="dotnet publish -c Release -f netstandard2.0  -o $(RootPath)\netstandard2.0\"></Exec>
+    <Exec Command="dotnet publish -c Release -f net46           -o $(RootPath)\net46\"></Exec>
+  </Target>
+
+  <Target Name ="DotnetPack">
+    <Message Text="***Generating Nuget Package***" Importance="high"></Message>
+    <Exec Command ="dotnet pack -c Release AoCHelper.csproj --no-build -o $(NugetPackagesDir)"></Exec>
+  </Target>
+
+  <Target Name="ReplaceVersion" Condition="$(VersionTag) != '' AND $(TargetFramework)=='netstandard2.0'" DependsOnTargets="Build">
+    <Message Text="***Replacing current version $(Version) by new version $(VersionTag)***" Importance="high"></Message>
+    <PropertyGroup>
+      <ExistingVersionRegex>&lt;Version>.*&lt;/Version</ExistingVersionRegex>
+      <NewVersionRegex>&lt;Version>$(VersionTag)&lt;/Version</NewVersionRegex>
+      <ExistingReference>Include=&quot;$(AssemblyName)&quot; Version=&quot;.*&quot;</ExistingReference>
+      <NewReference>Include=&quot;$(AssemblyName)&quot; Version=&quot;$(VersionTag)&quot;</NewReference>
+    </PropertyGroup>
+    <ReplaceFileText InputFilename="AoCHelper.csproj" OutputFilename="AoCHelper.csproj"
+                     MatchExpression="$(ExistingVersionRegex)" ReplacementText="$(NewVersionRegex)" />
+  </Target>
+
+  <!--ApiKey cannot be inferred from a SetApiKey previously made outside of the build script-->
+  <Target Name="PushToNuget" Condition="$(ApiKey) != '' AND $(VersionTag) != '' " DependsOnTargets="TestNugetPackageLocally">
+    <PropertyGroup>
+      <NugetPackageName>$(AssemblyName).$(VersionTag).nupkg</NugetPackageName>
+    </PropertyGroup>
+    <Message Text="***Pushing $(NugetPackageName) to Nuget***" Importance="high"></Message>
+    <Exec Command="nuget push $(NugetPackagesDir)$(NugetPackageName) -ApiKey $(ApiKey) -Source https://api.nuget.org/v3/index.json -Verbosity detailed"
+          Condition="Exists('$(NugetPackagesDir)$(NugetPackageName)')" ContinueOnError="false"></Exec>
+    <Message Text="***$(NugetPackageName) has been successfully pushed to Nuget***" Importance="high"></Message>
+  </Target>
+</Project>
