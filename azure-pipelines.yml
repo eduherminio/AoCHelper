@@ -41,10 +41,8 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: custom
-    publishWebProjects: false
+    custom: '/t:DotnetPublish'
     projects: 'AoCHelper.csproj'
-    arguments: '/t:DotnetPublish'
-    zipAfterPublish: True
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
