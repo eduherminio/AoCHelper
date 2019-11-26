@@ -33,26 +33,6 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="Cleaning">
-    <Message Text="***Cleaning***" Importance="high"></Message>
-    <Exec Command="dotnet clean" />
-    <RemoveDir Directories=".\bin" Condition="Exists('.\bin')"></RemoveDir>
-    <RemoveDir Directories=".\obj" Condition="Exists('.\obj')"></RemoveDir>
-    <RemoveDir Directories=".\$(PublishDir)" Condition="Exists('.\$(PublishDir)')"></RemoveDir>
-    <Exec Command="dotnet restore --force"></Exec>
-  </Target>
-
-  <Target Name="FreshBuilding">
-    <Message Text="***Fresh-building***" Importance="high"></Message>
-    <Exec Command="dotnet restore" />
-    <Exec Command="dotnet build --configuration Release --force --no-incremental " ContinueOnError="false"></Exec>
-  </Target>
-
-  <Target Name="Tests">
-    <Message Text="***Running $(AssemblyName) tests***" Importance="high"></Message>
-    <Exec Command="dotnet test ../AoCHelper.Test/AoCHelper.Test.csproj -c Release" ContinueOnError="false" />
-  </Target>
-
   <Target Name ="DotnetPublish">
     <PropertyGroup>
       <RootPath>$(PublishDir)\$(AssemblyName).$(Version)\</RootPath>

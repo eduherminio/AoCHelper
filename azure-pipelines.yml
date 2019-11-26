@@ -29,6 +29,7 @@ steps:
     command: test
     arguments: '--configuration Release --logger trx --collect "Code coverage"'
     projects: '**/*.Test.csproj'
+    publishTestResults: true
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -41,3 +42,18 @@ steps:
   inputs:
     pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/PublishOutput/'
     artifactName: 'AoCHelper'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    arguments: '--configuration Release"'
+    packagesToPack: '**/*AoCHelper.csproj'
+    nobuild: true
+    packDirectory: '$(Build.SourcesDirectory)/AoCHelper/Artifacts'
+    includesymbols: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifact'
+  inputs:
+    pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
+    artifactName: 'AoCHelper2'
