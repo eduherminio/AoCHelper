@@ -16,21 +16,26 @@ variables:
 
 steps:
 
-#- task: DotNetCoreInstaller@1
-#  displayName: 'Install .NET Core 2.2'
-#  inputs:
-#    version: '2.2.402'
-#
-#- task: DotNetCoreInstaller@1
-#  displayName: 'Install .NET Core 3.0'
-#  inputs:
-#    version: '3.0.101'
 
-- bash: dotnet build ./AoCHelperSolution.sln --configuration Release --force --no-incremental
+- task: DotNetCoreCLI@2
   displayName: 'Build'
+  inputs:
+    command: build
+    arguments: '--configuration Release --force --no-incremental'
+    projects: 'AoCHelperSolution.sln'
 
-- bash: dotnet test ./AoCHelper.Test --logger trx --collect "Code coverage"
+- task: DotNetCoreCLI@2
   displayName: 'Run tests'
+  inputs:
+    command: build
+    arguments: '--configuration Release --logger trx --collect "Code coverage"'
+    projects: '**/*.Test.csproj'
+
+# - bash: dotnet build ./AoCHelperSolution.sln --configuration Release --force --no-incremental
+#   displayName: 'Build'
+
+# - bash: dotnet test ./AoCHelper.Test --logger trx --collect "Code coverage"
+#   displayName: 'Run tests'
 
 - task: PublishTestResults@2
   displayName: 'Publish test results'
@@ -47,5 +52,5 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/PublishOutput'
     artifactName: 'AoCHelper'
