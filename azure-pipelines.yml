@@ -32,7 +32,7 @@ steps:
 - bash: dotnet test ./AoCHelper.Test --logger trx --collect "Code coverage"
   displayName: 'Run tests'
 
-- task: PublishTestResults@1
+- task: PublishTestResults@2
   displayName: 'Publish test results'
   inputs:
     testRunner: VSTest
@@ -42,7 +42,7 @@ steps:
   inputs:
     command: custom
     custom: '/t:DotnetPublish'
-    projects: 'AoCHelper.csproj'
+    projects: '**/*AoCHelper.csproj'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
