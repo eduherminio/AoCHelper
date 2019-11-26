@@ -16,7 +16,6 @@ variables:
 
 steps:
 
-
 - task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
@@ -28,14 +27,8 @@ steps:
   displayName: 'Run tests'
   inputs:
     command: test
-    arguments: '--configuration Release --logger trx --collect "Code coverage"'
+    arguments: '--configuration Release --logger trx --collect "Code coverage" --output $(Build.ArtifactStagingDirectory)/TestResults'
     projects: '**/*.Test.csproj'
-
-# - bash: dotnet build ./AoCHelperSolution.sln --configuration Release --force --no-incremental
-#   displayName: 'Build'
-
-# - bash: dotnet test ./AoCHelper.Test --logger trx --collect "Code coverage"
-#   displayName: 'Run tests'
 
 - task: PublishTestResults@2
   displayName: 'Publish test results'
@@ -52,5 +45,5 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/PublishOutput'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/AoCHelper/PublishOutput'
     artifactName: 'AoCHelper'
