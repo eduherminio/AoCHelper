@@ -33,21 +33,6 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name ="DotnetPublish">
-    <PropertyGroup>
-      <RootPath>$(PublishDir)\$(AssemblyName).$(Version)\</RootPath>
-    </PropertyGroup>
-    <Message Text="***Publishing package***" Importance="high"></Message>
-    <Exec Command="dotnet publish -c Release -f netstandard2.1  -o $(RootPath)\netstandard2.1\"></Exec>
-    <Exec Command="dotnet publish -c Release -f netstandard2.0  -o $(RootPath)\netstandard2.0\"></Exec>
-    <Exec Command="dotnet publish -c Release -f net46           -o $(RootPath)\net46\"></Exec>
-  </Target>
-
-  <Target Name ="DotnetPack">
-    <Message Text="***Generating Nuget Package***" Importance="high"></Message>
-    <Exec Command ="dotnet pack -c Release AoCHelper.csproj --no-build -o $(NugetPackagesDir)"></Exec>
-  </Target>
-
   <Target Name="ReplaceVersion" Condition="$(VersionTag) != '' AND $(TargetFramework)=='netstandard2.0'" DependsOnTargets="Build">
     <Message Text="***Replacing current version $(Version) by new version $(VersionTag)***" Importance="high"></Message>
     <PropertyGroup>
