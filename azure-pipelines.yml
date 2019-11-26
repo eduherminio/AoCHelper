@@ -27,7 +27,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Run tests'
   inputs:
-    command: build
+    command: test
     arguments: '--configuration Release --logger trx --collect "Code coverage"'
     projects: '**/*.Test.csproj'
 
