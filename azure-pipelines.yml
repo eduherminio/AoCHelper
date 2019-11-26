@@ -30,12 +30,6 @@ steps:
     arguments: '--configuration Release --logger trx --collect "Code coverage"'
     projects: '**/*.Test.csproj'
 
-- task: PublishTestResults@2
-  displayName: 'Publish test results'
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.coverage'
-
 - task: DotNetCoreCLI@2
   inputs:
     command: build
@@ -45,5 +39,5 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/AoCHelper/PublishOutput/'
+    pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/PublishOutput/'
     artifactName: 'AoCHelper'
