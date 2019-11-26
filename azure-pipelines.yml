@@ -41,7 +41,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: custom
-    custom: '/t:DotnetPublish'
+    custom: 'build /t:DotnetPublish'
     projects: '**/*AoCHelper.csproj'
 
 - task: PublishBuildArtifacts@1
