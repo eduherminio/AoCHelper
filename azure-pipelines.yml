@@ -27,6 +27,7 @@ steps:
     publishTestResults: true
 
 - task: DotNetCoreCLI@2
+  displayName: 'Generate NuGet package'
   inputs:
     command: 'pack'
     arguments: '--configuration Release"'
@@ -35,7 +36,7 @@ steps:
     packDirectory: '$(Build.SourcesDirectory)/AoCHelper/Artifacts'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish artifact'
+  displayName: 'Publish artifact with NuGet package and its symbols'
   inputs:
     pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
     artifactName: 'AoCHelper'
