@@ -33,41 +33,6 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="Cleaning">
-    <Message Text="***Cleaning***" Importance="high"></Message>
-    <Exec Command="dotnet clean" />
-    <RemoveDir Directories=".\bin" Condition="Exists('.\bin')"></RemoveDir>
-    <RemoveDir Directories=".\obj" Condition="Exists('.\obj')"></RemoveDir>
-    <RemoveDir Directories=".\$(PublishDir)" Condition="Exists('.\$(PublishDir)')"></RemoveDir>
-    <Exec Command="dotnet restore --force"></Exec>
-  </Target>
-
-  <Target Name="FreshBuilding">
-    <Message Text="***Fresh-building***" Importance="high"></Message>
-    <Exec Command="dotnet restore" />
-    <Exec Command="dotnet build --configuration Release --force --no-incremental " ContinueOnError="false"></Exec>
-  </Target>
-
-  <Target Name="Tests">
-    <Message Text="***Running $(AssemblyName) tests***" Importance="high"></Message>
-    <Exec Command="dotnet test ../AoCHelper.Test/AoCHelper.Test.csproj -c Release" ContinueOnError="false" />
-  </Target>
-
-  <Target Name ="DotnetPublish">
-    <PropertyGroup>
-      <RootPath>$(PublishDir)\$(AssemblyName).$(Version)\</RootPath>
-    </PropertyGroup>
-    <Message Text="***Publishing package***" Importance="high"></Message>
-    <Exec Command="dotnet publish -c Release -f netstandard2.1  -o $(RootPath)\netstandard2.1\"></Exec>
-    <Exec Command="dotnet publish -c Release -f netstandard2.0  -o $(RootPath)\netstandard2.0\"></Exec>
-    <Exec Command="dotnet publish -c Release -f net46           -o $(RootPath)\net46\"></Exec>
-  </Target>
-
-  <Target Name ="DotnetPack">
-    <Message Text="***Generating Nuget Package***" Importance="high"></Message>
-    <Exec Command ="dotnet pack -c Release AoCHelper.csproj --no-build -o $(NugetPackagesDir)"></Exec>
-  </Target>
-
   <Target Name="ReplaceVersion" Condition="$(VersionTag) != '' AND $(TargetFramework)=='netstandard2.0'" DependsOnTargets="Build">
     <Message Text="***Replacing current version $(Version) by new version $(VersionTag)***" Importance="high"></Message>
     <PropertyGroup>

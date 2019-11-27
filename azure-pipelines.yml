@@ -1,0 +1,42 @@
+name: $(BuildID)
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-2019'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: build
+    arguments: '--configuration Release --force --no-incremental'
+    projects: 'AoCHelperSolution.sln'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests'
+  inputs:
+    command: test
+    arguments: '--configuration Release --logger trx --collect "Code coverage"'
+    projects: '**/*.Test.csproj'
+    publishTestResults: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Generate NuGet package'
+  inputs:
+    command: 'pack'
+    arguments: '--configuration Release"'
+    packagesToPack: '**/*AoCHelper.csproj'
+    nobuild: true
+    packDirectory: '$(Build.SourcesDirectory)/AoCHelper/Artifacts'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifact with NuGet package and its symbols'
+  inputs:
+    pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
+    artifactName: 'AoCHelper'
