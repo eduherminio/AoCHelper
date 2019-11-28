@@ -14,7 +14,7 @@ stages:
   displayName: 'Build and run tests'
   jobs:
   - job: ci
-    displayName: 'Build and run tests'
+#    displayName: 'Build and run tests'
     pool:
       vmImage: $(Agent)
     steps:
@@ -23,7 +23,7 @@ stages:
       displayName: 'Build'
       inputs:
         command: build
-        arguments: '--configuration Release --force --no-incremental'
+        configuration: '$(BuildConfiguration)'
         projects: 'AoCHelperSolution.sln'
 
     - task: DotNetCoreCLI@2
@@ -37,7 +37,7 @@ stages:
         publishTestResults: true
 
 - stage: CD
-  displayName: 'Create and upload NuGet Package'
+  displayName: 'Generate package(s)'
   dependsOn: 'CI'
   #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
   condition: and(succeeded('CI'), ne(variables['PackageVersion'], ''))

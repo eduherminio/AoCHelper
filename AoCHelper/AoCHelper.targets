@@ -1,10 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
-    <AssemblyName>AoCHelper</AssemblyName>
-  </PropertyGroup>
-
-  <Target Name="ReplaceVersion" Condition="$(VersionTag) != '' AND $(TargetFramework)=='netstandard2.0'">
+  <Target Name="ReplaceVersion" Condition="$(VersionTag) != ''">
     <Message Text="***Replacing current version $(Version) by new version $(VersionTag)***" Importance="high"></Message>
     <PropertyGroup>
       <ExistingVersionRegex>&lt;Version>.*&lt;/Version</ExistingVersionRegex>
@@ -15,5 +11,27 @@
     <ReplaceFileText InputFilename="AoCHelper.csproj" OutputFilename="AoCHelper.csproj"
                      MatchExpression="$(ExistingVersionRegex)" ReplacementText="$(NewVersionRegex)" />
   </Target>
+
+  <UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            File.WriteAllText(
+                OutputFilename,
+                Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
+                );
+          ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 
 </Project>
