@@ -40,7 +40,7 @@ stages:
   displayName: 'Create and upload NuGet Package'
   dependsOn: 'CI'
   #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
-  condition: and(succeeded('CI'), ne($(PackageVersion), '')
+  condition: and(succeeded('CI'), ne(variables['PackageVersion']), '')
   jobs:
   - job: cd
     displayName: 'Create and upload NuGet Package'
