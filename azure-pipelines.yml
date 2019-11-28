@@ -96,5 +96,5 @@ stages:
         #packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
         packagesToPush: '$(Build.SourcesDirectory)/TEST.nupkg'
         nuGetFeedType: 'external'
-        publishFeedCredentials: 'NuGet'
+        publishFeedCredentials: 'AoCHelper_NuGet'
         verbosityPush: 'Detailed'
