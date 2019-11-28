@@ -5,7 +5,6 @@ trigger:
     include:
     - master
 
-
 variables:
   Agent: 'windows-2019'
   BuildConfiguration: 'Release'
@@ -40,7 +39,8 @@ stages:
 - stage: CD
   displayName: 'Create and upload NuGet Package'
   dependsOn: 'CI'
-  condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
+  #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
+  condition: and(succeeded('CI'), ne($(PackageVersion), '')
   jobs:
   - job: cd
     displayName: 'Create and upload NuGet Package'
@@ -87,13 +87,14 @@ stages:
         script: |
           git add -A
           git commit -m "Bump version to $(PackageVersion)"
-          git push
+#          git push
 
     - task: NuGetCommand@2
       displayName: 'Push NuGet package'
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        #packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/TEST.nupkg'
         nuGetFeedType: 'external'
         publishFeedCredentials: 'NuGet'
         verbosityPush: 'Detailed'
