@@ -7,7 +7,7 @@ trigger:
 
 variables:
   Agent: 'windows-2019'
-  BuildConfiguration: 'Release'
+  BuildConfiguration: 'Release'   # configuration to package, does not work with build step
 
 stages:
 - stage: CI
@@ -23,15 +23,14 @@ stages:
       displayName: 'Build'
       inputs:
         command: build
-        configuration: '$(BuildConfiguration)'
+        arguments: '--configuration Release'
         projects: 'AoCHelperSolution.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Run tests'
       inputs:
         command: test
-        arguments: '--logger trx --collect "Code coverage"'
-        configuration: '$(BuildConfiguration)'
+        arguments: '--configuration Release --logger trx --collect "Code coverage"'
         nobuild: true
         projects: '**/*.Test.csproj'
         publishTestResults: true
@@ -53,26 +52,26 @@ stages:
       displayName: 'Set version'
       inputs:
         command: build
-        arguments: '/t:ReplaceVersion /p:VersionTag=$(PackageVersion)'
+        arguments: '--configuration Release /t:ReplaceVersion /p:VersionTag=$(PackageVersion)'
         projects: '**/*AoCHelper.csproj'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build'
       inputs:
         command: build
-        configuration: '$(BuildConfiguration)'
+        arguments: '--configuration Release'
         projects: 'AoCHelperSolution.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Generate NuGet package'
       inputs:
         command: 'pack'
+        arguments: '--configuration Release'
         configuration: '$(BuildConfiguration)'
         packagesToPack: '**/*AoCHelper.csproj'
         nobuild: true
         packDirectory: '$(Build.SourcesDirectory)/AoCHelper/Artifacts'
-        versioningScheme: 'off'     # We're ReplaceVersion target instead
-        verbosityPack: 'Detailed'
+        versioningScheme: 'off'     # We're using ReplaceVersion target instead
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish artifact with NuGet package and its symbols'
@@ -85,6 +84,7 @@ stages:
         displayName: 'Commit and push version increment'
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
         script: |
+          git status
           git add -A
           git commit -m "Bump version to $(PackageVersion)"
 #          git push
