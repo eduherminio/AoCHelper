@@ -53,7 +53,7 @@ stages:
       inputs:
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
         script: |
-            git config --global user.email '<>'
+            git config --global user.email \<\>
             git config --global user.name 'Azure DevOps'
 
     - task: DotNetCoreCLI@2
