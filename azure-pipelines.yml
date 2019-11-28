@@ -1,42 +1,99 @@
 name: $(BuildID)
 
 trigger:
-- master
+  branches:
+    include:
+    - master
 
-pool:
-  vmImage: 'windows-2019'
 
 variables:
-  buildConfiguration: 'Release'
+  Agent: 'windows-2019'
+  BuildConfiguration: 'Release'
 
-steps:
+stages:
+- stage: CI
+  displayName: 'Build and run tests'
+  jobs:
+  - job: ci
+    displayName: 'Build and run tests'
+    pool:
+      vmImage: $(Agent)
+    steps:
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build'
-  inputs:
-    command: build
-    arguments: '--configuration Release --force --no-incremental'
-    projects: 'AoCHelperSolution.sln'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: build
+        arguments: '--configuration Release --force --no-incremental'
+        projects: 'AoCHelperSolution.sln'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests'
-  inputs:
-    command: test
-    arguments: '--configuration Release --logger trx --collect "Code coverage"'
-    projects: '**/*.Test.csproj'
-    publishTestResults: true
+    - task: DotNetCoreCLI@2
+      displayName: 'Run tests'
+      inputs:
+        command: test
+        arguments: '--logger trx --collect "Code coverage"'
+        configuration: '$(BuildConfiguration)'
+        nobuild: true
+        projects: '**/*.Test.csproj'
+        publishTestResults: true
 
-- task: DotNetCoreCLI@2
-  displayName: 'Generate NuGet package'
-  inputs:
-    command: 'pack'
-    arguments: '--configuration Release"'
-    packagesToPack: '**/*AoCHelper.csproj'
-    nobuild: true
-    packDirectory: '$(Build.SourcesDirectory)/AoCHelper/Artifacts'
+- stage: CD
+  displayName: 'Create and upload NuGet Package'
+  dependsOn: 'CI'
+  condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
+  jobs:
+  - job: cd
+    displayName: 'Create and upload NuGet Package'
+    pool:
+      vmImage: $(Agent)
+    steps:
+    - checkout: self
+      clean: true
+    - task: DotNetCoreCLI@2
+      displayName: 'Set version'
+      inputs:
+        command: build
+        arguments: '/t:ReplaceVersion /p:VersionTag=$(PackageVersion)'
+        projects: '**/*AoCHelper.csproj'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish artifact with NuGet package and its symbols'
-  inputs:
-    pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
-    artifactName: 'AoCHelper'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: build
+        configuration: '$(BuildConfiguration)'
+        projects: 'AoCHelperSolution.sln'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Generate NuGet package'
+      inputs:
+        command: 'pack'
+        configuration: '$(BuildConfiguration)'
+        packagesToPack: '**/*AoCHelper.csproj'
+        nobuild: true
+        packDirectory: '$(Build.SourcesDirectory)/AoCHelper/Artifacts'
+        versioningScheme: 'off'     # We're ReplaceVersion target instead
+        verbosityPack: 'Detailed'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish artifact with NuGet package and its symbols'
+      inputs:
+        pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
+        artifactName: 'AoCHelper'
+
+    - task: CmdLine@2
+      inputs:
+        displayName: 'Commit and push version increment'
+        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
+        script: |
+          git add -A
+          git commit -m "Bump version to $(PackageVersion)"
+          git push
+
+    - task: NuGetCommand@2
+      displayName: 'Push NuGet package'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'NuGet'
+        verbosityPush: 'Detailed'
