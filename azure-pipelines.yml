@@ -11,10 +11,10 @@ variables:
 
 stages:
 - stage: CI
-  displayName: 'Build and run tests'
+  #displayName: 'Build and run tests'
   jobs:
   - job: ci
-#    displayName: 'Build and run tests'
+    displayName: 'Build and run tests'
     pool:
       vmImage: $(Agent)
     steps:
@@ -42,14 +42,22 @@ stages:
   condition: and(succeeded('CI'), ne(variables['PackageVersion'], ''))
   jobs:
   - job: cd
-    displayName: 'Create and upload NuGet Package'
+    displayName: 'Generate package(s)'
     pool:
       vmImage: $(Agent)
     steps:
     - checkout: self
       clean: true
+    - task: CmdLine@2
+      displayName: 'Setup Git'
+      inputs:
+        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
+        script: |
+            git config --global user.email '<>'
+            git config --global user.name 'Azure DevOps'
+
     - task: DotNetCoreCLI@2
-      displayName: 'Set version'
+      displayName: 'Modify version'
       inputs:
         command: build
         arguments: '--configuration Release /t:ReplaceVersion /p:VersionTag=$(PackageVersion)'
@@ -80,10 +88,11 @@ stages:
         artifactName: 'AoCHelper'
 
     - task: CmdLine@2
+      displayName: 'Commit and push version increment'
       inputs:
-        displayName: 'Commit and push version increment'
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
         script: |
+          git checkout master
           git status
           git add -A
           git commit -m "Bump version to $(PackageVersion)"
