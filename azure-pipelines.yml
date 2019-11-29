@@ -41,6 +41,7 @@ stages:
   #dependsOn: 'CI'
   #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
   #condition: and(succeeded('CI'), ne(variables['PackageVersion'], ''))
+  condition: always()
   jobs:
   - job: cd
     displayName: 'Generate package(s)'
