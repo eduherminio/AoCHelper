@@ -51,13 +51,13 @@ stages:
     - checkout: self
       clean: true
 
-    - task: CmdLine@2
-      displayName: 'Setup Git'
-      inputs:
-        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
-        script: |
-            git config --global user.name 'Azure DevOps'
-            git config --global user.email \<\>
+#    - task: CmdLine@2
+#      displayName: 'Setup Git'
+#      inputs:
+#        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
+#        script: |
+#            git config --global user.name 'Azure DevOps'
+#            git config --global user.email \<\>
 
     - task: DotNetCoreCLI@2
       displayName: 'Modify version'
@@ -97,8 +97,8 @@ stages:
         script: |
           git checkout master
           git status
-          git add -A
-          git commit -m "Bump version to $(PackageVersion)"
+#          git add -A
+          git commit --author "Azure DevOps \<\>" -am "Bump version to $(PackageVersion)"
 #          git push
 
     - task: NuGetCommand@2
