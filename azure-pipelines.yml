@@ -12,6 +12,7 @@ variables:
 stages:
 - stage: CI
   displayName: 'Build and run tests'
+  condition: and(failed())
   jobs:
   - job: ci
     displayName: 'Build and run tests'
@@ -37,9 +38,9 @@ stages:
 
 - stage: CD
   displayName: 'Generate package(s)'
-  dependsOn: 'CI'
+  #dependsOn: 'CI'
   #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
-  condition: and(succeeded('CI'), ne(variables['PackageVersion'], ''))
+  #condition: and(succeeded('CI'), ne(variables['PackageVersion'], ''))
   jobs:
   - job: cd
     displayName: 'Generate package(s)'
@@ -48,13 +49,14 @@ stages:
     steps:
     - checkout: self
       clean: true
-#    - task: CmdLine@2
-#      displayName: 'Setup Git'
-#      inputs:
-#        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
-#        script: |
-#            git config --global user.email \<\>
-#            git config --global user.name "Azure DevOps"
+
+    - task: CmdLine@2
+      displayName: 'Setup Git'
+      inputs:
+        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
+        script: |
+            git config --global user.name 'Azure DevOps'
+            git config --global user.email \<\>
 
     - task: DotNetCoreCLI@2
       displayName: 'Modify version'
@@ -95,7 +97,7 @@ stages:
           git checkout master
           git status
           git add -A
-          git commit --author "Azure DevOps <>" -m "Bump version to $(PackageVersion)"
+          git commit -m "Bump version to $(PackageVersion)"
 #          git push
 
     - task: NuGetCommand@2
