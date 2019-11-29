@@ -88,15 +88,6 @@ stages:
         pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
         artifactName: 'AoCHelper'
 
-    - task: NuGetCommand@2
-      displayName: 'Push NuGet package'
-      inputs:
-        command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'AoCHelper_NuGet'
-        verbosityPush: 'Detailed'
-
     - task: CmdLine@2
       displayName: 'Commit and push version increment'
       inputs:
@@ -109,9 +100,18 @@ stages:
           git tag -a v$(PackageVersion)
           git push --follow-tags
 
+    - task: NuGetCommand@2
+      displayName: 'Push NuGet package'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'AoCHelper_NuGet'
+        verbosityPush: 'Detailed'
+
     - task: GithubRelease@1
-        displayName: 'Create GitHub Release'
-        inputs:
+      displayName: 'Create GitHub Release'
+      inputs:
         gitHubConnection: eduherminio
         repositoryName: eduherminion/AoCHelper
         tagSource: manual
