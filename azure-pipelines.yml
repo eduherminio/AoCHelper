@@ -47,6 +47,7 @@ stages:
     steps:
 
     - checkout: self
+      persistCredentials: true
       clean: true
 
     - task: CmdLine@2
