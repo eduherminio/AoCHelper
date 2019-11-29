@@ -55,11 +55,11 @@ stages:
       inputs:
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
         script: |
-            git config --replace-all user.email \<\>
+            git config --replace-all user.email ""
             git config --replace-all user.name "Azure DevOps"
 
     - task: DotNetCoreCLI@2
-      displayName: 'Modify version'
+      displayName: 'Modify project version'
       inputs:
         command: build
         arguments: '--configuration Release /t:ReplaceVersion /p:VersionTag=$(PackageVersion)'
@@ -89,6 +89,16 @@ stages:
         pathtoPublish: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/'
         artifactName: 'AoCHelper'
 
+    - task: NuGetCommand@2
+      displayName: 'Push NuGet package'
+      inputs:
+        command: 'push'
+        #packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/TEST.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'AoCHelper_NuGet'
+        verbosityPush: 'Detailed'
+
     - task: CmdLine@2
       displayName: 'Commit and push version increment'
       inputs:
@@ -99,13 +109,3 @@ stages:
           git add -A
           git commit -m "Bump version to $(PackageVersion)"
 #          git push
-
-    - task: NuGetCommand@2
-      displayName: 'Push NuGet package'
-      inputs:
-        command: 'push'
-        #packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
-        packagesToPush: '$(Build.SourcesDirectory)/TEST.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'AoCHelper_NuGet'
-        verbosityPush: 'Detailed'
