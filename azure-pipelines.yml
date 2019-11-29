@@ -51,11 +51,13 @@ stages:
     - checkout: self
       clean: true
 
-#    - task: CmdLine@2
-#      displayName: 'Setup Git'
-#      inputs:
-#        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
-#        script: |
+    - task: CmdLine@2
+      displayName: 'Setup Git'
+      inputs:
+        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
+        script: |
+            git config --replace-all user.email "you@domain.com"
+            git config --replace-all user.name "AzureDevOps"
 #            git config --global user.name 'Azure DevOps'
 #            git config --global user.email \<\>
 
