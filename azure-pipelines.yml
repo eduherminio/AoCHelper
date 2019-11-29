@@ -99,7 +99,8 @@ stages:
           git add -A
           git commit -m "Release v$(PackageVersion)"
           git tag -a v$(PackageVersion) -m "v$(PackageVersion)"
-          git push --follow-tags
+          git push
+          git push --tags
 
     - task: NuGetCommand@2
       displayName: 'Push NuGet package'
