@@ -97,7 +97,7 @@ stages:
           git status
           git add -A
           git commit -m "Release v$(PackageVersion)"
-          git tag -a v$(PackageVersion)
+          git tag -a v$(PackageVersion) -m "v$(PackageVersion)"
           git push --follow-tags
 
     - task: NuGetCommand@2
