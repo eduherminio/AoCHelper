@@ -12,7 +12,6 @@ variables:
 stages:
 - stage: CI
   displayName: 'Build and run tests'
-  condition: failed()
   jobs:
   - job: ci
     displayName: 'Build and run tests'
@@ -38,15 +37,15 @@ stages:
 
 - stage: CD
   displayName: 'Generate package(s)'
-  #dependsOn: 'CI'
-  #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
-  condition: always()
+  dependsOn: 'CI'
+  condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
   jobs:
   - job: cd
     displayName: 'Generate package(s)'
     pool:
       vmImage: $(Agent)
     steps:
+
     - checkout: self
       clean: true
 
@@ -93,8 +92,7 @@ stages:
       displayName: 'Push NuGet package'
       inputs:
         command: 'push'
-        #packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
-        packagesToPush: '$(Build.SourcesDirectory)/TEST.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
         nuGetFeedType: 'external'
         publishFeedCredentials: 'AoCHelper_NuGet'
         verbosityPush: 'Detailed'
@@ -107,5 +105,15 @@ stages:
           git checkout master
           git status
           git add -A
-          git commit -m "Bump version to $(PackageVersion)"
-#          git push
+          git commit -m "Release v$(PackageVersion)"
+          git tag -a v$(PackageVersion)
+          git push --follow-tags
+
+    - task: GithubRelease@1
+        displayName: 'Create GitHub Release'
+        inputs:
+        gitHubConnection: eduherminio
+        repositoryName: eduherminion/AoCHelper
+        tagSource: manual
+        tag: v$(PackageVersion)
+        assets: $(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg
