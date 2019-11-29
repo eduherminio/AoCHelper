@@ -56,6 +56,7 @@ stages:
         script: |
             git config --replace-all user.email "azure@devops.com"
             git config --replace-all user.name "Azure DevOps"
+            git config --global --add url."git@github.com:".insteadOf "https://github.com/"
 
     - task: DotNetCoreCLI@2
       displayName: 'Modify project version'
