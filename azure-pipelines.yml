@@ -12,7 +12,7 @@ variables:
 stages:
 - stage: CI
   displayName: 'Build and run tests'
-  condition: and(failed())
+  condition: failed()
   jobs:
   - job: ci
     displayName: 'Build and run tests'
