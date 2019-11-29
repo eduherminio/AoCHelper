@@ -40,7 +40,6 @@ stages:
   displayName: 'Generate package(s)'
   #dependsOn: 'CI'
   #condition: and(succeeded('CI'), contains(variables[‘Build.SourceBranch’], ‘refs/heads/master’), ne($(PackageVersion), '')
-  #condition: and(succeeded('CI'), ne(variables['PackageVersion'], ''))
   condition: always()
   jobs:
   - job: cd
@@ -56,10 +55,8 @@ stages:
       inputs:
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
         script: |
-            git config --replace-all user.email "you@domain.com"
-            git config --replace-all user.name "AzureDevOps"
-#            git config --global user.name 'Azure DevOps'
-#            git config --global user.email \<\>
+            git config --replace-all user.email \<\>
+            git config --replace-all user.name "Azure DevOps"
 
     - task: DotNetCoreCLI@2
       displayName: 'Modify version'
@@ -99,7 +96,8 @@ stages:
         script: |
           git checkout master
           git status
-          git commit --author "Azure DevOps \<\>" -am "Bump version to $(PackageVersion)"
+          git add -A
+          git commit -m "Bump version to $(PackageVersion)"
 #          git push
 
     - task: NuGetCommand@2
