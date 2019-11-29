@@ -11,7 +11,7 @@ variables:
 
 stages:
 - stage: CI
-  #displayName: 'Build and run tests'
+  displayName: 'Build and run tests'
   jobs:
   - job: ci
     displayName: 'Build and run tests'
@@ -48,13 +48,13 @@ stages:
     steps:
     - checkout: self
       clean: true
-    - task: CmdLine@2
-      displayName: 'Setup Git'
-      inputs:
-        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
-        script: |
-            git config --global user.email \<\>
-            git config --global user.name "Azure DevOps"
+#    - task: CmdLine@2
+#      displayName: 'Setup Git'
+#      inputs:
+#        workingDirectory: $(Build.SourcesDirectory)/AoCHelper
+#        script: |
+#            git config --global user.email \<\>
+#            git config --global user.name "Azure DevOps"
 
     - task: DotNetCoreCLI@2
       displayName: 'Modify version'
@@ -95,7 +95,7 @@ stages:
           git checkout master
           git status
           git add -A
-          git commit -m "Bump version to $(PackageVersion)"
+          git commit --author "Azure DevOps <>" -m "Bump version to $(PackageVersion)"
 #          git push
 
     - task: NuGetCommand@2
