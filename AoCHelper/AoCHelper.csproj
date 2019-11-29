@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="AoCHelper.targets" />
 
@@ -8,7 +8,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>AoCHelper</Title>
     <PackageId>AoCHelper</PackageId>
-    <Version>0.1</Version>
+    <Version>0.1.0-alpha</Version>
     <PackageTags>AoC, AdventOfCode, Advent, Code</PackageTags>
     <Tags>$(PackageTags)</Tags>
     <Authors>Eduardo Cáceres</Authors>
