@@ -55,7 +55,7 @@ stages:
       inputs:
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
         script: |
-            git config --replace-all user.email ""
+            git config --replace-all user.email "azure@devops.com"
             git config --replace-all user.name "Azure DevOps"
 
     - task: DotNetCoreCLI@2
