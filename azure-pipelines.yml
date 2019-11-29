@@ -112,7 +112,7 @@ stages:
     - task: GithubRelease@1
       displayName: 'Create GitHub Release'
       inputs:
-        gitHubConnection: eduherminio
+        gitHubConnection: AoCHelper_GitHub
         repositoryName: eduherminion/AoCHelper
         tagSource: manual
         tag: v$(PackageVersion)
