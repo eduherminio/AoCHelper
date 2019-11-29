@@ -97,7 +97,6 @@ stages:
         script: |
           git checkout master
           git status
-#          git add -A
           git commit --author "Azure DevOps \<\>" -am "Bump version to $(PackageVersion)"
 #          git push
 
