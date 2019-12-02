@@ -7,7 +7,7 @@ trigger:
 
 variables:
   Agent: 'windows-2019'
-  BuildConfiguration: 'Release'   # configuration to package, does not work with build step
+  BuildConfiguration: 'Release'   # configuration to pack, does not work with build step
 
 stages:
 - stage: CI
@@ -99,9 +99,18 @@ stages:
       displayName: 'Push NuGet package'
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg;$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.snupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
         nuGetFeedType: 'external'
         publishFeedCredentials: 'AoCHelper_NuGet'
+        verbosityPush: 'Detailed'
+
+    - task: NuGetCommand@2
+      displayName: 'Push GitHub package'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'GitHubPackageRegistry'
         verbosityPush: 'Detailed'
 
     - task: CmdLine@2
@@ -116,12 +125,3 @@ stages:
           git tag -a v$(PackageVersion) -m "v$(PackageVersion)"
           git push
           git push --tags
-
-    - task: NuGetCommand@2
-      displayName: 'Push GitHub package'
-      inputs:
-        command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg;$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.snupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'GitHubPackageRegistry'
-        verbosityPush: 'Detailed'
