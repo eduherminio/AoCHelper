@@ -112,16 +112,10 @@ stages:
         verbosityPush: 'Detailed'
 
     - task: NuGetCommand@2
-      displayName: 'Add GitHub Packages Repository as source'
-      inputs:
-        command: 'custom'
-        arguments: sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/eduherminio/index.json" -UserName eduherminio -Password AoCHelper_GitHub
-
-    - task: NuGetCommand@2
       displayName: 'Push GitHub package'
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg;$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.snupkg'
         nuGetFeedType: 'external'
-        publishFeedCredentials: 'AoCHelper_GitHub'
+        publishFeedCredentials: 'GitHubPackageRegistry'
         verbosityPush: 'Detailed'
