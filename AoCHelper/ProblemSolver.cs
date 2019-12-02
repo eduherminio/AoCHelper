@@ -83,11 +83,17 @@ namespace AoCHelper
         /// <param name="problem"></param>
         protected virtual void Solve(IProblem problem)
         {
-            problem.Solve_1();
-            Console.WriteLine();
+            string typeName = problem.GetType().Name;
+            string problemIndex = typeName.Substring(typeName.IndexOf("Problem") + "Problem".Length).TrimStart('0');
+            string lineStart = string.IsNullOrWhiteSpace(problemIndex)
+                ? problem.GetType().Name
+                : $"Day {problemIndex}";
 
-            problem.Solve_2();
-            Console.WriteLine('\n');
+            string solution1 = problem.Solve_1();
+            Console.WriteLine($"{lineStart}, part 1:\t\t{solution1}");
+
+            string solution2 = problem.Solve_2();
+            Console.WriteLine($"{lineStart}, part 2:\t\t{solution2}\n");
         }
 
         /// <summary>
@@ -97,18 +103,27 @@ namespace AoCHelper
         /// <param name="problem"></param>
         protected virtual void SolveWithMetrics(IProblem problem)
         {
+            string typeName = problem.GetType().Name;
+            string problemIndex = typeName.Substring(typeName.IndexOf("Problem") + "Problem".Length).TrimStart('0');
+            string lineStart = string.IsNullOrWhiteSpace(problemIndex)
+                ? problem.GetType().Name
+                : $"Day {problemIndex}";
+
             var stopwatch = Stopwatch.StartNew();
 
-            problem.Solve_1();
+            string solution1 = problem.Solve_1();
 
             stopwatch.Stop();
+
+            Console.Write($"{lineStart}, part 1:\t\t{solution1}");
             PrintElapsedTime(stopwatch);
             stopwatch.Reset();
             stopwatch.Restart();
 
-            problem.Solve_2();
+            string solution2 = problem.Solve_2();
 
             stopwatch.Stop();
+            Console.Write($"{lineStart}, part 2:\t\t{solution2}");
             PrintElapsedTime(stopwatch, newLine: true);
         }
 
@@ -124,7 +139,7 @@ namespace AoCHelper
 
             string elapsedTime = elapsedMilliseconds < 1000
                 ? $"{elapsedMilliseconds} ms"
-                : $"{0.001 * elapsedMilliseconds} s";
+                : $"{(0.001 * elapsedMilliseconds).ToString("F")} s";
 
             Console.WriteLine($"\t\t\t\t{elapsedTime}");
 

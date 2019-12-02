@@ -16,16 +16,18 @@ namespace AoCHelper.Test
 
         private abstract class ProblemFixture : BaseProblem
         {
-            public override void Solve_1() => Solve();
+            public override string Solve_1() => Solve();
 
-            public override void Solve_2() => Solve();
+            public override string Solve_2() => Solve();
 
-            private void Solve()
+            private string Solve()
             {
                 if (!File.Exists(FilePath))
                 {
                     throw new FileNotFoundException(FilePath);
                 }
+
+                return string.Empty;
             }
         }
 

@@ -5,7 +5,7 @@ namespace AoCHelper
 {
     public abstract class BaseProblem : IProblem
     {
-        public string FilePath { get; }
+        public virtual string FilePath { get; }
 
         /// <summary>
         /// Providing class name is ProblemXX, it parses problem input from Inputs/XX.in
@@ -18,8 +18,8 @@ namespace AoCHelper
             FilePath = Path.Combine("Inputs", problemIndex + ".in");
         }
 
-        public abstract void Solve_1();
+        public abstract string Solve_1();
 
-        public abstract void Solve_2();
+        public abstract string Solve_2();
     }
 }

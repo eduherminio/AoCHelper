@@ -4,8 +4,8 @@
     {
         string FilePath { get; }
 
-        void Solve_1();
+        string Solve_1();
 
-        void Solve_2();
+        string Solve_2();
     }
 }
