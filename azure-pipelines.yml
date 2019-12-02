@@ -106,16 +106,22 @@ stages:
       displayName: 'Push NuGet package'
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg;$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.snupkg'
         nuGetFeedType: 'external'
         publishFeedCredentials: 'AoCHelper_NuGet'
         verbosityPush: 'Detailed'
 
-    - task: GithubRelease@1
-      displayName: 'Create GitHub Release'
+    - task: NuGetCommand@2
+      displayName: 'Add GitHub Packages Repository as source'
       inputs:
-        gitHubConnection: AoCHelper_GitHub
-        repositoryName: eduherminion/AoCHelper
-        tagSource: manual
-        tag: v$(PackageVersion)
-        assets: $(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg
+        command: 'custom'
+        arguments: sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/eduherminio/index.json" -UserName eduherminio -Password AoCHelper_GitHub
+
+    - task: NuGetCommand@2
+      displayName: 'Push GitHub package'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.SourcesDirectory)/AoCHelper/Artifacts/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'AoCHelper_GitHub'
+        verbosityPush: 'Detailed'
