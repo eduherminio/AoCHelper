@@ -7,7 +7,7 @@ namespace AoCHelper.Model
     /// <summary>
     /// Simple point class, with equals method and equality operators overriden
     /// </summary>
-    internal class Point : IEquatable<Point>
+    public class Point : IEquatable<Point>
     {
         internal int X { get; set; }
 
