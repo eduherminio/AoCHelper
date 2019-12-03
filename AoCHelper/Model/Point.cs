@@ -9,9 +9,9 @@ namespace AoCHelper.Model
     /// </summary>
     public class Point : IEquatable<Point>
     {
-        internal int X { get; set; }
+        public int X { get; set; }
 
-        internal int Y { get; set; }
+        public int Y { get; set; }
 
         public Point(int x, int y)
         {
