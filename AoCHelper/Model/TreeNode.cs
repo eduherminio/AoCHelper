@@ -47,17 +47,17 @@ namespace AoCHelper.Model
         /// Equals to <see cref="DescendantsCount()"/>
         /// </summary>
         /// <returns></returns>
-        public int GrandesChildreCount() => DescendantsCount();
+        public int GrandChildrenCount() => DescendantsCount();
 
         /// <summary>
         /// Number of relationships between this node and its descendants
         /// </summary>
         /// <returns></returns>
-        public int RelationshipCount()
+        public int RelationshipsCount()
         {
             return Children.Count
                    + Children.Select(child => child.DescendantsCount()).Sum()
-                   + Children.Select(child => child.RelationshipCount()).Sum();
+                   + Children.Select(child => child.RelationshipsCount()).Sum();
         }
 
         /// <summary>
