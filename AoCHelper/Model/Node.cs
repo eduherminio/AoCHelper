@@ -8,8 +8,6 @@ namespace AoCHelper.Model
     /// <typeparam name="TKey"></typeparam>
     public class Node<TKey> : IEquatable<Node<TKey>>
     {
-        public TKey ParentId { get; set; }
-
         public TKey Id { get; set; }
 
         public Node(TKey id)
@@ -42,13 +40,9 @@ namespace AoCHelper.Model
                 return false;
             }
 
-            if (Id is string _id && other is Node<string> _other)
+            if (Id.GetType() == typeof(TKey))
             {
-                return _id == _other.Id;
-            }
-            else if (Id is int _id2 && other is Node<int> _other2)
-            {
-                return _id2 == _other2.Id;
+                return Id.Equals(other.Id);
             }
             else
             {
@@ -59,6 +53,16 @@ namespace AoCHelper.Model
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        public bool Equals(TKey x, TKey y)
+        {
+            return x != null && x.Equals(y);
+        }
+
+        public int GetHashCode(TKey obj)
+        {
+            return obj.GetHashCode();
         }
 
         public static bool operator ==(Node<TKey> node1, Node<TKey> node2)
