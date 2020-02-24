@@ -5,7 +5,7 @@ using System.Linq;
 namespace AoCHelper.Model
 {
     /// <summary>
-    /// Simple point class, with equals method and equality operators overriden
+    /// Simple point class, with equality operators overriden
     /// </summary>
     public class Point : IEquatable<Point>
     {
@@ -13,8 +13,17 @@ namespace AoCHelper.Model
 
         public int Y { get; set; }
 
+        public string Id { get; set; }
+
         public Point(int x, int y)
         {
+            X = x;
+            Y = y;
+        }
+
+        public Point(string id, int x, int y)
+        {
+            Id = id;
             X = x;
             Y = y;
         }
@@ -22,6 +31,13 @@ namespace AoCHelper.Model
         public int ManhattanDistance(Point point)
         {
             return Math.Abs(point.X - X) + Math.Abs(point.Y - Y);
+        }
+
+        public double DistanceTo(Point otherPoint)
+        {
+            return Math.Sqrt(
+                Math.Pow(otherPoint.X - X, 2)
+                + Math.Pow(otherPoint.Y - Y, 2));
         }
 
         public Point CalculateClosestManhattanPoint(ICollection<Point> candidatePoints)

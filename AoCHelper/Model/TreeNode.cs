@@ -9,7 +9,7 @@ namespace AoCHelper.Model
     /// That's to say, it can be transversed recursively due its lack of cycles: a node only has one parent
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public class TreeNode<TKey> : Node<TKey>
+    public class TreeNode<TKey> : GenericNode<TKey>
     {
         public TKey ParentId { get; set; }
 
