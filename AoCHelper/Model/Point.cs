@@ -106,7 +106,15 @@ namespace AoCHelper.Model
 
         public override int GetHashCode()
         {
-            return X ^ Y;
+#if NETSTANDARD2_1
+            return HashCode.Combine(X, Y, Id);
+#else
+            var hashCode = 1166230731;
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
+            return hashCode;
+#endif
         }
 
         public override bool Equals(object obj)

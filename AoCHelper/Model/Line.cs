@@ -36,6 +36,9 @@ namespace AoCHelper.Model
 
         public override int GetHashCode()
         {
+#if NETSTANDARD2_1
+            return HashCode.Combine(M, X0, Y0);
+#else
             unchecked
             {
                 var hashCode = M.GetHashCode();
@@ -43,6 +46,7 @@ namespace AoCHelper.Model
                 hashCode = (hashCode * 397) ^ X0.GetHashCode();
                 return hashCode;
             }
+#endif
         }
 
         public override bool Equals(object obj)
