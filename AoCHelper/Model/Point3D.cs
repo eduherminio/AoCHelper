@@ -29,6 +29,14 @@ namespace AoCHelper.Model
             Id = id;
         }
 
+        public double DistanceTo(Point3D otherPoint)
+        {
+            return Math.Sqrt(
+                Math.Pow(otherPoint.X - X, 2)
+                + Math.Pow(otherPoint.Y - Y, 2)
+                + Math.Pow(otherPoint.Z - Z, 2));
+        }
+
         public override string ToString()
         {
             return $"[{X}, {Y}, {Z}]";
