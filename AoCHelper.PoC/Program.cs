@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace AoCHelper.PoC
+﻿namespace AoCHelper.PoC
 {
-    internal class Program
+    public static class Program
     {
-        internal static void Main()
+        public static void Main()
         {
             ProblemSolver solver = new ProblemSolver();
 

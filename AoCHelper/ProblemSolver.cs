@@ -1,5 +1,4 @@
-﻿using AoCHelper.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -65,17 +64,15 @@ namespace AoCHelper
 
         #endregion
 
-        #region Virtual methods
-        internal protected virtual IEnumerable<Type> LoadAllProblems(Assembly assembly)
-        {
-            return assembly.GetTypes()
-                .Where(type => typeof(IProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
-        }
-
         /// <summary>
         /// Loads problems to be solved by <see cref="SolveAllProblems"/> and <see cref="SolveAllProblemsWithMetrics"/>
         /// </summary>
         /// <returns></returns>
+        internal IEnumerable<Type> LoadAllProblems(Assembly assembly)
+        {
+            return assembly.GetTypes()
+                .Where(type => typeof(IProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+        }
 
         /// <summary>
         /// Solves both parts of a problem, each one in a different line, adding an empty line in the end
@@ -139,7 +136,7 @@ namespace AoCHelper
 
             string elapsedTime = elapsedMilliseconds < 1000
                 ? $"{elapsedMilliseconds} ms"
-                : $"{(0.001 * elapsedMilliseconds).ToString("F")} s";
+                : $"{0.001 * elapsedMilliseconds:F} s";
 
             Console.WriteLine($"\t\t\t\t{elapsedTime}");
 
@@ -158,13 +155,15 @@ namespace AoCHelper
         /// <returns></returns>
         protected virtual Performance EvaluatePerformance(long elapsedMilliseconds)
         {
+            if (elapsedMilliseconds == 0)
+            {
+                return Performance.Unknown;
+            }
+
             return (Performance)Enum.ToObject(
                 typeof(Performance),
-                    (elapsedMilliseconds / 1000)
-                    .Clamp(min: 0, max: _actionDictionary.Count - 1));
+                Clamp(value: elapsedMilliseconds / 1000, min: 0, max: _actionDictionary.Count - 1));
         }
-
-        #endregion
 
         /// <summary>
         /// Console foreground colors for different <see cref="Performance"/>
@@ -173,7 +172,8 @@ namespace AoCHelper
         {
             [Performance.Good] = () => Console.ForegroundColor = ConsoleColor.DarkGreen,
             [Performance.Average] = () => Console.ForegroundColor = ConsoleColor.DarkYellow,
-            [Performance.Bad] = () => Console.ForegroundColor = ConsoleColor.DarkRed
+            [Performance.Bad] = () => Console.ForegroundColor = ConsoleColor.DarkRed,
+            [Performance.Unknown] = () => Console.ForegroundColor = ConsoleColor.DarkBlue
         };
 
         protected void ChangeForegroundConsoleColor(Performance key)
@@ -182,6 +182,15 @@ namespace AoCHelper
             {
                 action.Invoke();
             }
+        }
+
+        private static long Clamp(long value, long min, long max)
+        {
+            return (value.CompareTo(min) <= 0)
+                ? min
+                : (value.CompareTo(max) >= 0)
+                    ? max
+                    : value;
         }
     }
 }
