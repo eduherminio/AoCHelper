@@ -125,7 +125,7 @@ stages:
       condition: eq(variables['NoCommit'], '')
       inputs:
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
-        script:
+        script: |
           git checkout master
           git status
           git add -A
