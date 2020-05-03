@@ -122,10 +122,11 @@ stages:
 
     - task: CmdLine@2
       displayName: 'Commit and push version increment'
-      condition: ne(variables['NoCommit'], '')
+      condition: eq(variables['NoCommit'], '')
       inputs:
         workingDirectory: $(Build.SourcesDirectory)/AoCHelper
-        script: |
+        script:
+          git checkout master
           git status
           git add -A
           git commit -m "Release v$(PackageVersion)"
