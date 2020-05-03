@@ -155,6 +155,11 @@ namespace AoCHelper
         /// <returns></returns>
         protected virtual Performance EvaluatePerformance(long elapsedMilliseconds)
         {
+            if (elapsedMilliseconds == 0)
+            {
+                return Performance.Unknown;
+            }
+
             return (Performance)Enum.ToObject(
                 typeof(Performance),
                 Clamp(value: elapsedMilliseconds / 1000, min: 0, max: _actionDictionary.Count - 1));
@@ -167,7 +172,8 @@ namespace AoCHelper
         {
             [Performance.Good] = () => Console.ForegroundColor = ConsoleColor.DarkGreen,
             [Performance.Average] = () => Console.ForegroundColor = ConsoleColor.DarkYellow,
-            [Performance.Bad] = () => Console.ForegroundColor = ConsoleColor.DarkRed
+            [Performance.Bad] = () => Console.ForegroundColor = ConsoleColor.DarkRed,
+            [Performance.Unknown] = () => Console.ForegroundColor = ConsoleColor.DarkBlue
         };
 
         protected void ChangeForegroundConsoleColor(Performance key)
