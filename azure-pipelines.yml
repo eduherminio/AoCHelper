@@ -5,6 +5,14 @@ trigger:
     include:
     - master
 
+schedules:
+- cron: "1 0 * * 1"
+  displayName: 'Weekly build'
+  always: true
+  branches:
+    include:
+    - master
+
 variables:
   Agent: 'windows-2019'
   BuildConfiguration: 'Release'   # configuration to pack, does not work with build step

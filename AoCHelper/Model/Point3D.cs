@@ -92,8 +92,8 @@ namespace AoCHelper.Model
 
         public override int GetHashCode()
         {
-#if NESTANDARD2_1
-                    return HashCode.Combine(X, Y, Z, Id);
+#if NETSTANDARD2_1
+            return HashCode.Combine(X, Y, Z, Id);
 #else
             var hashCode = -1895077416;
 
