@@ -56,7 +56,7 @@ jobs:
     - name: Set version to ${{ github.event.inputs.new_package_version }}
       shell: pwsh
       run: |
-        $input_path = "src/$PROJECT_NAME/$PROJECT_NAME.csproj"
+        $input_path = "src/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj"
         $regex = "(?<=<Version>).*(?=</Version>)"
         (Get-Content $input_path) -Replace $regex, '${{ github.event.inputs.new_package_version }}' | Out-File $input_path
 
@@ -68,31 +68,31 @@ jobs:
 
     - name: Pack
       run: |
-        dotnet pack -c Release --no-build src/$PROJECT_NAME/$PROJECT_NAME.csproj --include-symbols -o $ARTIFACT_DIR
+        dotnet pack -c Release --no-build src/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --include-symbols -o ${{ env.ARTIFACT_DIR }}
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: SheepTools-publish-artifact
+        name: ${{ env.PROJECT_NAME }}-publish-artifact
         path: |
-          $ARTIFACT_DIR/*.nupkg
-          $ARTIFACT_DIR/*.snupkg
+          ${{ env.ARTIFACT_DIR }}/*.nupkg
+          ${{ env.ARTIFACT_DIR }}/*.snupkg
         if-no-files-found: error
 
     - name: Push to NuGet
       if: github.event.inputs.should_push_nuget == 'true'
       run: |
-        nuget push '$ARTIFACT_DIR/*.nupkg' -ApiKey ${{ secrets.NuGetKey }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate -Verbosity detailed
+        nuget push '${{ env.ARTIFACT_DIR }}/*.nupkg' -ApiKey ${{ secrets.NuGetKey }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate -Verbosity detailed
 
     - name: Push to GitHub packages registry
       if: github.event.inputs.should_push_github == 'true'
       run: |
-        nuget push '$ARTIFACT_DIR/*.nupkg' -ApiKey ${{ secrets.GitHubToken }} -Source https://nuget.pkg.github.com/eduherminio/index.json -SkipDuplicate -Verbosity detailed
+        nuget push '${{ env.ARTIFACT_DIR }}/*.nupkg' -ApiKey ${{ secrets.GitHubToken }} -Source https://nuget.pkg.github.com/eduherminio/index.json -SkipDuplicate -Verbosity detailed
 
     - name: Commit and push version increment
       if: github.event.inputs.should_commit_new_version == 'true'
       run: |
-        git switch $GITHUB_REF_SLUG
+        git switch ${{ env.GITHUB_REF_SLUG }}
         git status
         git commit -am "Release v${{ github.event.inputs.new_package_version }}"
         git push
@@ -100,7 +100,7 @@ jobs:
     - name: Create git tag
       if: github.event.inputs.should_tag_new_version == 'true'
       run: |
-        git switch $GITHUB_REF_SLUG
+        git switch ${{ env.GITHUB_REF_SLUG }}
         git status
         git tag -a v${{ github.event.inputs.new_package_version }} -m "v${{ github.event.inputs.new_package_version }}"
         git push --tags
@@ -112,7 +112,7 @@ jobs:
       run: |
         set -x
         assets=()
-        for asset in $ARTIFACT_DIR/*; do
+        for asset in ${{ env.ARTIFACT_DIR }}/*; do
           assets+=("-a" "$asset")
         done
         tag_name="v${{ github.event.inputs.new_package_version }}"

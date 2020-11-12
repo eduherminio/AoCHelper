@@ -30,13 +30,13 @@ jobs:
       with:
         dotnet-version: 5.0.100
 
-    - name: '[Ubuntu] Set version to -ci-$GITHUB_RUN_NUMBER'
+    - name: '[Ubuntu] Set version to -ci-${{ github.run_number }}'
       if: matrix.os == 'ubuntu-latest'
       shell: pwsh
       run: |
-        $input_path = "src/$PROJECT_NAME/$PROJECT_NAME.csproj"
+        $input_path = "src/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj"
         $regex = "(?<=<Version>).*(?=</Version>)"
-        (Get-Content $input_path) -Replace $regex, '$0-ci-$GITHUB_RUN_NUMBER' | Out-File $input_path
+        (Get-Content $input_path) -Replace $regex, '$0-ci-${{ github.run_number }}' | Out-File $input_path
 
     - name: Build
       run: dotnet build -c Release /p:DeterministicBuild=true
@@ -47,16 +47,16 @@ jobs:
     - name: '[Ubuntu] Pack'
       if: matrix.os == 'ubuntu-latest'
       run: |
-        dotnet pack -c Release --no-build src/$PROJECT_NAME/$PROJECT_NAME.csproj --include-symbols -o $ARTIFACT_DIR
+        dotnet pack -c Release --no-build src/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --include-symbols -o ${{ env.ARTIFACT_DIR }}
 
     - name: '[Ubuntu] Upload Artifact'
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
-        name: SheepTools-ci-artifact
+        name: ${{ env.PROJECT_NAME }}-ci-artifact
         path: |
-          $ARTIFACT_DIR/*.nupkg
-          $ARTIFACT_DIR/*.snupkg
+          ${{ env.ARTIFACT_DIR }}/*.nupkg
+          ${{ env.ARTIFACT_DIR }}/*.snupkg
         if-no-files-found: error
 
     - name: '[Ubuntu] Generate test coverage report'
@@ -70,14 +70,14 @@ jobs:
         classfilters: '+*'
         filefilters: '+*'
         verbosity: 'Info'
-        title: '$PROJECT_NAME #$GITHUB_RUN_NUMBER ($GITHUB_REF_SLUG)'
-        tag: '$GITHUB_RUN_NUMBER_$GITHUB_RUN_ID'
+        title: '${{ env.PROJECT_NAME }} #${{ github.run_number }} (${{ env.GITHUB_REF_SLUG }})'
+        tag: '${{ github.run_number }}_${{ github.run_id }}'
         customSettings: 'numberOfReportsParsedInParallel=3;numberOfReportsMergedInParallel=3'
 
     - name: '[Ubuntu] Upload test coverage report'
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
-        name: $PROJECT_NAME-coverage-$GITHUB_RUN_NUMBER
+        name: ${{ env.PROJECT_NAME }}-coverage-${{ github.run_number }}
         path: coveragereport/
         if-no-files-found: error
