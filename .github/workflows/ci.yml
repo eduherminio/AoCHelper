@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+  schedule:
+    - cron:  '1 0 * * 1'    # * is a special character in YAML, therefore this string needs to be quoted
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      ARTIFACT_DIR: ./Artifacts
+      PROJECT_NAME: AoCHelper
+
+    steps:
+    - uses: actions/checkout@v2.3.3
+
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: 5.0.100
+
+    - name: '[Ubuntu] Set version to -ci-$GITHUB_RUN_NUMBER'
+      if: matrix.os == 'ubuntu-latest'
+      shell: pwsh
+      run: |
+        $input_path = "src/$PROJECT_NAME/$PROJECT_NAME.csproj"
+        $regex = "(?<=<Version>).*(?=</Version>)"
+        (Get-Content $input_path) -Replace $regex, '$0-ci-$GITHUB_RUN_NUMBER' | Out-File $input_path
+
+    - name: Build
+      run: dotnet build -c Release /p:DeterministicBuild=true
+
+    - name: Run tests
+      run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
+
+    - name: '[Ubuntu] Pack'
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        dotnet pack -c Release --no-build src/$PROJECT_NAME/$PROJECT_NAME.csproj --include-symbols -o $ARTIFACT_DIR
+
+    - name: '[Ubuntu] Upload Artifact'
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: SheepTools-ci-artifact
+        path: |
+          $ARTIFACT_DIR/*.nupkg
+          $ARTIFACT_DIR/*.snupkg
+        if-no-files-found: error
+
+    - name: '[Ubuntu] Generate test coverage report'
+      if: matrix.os == 'ubuntu-latest'
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.x
+      with:
+        reports: 'tests/**/*.cobertura.xml'
+        targetdir: 'coveragereport'
+        reporttypes: 'HtmlInline_AzurePipelines_Dark'
+        assemblyfilters: '+*'
+        classfilters: '+*'
+        filefilters: '+*'
+        verbosity: 'Info'
+        title: '$PROJECT_NAME #$GITHUB_RUN_NUMBER ($GITHUB_REF_SLUG)'
+        tag: '$GITHUB_RUN_NUMBER_$GITHUB_RUN_ID'
+        customSettings: 'numberOfReportsParsedInParallel=3;numberOfReportsMergedInParallel=3'
+
+    - name: '[Ubuntu] Upload test coverage report'
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: $PROJECT_NAME-coverage-$GITHUB_RUN_NUMBER
+        path: coveragereport/
+        if-no-files-found: error
