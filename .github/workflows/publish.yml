@@ -64,7 +64,30 @@ jobs:
       run: dotnet build -c Release /p:DeterministicBuild=true
 
     - name: Run tests
-      run: dotnet test -c Release --no-build
+      run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
+
+    - name: '[Ubuntu] Generate test coverage report'
+      continue-on-error: true
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.0
+      with:
+        reports: 'tests/**/*.cobertura.xml'
+        targetdir: 'coveragereport'
+        reporttypes: 'HtmlInline_AzurePipelines_Dark'
+        assemblyfilters: '+*'
+        classfilters: '+*'
+        filefilters: '+*'
+        verbosity: 'Info'
+        title: '${{ env.PROJECT_NAME }} #${{ github.run_number }} (${{ env.GITHUB_REF_SLUG }})'
+        tag: '${{ github.run_number }}_${{ github.run_id }}'
+        customSettings: 'numberOfReportsParsedInParallel=3;numberOfReportsMergedInParallel=3'
+
+    - name: '[Ubuntu] Upload test coverage report'
+      continue-on-error: true
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PROJECT_NAME }}-coverage-${{ env.GITHUB_REF_SLUG }}-${{ github.run_number }}
+        path: coveragereport/
+        if-no-files-found: error
 
     - name: Pack
       run: |
