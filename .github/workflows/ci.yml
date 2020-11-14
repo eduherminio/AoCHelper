@@ -53,7 +53,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.PROJECT_NAME }}-ci-artifact
+        name: ${{ env.PROJECT_NAME }}-ci-${{ github.run_number }}
         path: |
           ${{ env.ARTIFACT_DIR }}/*.nupkg
           ${{ env.ARTIFACT_DIR }}/*.snupkg
@@ -78,6 +78,6 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.PROJECT_NAME }}-coverage-${{ github.run_number }}
+        name: ${{ env.PROJECT_NAME }}-coverage-ci-${{ github.run_number }}
         path: coveragereport/
         if-no-files-found: error
