@@ -85,7 +85,7 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.PROJECT_NAME }}-coverage-${{ env.GITHUB_REF_SLUG }}-${{ github.run_number }}
+        name: ${{ env.PROJECT_NAME }}.${{ github.event.inputs.new_package_version }}-coverage-${{ env.GITHUB_REF_SLUG }}-${{ github.run_number }}
         path: coveragereport/
         if-no-files-found: error
 
