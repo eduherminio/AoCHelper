@@ -15,9 +15,9 @@ namespace AoCHelper
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         public void Solve<TProblem>()
-            where TProblem : IProblem, new()
+            where TProblem : BaseProblem, new()
         {
-            IProblem problem = new TProblem();
+            TProblem problem = new TProblem();
 
             Solve(problem);
         }
@@ -27,9 +27,9 @@ namespace AoCHelper
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         public void SolveWithMetrics<TProblem>()
-            where TProblem : IProblem, new()
+            where TProblem : BaseProblem, new()
         {
-            IProblem problem = new TProblem();
+            TProblem problem = new TProblem();
 
             SolveWithMetrics(problem);
         }
@@ -41,7 +41,7 @@ namespace AoCHelper
         {
             foreach (Type problemType in LoadAllProblems(Assembly.GetCallingAssembly()))
             {
-                if (Activator.CreateInstance(problemType) is IProblem problem)
+                if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
                     Solve(problem);
                 }
@@ -55,7 +55,7 @@ namespace AoCHelper
         {
             foreach (Type problemType in LoadAllProblems(Assembly.GetCallingAssembly()))
             {
-                if (Activator.CreateInstance(problemType) is IProblem problem)
+                if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
                     SolveWithMetrics(problem);
                 }
@@ -71,14 +71,14 @@ namespace AoCHelper
         internal static IEnumerable<Type> LoadAllProblems(Assembly assembly)
         {
             return assembly.GetTypes()
-                .Where(type => typeof(IProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+                .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
         /// <summary>
         /// Solves both parts of a problem, each one in a different line, adding an empty line in the end
         /// </summary>
         /// <param name="problem"></param>
-        protected virtual void Solve(IProblem problem)
+        protected virtual void Solve(BaseProblem problem)
         {
             var problemIndex = problem.CalculateIndex();
             var lineStart = problemIndex != default
@@ -97,7 +97,7 @@ namespace AoCHelper
         /// Prints the time consumed by each part next to the result produced by it
         /// </summary>
         /// <param name="problem"></param>
-        protected virtual void SolveWithMetrics(IProblem problem)
+        protected virtual void SolveWithMetrics(BaseProblem problem)
         {
             var problemIndex = problem.CalculateIndex();
             var lineStart = problemIndex != default

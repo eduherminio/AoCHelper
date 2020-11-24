@@ -2,7 +2,7 @@
 
 namespace AoCHelper
 {
-    public abstract class BaseProblem : IProblem
+    public abstract class BaseProblem
     {
         protected virtual string ClassPrefix { get; } = "Problem";
 
