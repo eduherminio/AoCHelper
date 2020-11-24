@@ -13,8 +13,18 @@
     <ItemsToCopy Include="$(MSBuildThisFileDirectory)\Inputs\*.*" />
   </ItemGroup>
 
-  <Target Name="CopyInputFilesToOutputDir" AfterTargets="Build">
-    <Copy SourceFiles="@(ItemsToCopy)" DestinationFolder="$(OutputPath)\Inputs" />
-  </Target>
+  <ItemGroup>
+    <ItemsToCopy Remove="Inputs\RandomInput.random" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Inputs\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AlternativeInputs\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

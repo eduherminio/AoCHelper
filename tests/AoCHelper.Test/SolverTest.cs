@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -31,28 +32,38 @@ namespace AoCHelper.Test
             }
         }
 
-        private class Problem01 : ProblemFixture
-        {
-        }
+        private class Problem66 : ProblemFixture { }
 
-        private class NonDetectedProblem : ProblemFixture
-        {
-        }
+        private class IllCreatedCustomProblem : ProblemFixture { }
 
         [Fact]
         public void Solve()
         {
-            _solver.Solve<Problem01>();
-            _solver.SolveWithMetrics<Problem01>();
+            _solver.Solve<Problem66>();
+        }
 
-            Assert.Equal(2, _solver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
+        [Fact]
+        public void SolveWithMetrics()
+        {
+            _solver.SolveWithMetrics<Problem66>();
         }
 
         [Fact]
         public void ShouldNotSolve()
         {
-            Assert.Throws<FileNotFoundException>(() => _solver.Solve<NonDetectedProblem>());
-            Assert.Throws<FileNotFoundException>(() => _solver.SolveWithMetrics<NonDetectedProblem>());
+            Assert.Throws<FileNotFoundException>(() => _solver.Solve<IllCreatedCustomProblem>());
+        }
+
+        [Fact]
+        public void ShouldNotSolveWithMetrics()
+        {
+            Assert.Throws<FileNotFoundException>(() => _solver.SolveWithMetrics<IllCreatedCustomProblem>());
+        }
+
+        [Fact]
+        public void LoadAllProblems()
+        {
+            Assert.Equal(14, ProblemSolver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
         }
     }
 }
