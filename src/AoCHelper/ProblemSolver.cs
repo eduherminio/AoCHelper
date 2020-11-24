@@ -176,7 +176,7 @@ namespace AoCHelper
 
         protected void ChangeForegroundConsoleColor(Performance key)
         {
-            if (_actionDictionary.TryGetValue(key, out Action action))
+            if (_actionDictionary.TryGetValue(key, out Action? action))
             {
                 action.Invoke();
             }

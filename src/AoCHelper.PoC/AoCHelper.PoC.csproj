@@ -10,14 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ItemsToCopy Include="$(MSBuildThisFileDirectory)\Inputs\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ItemsToCopy Remove="Inputs\RandomInput.random" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Inputs\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -25,6 +17,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 
 </Project>
