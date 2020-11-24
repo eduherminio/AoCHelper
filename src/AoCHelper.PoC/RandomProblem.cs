@@ -7,13 +7,13 @@ namespace AoCHelper.PoC
         /// <summary>
         /// Overriding FilePath, due to problem not following any convention (not even index one).
         /// </summary>
-        public override string FilePath => "Inputs/RandomInput.random";
+        public override string InputFilePath => "Inputs/RandomInput.random";
 
         public RandomProblem()
         {
-            if (!File.Exists(FilePath))
+            if (!File.Exists(InputFilePath))
             {
-                throw new SolvingException($"Path {FilePath} not found for {GetType().Name}");
+                throw new SolvingException($"Path {InputFilePath} not found for {GetType().Name}");
             }
         }
 

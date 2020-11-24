@@ -3,18 +3,18 @@ using Xunit;
 
 namespace AoCHelper.Test
 {
-    public class OverrideFilePathTests
+    public class OverrideInputFilePathTests
     {
         private readonly ProblemSolver _solver;
 
-        public OverrideFilePathTests()
+        public OverrideInputFilePathTests()
         {
             _solver = new ProblemSolver();
         }
 
         private abstract class BaseProblemFixture : BaseProblem
         {
-            protected override string FileExtension => nameof(OverrideFilePathTests);
+            protected override string InputFileExtension => nameof(OverrideInputFilePathTests);
 
             public override string Solve_1() => Solve();
 
@@ -22,19 +22,19 @@ namespace AoCHelper.Test
 
             private string Solve()
             {
-                if (!File.Exists(FilePath))
+                if (!File.Exists(InputFilePath))
                 {
-                    throw new FileNotFoundException(FilePath);
+                    throw new FileNotFoundException(InputFilePath);
                 }
 
                 return string.Empty;
             }
         }
 
-        private class CustomProblem : BaseProblemFixture { public override string FilePath => "AlternativeInputs/43.OverrideFilePathTests"; }
+        private class CustomProblem : BaseProblemFixture { public override string InputFilePath => $"AlternativeInputs/43.{nameof(OverrideInputFilePathTests)}"; }
 
         [Fact]
-        public void OverrideFilePath()
+        public void OverrideInputFilePath()
         {
             _solver.Solve<CustomProblem>();
         }

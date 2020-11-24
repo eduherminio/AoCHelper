@@ -6,9 +6,9 @@ namespace AoCHelper.PoC
     {
         public Problem01()
         {
-            if (!File.Exists(FilePath))
+            if (!File.Exists(InputFilePath))
             {
-                throw new SolvingException($"Path {FilePath} not found for {GetType().Name}");
+                throw new SolvingException($"Path {InputFilePath} not found for {GetType().Name}");
             }
         }
 

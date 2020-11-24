@@ -20,9 +20,9 @@ namespace AoCHelper.Test
 
             private string Solve()
             {
-                if (!File.Exists(FilePath))
+                if (!File.Exists(InputFilePath))
                 {
-                    throw new FileNotFoundException(FilePath);
+                    throw new FileNotFoundException(InputFilePath);
                 }
 
                 return string.Empty;
