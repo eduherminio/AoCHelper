@@ -61,13 +61,13 @@ jobs:
 
     - name: '[Ubuntu] Generate test coverage report'
       if: matrix.os == 'ubuntu-latest'
-      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.0
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.1
       with:
         reports: 'tests/**/*.cobertura.xml'
         targetdir: 'coveragereport'
         reporttypes: 'HtmlInline_AzurePipelines_Dark'
         assemblyfilters: '+*'
-        classfilters: '+*'
+        classfilters: '+*;-*Exception'
         filefilters: '+*'
         verbosity: 'Info'
         title: '${{ env.PROJECT_NAME }} #${{ github.run_number }} (${{ env.GITHUB_REF_SLUG }})'

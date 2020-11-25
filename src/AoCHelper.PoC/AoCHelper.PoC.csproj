@@ -10,11 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ItemsToCopy Include="$(MSBuildThisFileDirectory)\Inputs\*.*" />
+    <None Update="Inputs\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AlternativeInputs\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-
-  <Target Name="CopyInputFilesToOutputDir" AfterTargets="Build">
-    <Copy SourceFiles="@(ItemsToCopy)" DestinationFolder="$(OutputPath)\Inputs" />
-  </Target>
 
 </Project>

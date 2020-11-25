@@ -15,9 +15,9 @@ namespace AoCHelper
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         public void Solve<TProblem>()
-            where TProblem : IProblem, new()
+            where TProblem : BaseProblem, new()
         {
-            IProblem problem = new TProblem();
+            TProblem problem = new TProblem();
 
             Solve(problem);
         }
@@ -27,9 +27,9 @@ namespace AoCHelper
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         public void SolveWithMetrics<TProblem>()
-            where TProblem : IProblem, new()
+            where TProblem : BaseProblem, new()
         {
-            IProblem problem = new TProblem();
+            TProblem problem = new TProblem();
 
             SolveWithMetrics(problem);
         }
@@ -41,7 +41,7 @@ namespace AoCHelper
         {
             foreach (Type problemType in LoadAllProblems(Assembly.GetCallingAssembly()))
             {
-                if (Activator.CreateInstance(problemType) is IProblem problem)
+                if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
                     Solve(problem);
                 }
@@ -55,7 +55,7 @@ namespace AoCHelper
         {
             foreach (Type problemType in LoadAllProblems(Assembly.GetCallingAssembly()))
             {
-                if (Activator.CreateInstance(problemType) is IProblem problem)
+                if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
                     SolveWithMetrics(problem);
                 }
@@ -68,28 +68,27 @@ namespace AoCHelper
         /// Loads problems to be solved by <see cref="SolveAllProblems"/> and <see cref="SolveAllProblemsWithMetrics"/>
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<Type> LoadAllProblems(Assembly assembly)
+        internal static IEnumerable<Type> LoadAllProblems(Assembly assembly)
         {
             return assembly.GetTypes()
-                .Where(type => typeof(IProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+                .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
         /// <summary>
         /// Solves both parts of a problem, each one in a different line, adding an empty line in the end
         /// </summary>
         /// <param name="problem"></param>
-        protected virtual void Solve(IProblem problem)
+        protected virtual void Solve(BaseProblem problem)
         {
-            string typeName = problem.GetType().Name;
-            string problemIndex = typeName.Substring(typeName.IndexOf("Problem") + "Problem".Length).TrimStart('0');
-            string lineStart = string.IsNullOrWhiteSpace(problemIndex)
-                ? problem.GetType().Name
-                : $"Day {problemIndex}";
+            var problemIndex = problem.CalculateIndex();
+            var lineStart = problemIndex != default
+                ? $"Day {problemIndex}"
+                : $"{problem.GetType().Name}";
 
-            string solution1 = problem.Solve_1();
+            var solution1 = problem.Solve_1();
             Console.WriteLine($"{lineStart}, part 1:\t\t{solution1}");
 
-            string solution2 = problem.Solve_2();
+            var solution2 = problem.Solve_2();
             Console.WriteLine($"{lineStart}, part 2:\t\t{solution2}\n");
         }
 
@@ -98,17 +97,16 @@ namespace AoCHelper
         /// Prints the time consumed by each part next to the result produced by it
         /// </summary>
         /// <param name="problem"></param>
-        protected virtual void SolveWithMetrics(IProblem problem)
+        protected virtual void SolveWithMetrics(BaseProblem problem)
         {
-            string typeName = problem.GetType().Name;
-            string problemIndex = typeName.Substring(typeName.IndexOf("Problem") + "Problem".Length).TrimStart('0');
-            string lineStart = string.IsNullOrWhiteSpace(problemIndex)
-                ? problem.GetType().Name
-                : $"Day {problemIndex}";
+            var problemIndex = problem.CalculateIndex();
+            var lineStart = problemIndex != default
+                ? $"Day {problemIndex}"
+                : $"{problem.GetType().Name}";
 
             var stopwatch = Stopwatch.StartNew();
 
-            string solution1 = problem.Solve_1();
+            var solution1 = problem.Solve_1();
 
             stopwatch.Stop();
 
@@ -117,7 +115,7 @@ namespace AoCHelper
             stopwatch.Reset();
             stopwatch.Restart();
 
-            string solution2 = problem.Solve_2();
+            var solution2 = problem.Solve_2();
 
             stopwatch.Stop();
             Console.Write($"{lineStart}, part 2:\t\t{solution2}");
@@ -178,7 +176,7 @@ namespace AoCHelper
 
         protected void ChangeForegroundConsoleColor(Performance key)
         {
-            if (_actionDictionary.TryGetValue(key, out Action action))
+            if (_actionDictionary.TryGetValue(key, out Action? action))
             {
                 action.Invoke();
             }

@@ -2,14 +2,9 @@
 
 namespace AoCHelper.PoC
 {
-    internal class RandomProblem : BaseProblem
+    public class Day_04 : BaseDay
     {
-        /// <summary>
-        /// Overriding FilePath, due to problem not following any convention (not even index one).
-        /// </summary>
-        public override string InputFilePath => "Inputs/RandomInput.random";
-
-        public RandomProblem()
+        public Day_04()
         {
             if (!File.Exists(InputFilePath))
             {
@@ -19,13 +14,13 @@ namespace AoCHelper.PoC
 
         public override string Solve_1()
         {
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(250);
             return "Solution 1";
         }
 
         public override string Solve_2()
         {
-            System.Threading.Thread.Sleep(1501);
+            System.Threading.Thread.Sleep(1001);
             return "Solution 2";
         }
     }
