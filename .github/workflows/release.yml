@@ -68,13 +68,13 @@ jobs:
 
     - name: 'Generate test coverage report'
       continue-on-error: true
-      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.0
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.1
       with:
         reports: 'tests/**/*.cobertura.xml'
         targetdir: 'coveragereport'
         reporttypes: 'HtmlInline_AzurePipelines_Dark'
         assemblyfilters: '+*'
-        classfilters: '+*'
+        classfilters: '+*;-*Exception'
         filefilters: '+*'
         verbosity: 'Info'
         title: '${{ env.PROJECT_NAME }} #${{ github.run_number }} (${{ env.GITHUB_REF_SLUG }})'
@@ -114,6 +114,7 @@ jobs:
 
     - name: Commit and push version increment
       if: github.event.inputs.should_commit_new_version == 'true'
+      continue-on-error: true
       run: |
         git switch ${{ env.GITHUB_REF_SLUG }}
         git status
