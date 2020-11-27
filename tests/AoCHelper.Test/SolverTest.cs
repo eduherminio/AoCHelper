@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -8,13 +7,6 @@ namespace AoCHelper.Test
 {
     public class SolverTest
     {
-        private readonly ProblemSolver _solver;
-
-        public SolverTest()
-        {
-            _solver = new ProblemSolver();
-        }
-
         private abstract class ProblemFixture : BaseProblem
         {
             public override string Solve_1() => Solve();
@@ -39,31 +31,31 @@ namespace AoCHelper.Test
         [Fact]
         public void Solve()
         {
-            _solver.Solve<Problem66>();
+            Solver.Solve<Problem66>();
         }
 
         [Fact]
         public void SolveWithMetrics()
         {
-            _solver.SolveWithMetrics<Problem66>();
+            Solver.Solve<Problem66>();
         }
 
         [Fact]
         public void ShouldNotSolve()
         {
-            Assert.Throws<FileNotFoundException>(() => _solver.Solve<IllCreatedCustomProblem>());
+            Assert.Throws<FileNotFoundException>(() => Solver.Solve<IllCreatedCustomProblem>());
         }
 
         [Fact]
         public void ShouldNotSolveWithMetrics()
         {
-            Assert.Throws<FileNotFoundException>(() => _solver.SolveWithMetrics<IllCreatedCustomProblem>());
+            Assert.Throws<FileNotFoundException>(() => Solver.Solve<IllCreatedCustomProblem>());
         }
 
         [Fact]
         public void LoadAllProblems()
         {
-            Assert.Equal(14, ProblemSolver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
+            Assert.Equal(14, Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
         }
     }
 }

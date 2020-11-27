@@ -5,13 +5,6 @@ namespace AoCHelper.Test
 {
     public class OverrideIndexTests
     {
-        private readonly ProblemSolver _solver;
-
-        public OverrideIndexTests()
-        {
-            _solver = new ProblemSolver();
-        }
-
         private abstract class ProblemFixture : BaseProblem
         {
             public override string Solve_1() => Solve();
@@ -34,8 +27,8 @@ namespace AoCHelper.Test
         [Fact]
         public void OverrideIndex()
         {
-            _solver.Solve<CustomProblem>();
-            _solver.SolveWithMetrics<CustomProblem>();
+            Solver.Solve<CustomProblem>();
+            Solver.Solve<CustomProblem>();
         }
     }
 }

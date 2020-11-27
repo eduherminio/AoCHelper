@@ -1,12 +1,6 @@
-﻿namespace AoCHelper.PoC
-{
-    public static class Program
-    {
-        public static void Main()
-        {
-            ProblemSolver solver = new ProblemSolver();
+﻿using AoCHelper;
+using AoCHelper.PoC;
 
-            solver.SolveAllProblemsWithMetrics();
-        }
-    }
-}
+Solver.SolveAll();
+
+Solver.Solve(typeof(Problem01), typeof(Day03));
