@@ -5,13 +5,6 @@ namespace AoCHelper.Test
 {
     public class OverrideInputFileExtensionTests
     {
-        private readonly ProblemSolver _solver;
-
-        public OverrideInputFileExtensionTests()
-        {
-            _solver = new ProblemSolver();
-        }
-
         private abstract class BaseProblemFixture : BaseProblem
         {
             public override string Solve_1() => Solve();
@@ -38,11 +31,11 @@ namespace AoCHelper.Test
         [Fact]
         public void OverrideInputFileExtension()
         {
-            _solver.Solve<Problem01>();
-            _solver.Solve<Problem_01>();
+            Solver.Solve<Problem01>();
+            Solver.Solve<Problem_01>();
 
-            Assert.Throws<FileNotFoundException>(() => _solver.Solve<Problem02>());
-            Assert.Throws<FileNotFoundException>(() => _solver.Solve<Problem_02>());
+            Assert.Throws<FileNotFoundException>(() => Solver.Solve<Problem02>());
+            Assert.Throws<FileNotFoundException>(() => Solver.Solve<Problem_02>());
         }
     }
 }

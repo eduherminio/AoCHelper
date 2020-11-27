@@ -6,27 +6,16 @@ using System.Reflection;
 
 namespace AoCHelper
 {
-    public class ProblemSolver
+    public static class Solver
     {
         #region Public methods
 
         /// <summary>
-        /// Solves a problem
+        /// Solves both parts of a problem.
+        /// Prints the time consumed by each part next to the result produced by it
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
-        public void Solve<TProblem>()
-            where TProblem : BaseProblem, new()
-        {
-            TProblem problem = new TProblem();
-
-            Solve(problem);
-        }
-
-        /// <summary>
-        /// Solves a problem providing metrics
-        /// </summary>
-        /// <typeparam name="TProblem"></typeparam>
-        public void SolveWithMetrics<TProblem>()
+        public static void Solve<TProblem>()
             where TProblem : BaseProblem, new()
         {
             TProblem problem = new TProblem();
@@ -35,27 +24,38 @@ namespace AoCHelper
         }
 
         /// <summary>
-        /// Solve all problems
+        /// Solves all problems in the assembly
+        /// Prints the time consumed by each part next to the result produced by it
         /// </summary>
-        public void SolveAllProblems()
+        public static void SolveAll()
         {
-            foreach (Type problemType in LoadAllProblems(Assembly.GetCallingAssembly()))
+            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem);
+                    SolveWithMetrics(problem);
                 }
             }
         }
 
         /// <summary>
-        /// Solves all problems providing metrics
+        /// Solves the provided problems.
+        /// Prints the time consumed by each part next to the result produced by it
         /// </summary>
-        public void SolveAllProblemsWithMetrics()
+        public static void Solve(params Type[] problems)
         {
-            foreach (Type problemType in LoadAllProblems(Assembly.GetCallingAssembly()))
+            Solve(problems.AsEnumerable());
+        }
+
+        /// <summary>
+        /// Solves the provided problems.
+        /// Prints the time consumed by each part next to the result produced by it
+        /// </summary>
+        public static void Solve(IEnumerable<Type> problems)
+        {
+            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
-                if (Activator.CreateInstance(problemType) is BaseProblem problem)
+                if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
                     SolveWithMetrics(problem);
                 }
@@ -65,7 +65,7 @@ namespace AoCHelper
         #endregion
 
         /// <summary>
-        /// Loads problems to be solved by <see cref="SolveAllProblems"/> and <see cref="SolveAllProblemsWithMetrics"/>
+        /// Loads all <see cref="BaseProblem"/> in the entry assembly
         /// </summary>
         /// <returns></returns>
         internal static IEnumerable<Type> LoadAllProblems(Assembly assembly)
@@ -74,30 +74,7 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        /// <summary>
-        /// Solves both parts of a problem, each one in a different line, adding an empty line in the end
-        /// </summary>
-        /// <param name="problem"></param>
-        protected virtual void Solve(BaseProblem problem)
-        {
-            var problemIndex = problem.CalculateIndex();
-            var lineStart = problemIndex != default
-                ? $"Day {problemIndex}"
-                : $"{problem.GetType().Name}";
-
-            var solution1 = problem.Solve_1();
-            Console.WriteLine($"{lineStart}, part 1:\t\t{solution1}");
-
-            var solution2 = problem.Solve_2();
-            Console.WriteLine($"{lineStart}, part 2:\t\t{solution2}\n");
-        }
-
-        /// <summary>
-        /// Solves both parts of a problem, each one in a different line, adding an empty line in the end
-        /// Prints the time consumed by each part next to the result produced by it
-        /// </summary>
-        /// <param name="problem"></param>
-        protected virtual void SolveWithMetrics(BaseProblem problem)
+        private static void SolveWithMetrics(BaseProblem problem)
         {
             var problemIndex = problem.CalculateIndex();
             var lineStart = problemIndex != default
@@ -122,7 +99,7 @@ namespace AoCHelper
             PrintElapsedTime(stopwatch, newLine: true);
         }
 
-        protected virtual void PrintElapsedTime(Stopwatch stopwatch, bool newLine = false)
+        private static void PrintElapsedTime(Stopwatch stopwatch, bool newLine = false)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
 
@@ -136,7 +113,7 @@ namespace AoCHelper
                 ? $"{elapsedMilliseconds} ms"
                 : $"{0.001 * elapsedMilliseconds:F} s";
 
-            Console.WriteLine($"\t\t\t\t{elapsedTime}");
+            Console.WriteLine($"\t\t\t\t\t{elapsedTime}");
 
             if (newLine)
             {
@@ -151,7 +128,7 @@ namespace AoCHelper
         /// </summary>
         /// <param name="elapsedMilliseconds"></param>
         /// <returns></returns>
-        protected virtual Performance EvaluatePerformance(long elapsedMilliseconds)
+        private static Performance EvaluatePerformance(long elapsedMilliseconds)
         {
             if (elapsedMilliseconds == 0)
             {
@@ -160,13 +137,13 @@ namespace AoCHelper
 
             return (Performance)Enum.ToObject(
                 typeof(Performance),
-                Clamp(value: elapsedMilliseconds / 1000, min: 0, max: _actionDictionary.Count - 1));
+                Clamp(value: elapsedMilliseconds / 1000, min: 0, max: ActionDictionary.Count - 1));
         }
 
         /// <summary>
         /// Console foreground colors for different <see cref="Performance"/>
         /// </summary>
-        protected Dictionary<Performance, Action> _actionDictionary = new Dictionary<Performance, Action>()
+        private static readonly IReadOnlyDictionary<Performance, Action> ActionDictionary = new Dictionary<Performance, Action>()
         {
             [Performance.Good] = () => Console.ForegroundColor = ConsoleColor.DarkGreen,
             [Performance.Average] = () => Console.ForegroundColor = ConsoleColor.DarkYellow,
@@ -174,9 +151,9 @@ namespace AoCHelper
             [Performance.Unknown] = () => Console.ForegroundColor = ConsoleColor.DarkBlue
         };
 
-        protected void ChangeForegroundConsoleColor(Performance key)
+        private static void ChangeForegroundConsoleColor(Performance key)
         {
-            if (_actionDictionary.TryGetValue(key, out Action? action))
+            if (ActionDictionary.TryGetValue(key, out Action? action))
             {
                 action.Invoke();
             }

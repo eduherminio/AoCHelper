@@ -5,13 +5,6 @@ namespace AoCHelper.Test
 {
     public class OverrideInputFilePathTests
     {
-        private readonly ProblemSolver _solver;
-
-        public OverrideInputFilePathTests()
-        {
-            _solver = new ProblemSolver();
-        }
-
         private abstract class BaseProblemFixture : BaseProblem
         {
             protected override string InputFileExtension => nameof(OverrideInputFilePathTests);
@@ -36,7 +29,7 @@ namespace AoCHelper.Test
         [Fact]
         public void OverrideInputFilePath()
         {
-            _solver.Solve<CustomProblem>();
+            Solver.Solve<CustomProblem>();
         }
     }
 }
