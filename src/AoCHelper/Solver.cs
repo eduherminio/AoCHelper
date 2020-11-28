@@ -10,7 +10,7 @@ namespace AoCHelper
     public static class Solver
     {
         private static readonly bool IsInteractiveEnvironment =
-            Environment.UserInteractive && bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var ci) && ci;
+            Environment.UserInteractive && (!bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var ci) || !ci);
 
         private static Table GetTable() => new Table()
                     .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
