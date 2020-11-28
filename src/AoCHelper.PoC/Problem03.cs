@@ -2,9 +2,9 @@
 
 namespace AoCHelper.PoC
 {
-    public class Day_04 : BaseDay
+    internal class Problem03 : BaseProblem
     {
-        public Day_04()
+        public Problem03()
         {
             if (!File.Exists(InputFilePath))
             {

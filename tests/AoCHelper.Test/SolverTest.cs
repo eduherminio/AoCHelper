@@ -35,19 +35,7 @@ namespace AoCHelper.Test
         }
 
         [Fact]
-        public void SolveWithMetrics()
-        {
-            Solver.Solve<Problem66>();
-        }
-
-        [Fact]
         public void ShouldNotSolve()
-        {
-            Assert.Throws<FileNotFoundException>(() => Solver.Solve<IllCreatedCustomProblem>());
-        }
-
-        [Fact]
-        public void ShouldNotSolveWithMetrics()
         {
             Assert.Throws<FileNotFoundException>(() => Solver.Solve<IllCreatedCustomProblem>());
         }

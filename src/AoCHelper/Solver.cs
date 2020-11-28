@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,11 +9,18 @@ namespace AoCHelper
 {
     public static class Solver
     {
+        private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
+
+        private static Table GetTable() => new Table()
+                    .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
+                    .RoundedBorder()
+                    .BorderColor(Color.Grey);
+
         #region Public methods
 
         /// <summary>
-        /// Solves both parts of a problem.
-        /// Prints the time consumed by each part next to the result produced by it
+        /// Solves a problem.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         public static void Solve<TProblem>()
@@ -20,27 +28,29 @@ namespace AoCHelper
         {
             TProblem problem = new TProblem();
 
-            SolveWithMetrics(problem);
+            Solve(problem, GetTable());
         }
 
         /// <summary>
-        /// Solves all problems in the assembly
-        /// Prints the time consumed by each part next to the result produced by it
+        /// Solves all problems in the assembly.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         public static void SolveAll()
         {
+            var table = GetTable();
+
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    SolveWithMetrics(problem);
+                    Solve(problem, table);
                 }
             }
         }
 
         /// <summary>
         /// Solves the provided problems.
-        /// Prints the time consumed by each part next to the result produced by it
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         public static void Solve(params Type[] problems)
         {
@@ -49,15 +59,17 @@ namespace AoCHelper
 
         /// <summary>
         /// Solves the provided problems.
-        /// Prints the time consumed by each part next to the result produced by it
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         public static void Solve(IEnumerable<Type> problems)
         {
+            var table = GetTable();
+
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    SolveWithMetrics(problem);
+                    Solve(problem, table);
                 }
             }
         }
@@ -74,98 +86,55 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static void SolveWithMetrics(BaseProblem problem)
+        private static void Solve(BaseProblem problem, Table table)
         {
             var problemIndex = problem.CalculateIndex();
-            var lineStart = problemIndex != default
+            var problemTitle = problemIndex != default
                 ? $"Day {problemIndex}"
                 : $"{problem.GetType().Name}";
 
             var stopwatch = Stopwatch.StartNew();
-
             var solution1 = problem.Solve_1();
-
             stopwatch.Stop();
 
-            Console.Write($"{lineStart}, part 1:\t\t{solution1}");
-            PrintElapsedTime(stopwatch);
+            RenderRow(table, problemTitle, 1, solution1, stopwatch);
+
             stopwatch.Reset();
             stopwatch.Restart();
-
             var solution2 = problem.Solve_2();
-
             stopwatch.Stop();
-            Console.Write($"{lineStart}, part 2:\t\t{solution2}");
-            PrintElapsedTime(stopwatch, newLine: true);
+
+            RenderRow(table, problemTitle, 2, solution2, stopwatch);
+
+            table.AddEmptyRow();
         }
 
-        private static void PrintElapsedTime(Stopwatch stopwatch, bool newLine = false)
+        private static void RenderRow(Table table, string problemTitle, int part, string solution, Stopwatch stopwatch)
         {
-            ConsoleColor originalColor = Console.ForegroundColor;
+            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
 
-            long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            var color = elapsedMilliseconds switch
+            {
+                0 => Color.Blue,
+                <= 100 => Color.Lime,
+                <= 500 => Color.GreenYellow,
+                <= 1000 => Color.Yellow1,
+                <= 2000 => Color.OrangeRed1,
+                _ => Color.Red1
+            };
 
-            Performance performance = EvaluatePerformance(elapsedMilliseconds);
-
-            ChangeForegroundConsoleColor(performance);
-
-            string elapsedTime = elapsedMilliseconds < 1000
+            var elapsedTime = elapsedMilliseconds < 1000
                 ? $"{elapsedMilliseconds} ms"
                 : $"{0.001 * elapsedMilliseconds:F} s";
 
-            Console.WriteLine($"\t\t\t\t\t{elapsedTime}");
+            table.AddRow(problemTitle, $"Part {part}", solution, $"[{color}]{elapsedTime}[/]");
 
-            if (newLine)
+            if (IsInteractiveEnvironment)
             {
-                Console.WriteLine();
+                Console.Clear();
             }
 
-            Console.ForegroundColor = originalColor;
-        }
-
-        /// <summary>
-        /// Provides a <see cref="Performance"/> value according to the number of milliseconds spent
-        /// </summary>
-        /// <param name="elapsedMilliseconds"></param>
-        /// <returns></returns>
-        private static Performance EvaluatePerformance(long elapsedMilliseconds)
-        {
-            if (elapsedMilliseconds == 0)
-            {
-                return Performance.Unknown;
-            }
-
-            return (Performance)Enum.ToObject(
-                typeof(Performance),
-                Clamp(value: elapsedMilliseconds / 1000, min: 0, max: ActionDictionary.Count - 1));
-        }
-
-        /// <summary>
-        /// Console foreground colors for different <see cref="Performance"/>
-        /// </summary>
-        private static readonly IReadOnlyDictionary<Performance, Action> ActionDictionary = new Dictionary<Performance, Action>()
-        {
-            [Performance.Good] = () => Console.ForegroundColor = ConsoleColor.DarkGreen,
-            [Performance.Average] = () => Console.ForegroundColor = ConsoleColor.DarkYellow,
-            [Performance.Bad] = () => Console.ForegroundColor = ConsoleColor.DarkRed,
-            [Performance.Unknown] = () => Console.ForegroundColor = ConsoleColor.DarkBlue
-        };
-
-        private static void ChangeForegroundConsoleColor(Performance key)
-        {
-            if (ActionDictionary.TryGetValue(key, out Action? action))
-            {
-                action.Invoke();
-            }
-        }
-
-        private static long Clamp(long value, long min, long max)
-        {
-            return (value.CompareTo(min) <= 0)
-                ? min
-                : (value.CompareTo(max) >= 0)
-                    ? max
-                    : value;
+            AnsiConsole.Render(table);
         }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace AoCHelper.PoC
 {
-    internal class Problem01 : BaseProblem
+    internal class Problem04 : BaseProblem
     {
-        public Problem01()
+        public Problem04()
         {
             if (!File.Exists(InputFilePath))
             {
@@ -14,6 +14,7 @@ namespace AoCHelper.PoC
 
         public override string Solve_1()
         {
+            System.Threading.Thread.Sleep(1500);
             return "Solution 1";
         }
 
