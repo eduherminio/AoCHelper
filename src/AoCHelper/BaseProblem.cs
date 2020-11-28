@@ -7,14 +7,14 @@ namespace AoCHelper
         protected virtual string ClassPrefix { get; } = "Problem";
 
         /// <summary>
-        /// Expected input file dir path
+        /// Expected input file dir path.
         /// </summary>
         protected virtual string InputFileDirPath { get; } = "Inputs";
 
         /// <summary>
-        /// Expected input file extension
+        /// Expected input file extension.
         /// </summary>
-        protected virtual string InputFileExtension { get; } = ".in";
+        protected virtual string InputFileExtension { get; } = ".txt";
 
         /// <summary>
         /// Problem's index.
@@ -38,7 +38,7 @@ namespace AoCHelper
         /// <summary>
         /// Expected input file path.
         /// By default, <see cref="InputFileDirPath"/>/<see cref="CalculateIndex"/>.<see cref="InputFileExtension"/>.
-        /// Overriding it makes <see cref="InputFileDirPath"/> and <see cref="InputFileExtension"/> irrelevant
+        /// Overriding it makes <see cref="ClassPrefix"/>, <see cref="InputFileDirPath"/>, <see cref="InputFileExtension"/> and <see cref="CalculateIndex"/> irrelevant
         /// </summary>
         public virtual string InputFilePath
         {

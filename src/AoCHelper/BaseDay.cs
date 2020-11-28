@@ -9,10 +9,5 @@
         /// <inheritdoc/>
         /// </summary>
         protected override string ClassPrefix { get; } = "Day";
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        protected override string InputFileExtension { get; } = ".txt";
     }
 }
