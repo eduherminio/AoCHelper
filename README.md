@@ -82,7 +82,7 @@ namespace MyProject
 
         public Day_01()
         {
-            _input = ParseInput();
+            _input = File.ReadAllText(InputFilePath);
         }
 
         public override string Solve_1()
