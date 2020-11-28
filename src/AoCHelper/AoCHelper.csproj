@@ -11,9 +11,7 @@
     <PackageTags>AoC, AdventOfCode, Advent, Code</PackageTags>
     <Tags>$(PackageTags)</Tags>
     <Authors>Eduardo Cáceres</Authors>
-    <Description>
-      Library that provides infrastructure for you to solve AoC problems, so that you don't have to prepare (almost) anything!
-    </Description>
+    <Description>Library that provides infrastructure for you to solve AoC problems, so that you don't have to prepare (almost) anything!</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/eduherminio/AoCHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/eduherminio/AoCHelper</RepositoryUrl>

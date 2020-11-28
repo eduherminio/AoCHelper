@@ -4,6 +4,8 @@ namespace AoCHelper.PoC
 {
     internal class Problem04 : BaseProblem
     {
+        protected override string InputFileExtension => ".in";
+
         public Problem04()
         {
             if (!File.Exists(InputFilePath))
