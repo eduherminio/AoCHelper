@@ -7,7 +7,8 @@
 
 It provides a 'framework' so that you only have to worry about solving the problems, and measures the performance of your solutions.
 
-Problem example: 
+Problem example:
+
 ```csharp
 using AoCHelper;
 using System.IO;
@@ -56,15 +57,16 @@ Example projects can be found at:
 
 - [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template)
 - [AoCHelper.PoC](https://github.com/eduherminio/AoCHelper/tree/master/src/AoCHelper.PoC)
+- [AoC2020](https://github.com/eduherminio/AoC2020)
+
+## Tips
+
+Your problem classes are instantiated only once, so parsing the input file (`InputFilePath`) in your class constructor allows you to:
+
+- Avoid executing parsing logic twice per problem.
+- Measure more accurately your part 1 and part 2 solutions performance.
 
 [githubactionslogo]: https://github.com/eduherminio/AoCHelper/workflows/CI/badge.svg
 [githubactionslink]: https://github.com/eduherminio/AoCHelper/actions?query=workflow%3ACI
 [nugetlogo]: https://img.shields.io/nuget/v/AocHelper.svg?style=flat-square&label=nuget
 [nugetlink]: https://www.nuget.org/packages/AocHelper
-
-## Tips
-
-Your problem classes are only instantiated once, so parsing the input file (`InputFilePath`) in your class constructor allows you to:
-
-- Avoid executing parsing logic twice per problem.
-- Measure more accurately your part 1 and part 2 solutions performance.

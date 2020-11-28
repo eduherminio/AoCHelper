@@ -25,17 +25,11 @@ namespace AoCHelper.Test
         private class Problem01 : BaseProblemFixture { protected override string InputFileExtension => nameof(OverrideInputFileExtensionTests); }
         private class Problem_01 : BaseProblemFixture { protected override string InputFileExtension => nameof(OverrideInputFileExtensionTests); }
 
-        private class Problem02 : BaseProblemFixture { protected override string InputFileExtension => nameof(OverrideInputFileExtensionTests); }
-        private class Problem_02 : BaseProblemFixture { protected override string InputFileExtension => nameof(OverrideInputFileExtensionTests); }
-
         [Fact]
         public void OverrideInputFileExtension()
         {
             Solver.Solve<Problem01>();
             Solver.Solve<Problem_01>();
-
-            Assert.Throws<FileNotFoundException>(() => Solver.Solve<Problem02>());
-            Assert.Throws<FileNotFoundException>(() => Solver.Solve<Problem_02>());
         }
     }
 }

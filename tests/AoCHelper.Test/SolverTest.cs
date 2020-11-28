@@ -35,15 +35,17 @@ namespace AoCHelper.Test
         }
 
         [Fact]
-        public void ShouldNotSolve()
+        public void ShouldNotThrowExceptionIfCantSolve()
         {
-            Assert.Throws<FileNotFoundException>(() => Solver.Solve<IllCreatedCustomProblem>());
+            Solver.Solve<IllCreatedCustomProblem>();
         }
 
         [Fact]
         public void LoadAllProblems()
         {
-            Assert.Equal(14, Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
+            Assert.Equal(
+                Assembly.GetExecutingAssembly()!.GetTypes().Count(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsAbstract),
+                Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
         }
     }
 }

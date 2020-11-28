@@ -22,7 +22,7 @@ namespace AoCHelper.PoC
 
         public override string Solve_2()
         {
-            System.Threading.Thread.Sleep(2001);
+            System.Threading.Thread.Sleep(2000);
             return "Solution 2";
         }
     }

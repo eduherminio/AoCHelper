@@ -93,16 +93,48 @@ namespace AoCHelper
                 ? $"Day {problemIndex}"
                 : $"{problem.GetType().Name}";
 
-            var stopwatch = Stopwatch.StartNew();
-            var solution1 = problem.Solve_1();
-            stopwatch.Stop();
+            Stopwatch stopwatch = null!;
 
-            RenderRow(table, problemTitle, 1, solution1, stopwatch);
+            var solution1 = string.Empty;
+            try
+            {
+                stopwatch = Stopwatch.StartNew();
+                solution1 = problem.Solve_1();
+            }
+            catch (NotImplementedException)
+            {
+                solution1 = "[[Not implemented]]";
+            }
+            catch (Exception e)
+            {
+                solution1 = e.Message + Environment.NewLine + e.StackTrace;
+            }
+            finally
+            {
+                stopwatch.Stop();
+            }
 
-            stopwatch.Reset();
-            stopwatch.Restart();
-            var solution2 = problem.Solve_2();
-            stopwatch.Stop();
+            RenderRow(table, problemTitle, 1, solution1, stopwatch!);
+
+            var solution2 = string.Empty;
+            try
+            {
+                stopwatch.Reset();
+                stopwatch.Restart();
+                solution2 = problem.Solve_2();
+            }
+            catch (NotImplementedException)
+            {
+                solution2 = "[[Not implemented]]";
+            }
+            catch (Exception e)
+            {
+                solution2 = e.Message + Environment.NewLine + e.StackTrace;
+            }
+            finally
+            {
+                stopwatch.Stop();
+            }
 
             RenderRow(table, problemTitle, 2, solution2, stopwatch);
 
@@ -116,16 +148,18 @@ namespace AoCHelper
             var color = elapsedMilliseconds switch
             {
                 0 => Color.Blue,
-                <= 100 => Color.Lime,
-                <= 500 => Color.GreenYellow,
-                <= 1000 => Color.Yellow1,
-                <= 2000 => Color.OrangeRed1,
+                < 100 => Color.Lime,
+                < 500 => Color.GreenYellow,
+                < 1000 => Color.Yellow1,
+                < 2000 => Color.OrangeRed1,
                 _ => Color.Red1
             };
 
-            var elapsedTime = elapsedMilliseconds < 1000
-                ? $"{elapsedMilliseconds} ms"
-                : $"{0.001 * elapsedMilliseconds:F} s";
+            var elapsedTime = elapsedMilliseconds < 60_000
+                ? elapsedMilliseconds < 1_000
+                    ? $"{elapsedMilliseconds} ms"
+                    : $"{0.001 * elapsedMilliseconds:F} s"
+                : $"{elapsedMilliseconds / 60_000} min {Math.Round(0.001 * (elapsedMilliseconds % 60_000))} s";
 
             table.AddRow(problemTitle, $"Part {part}", solution, $"[{color}]{elapsedTime}[/]");
 
