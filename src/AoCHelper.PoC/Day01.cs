@@ -2,9 +2,9 @@
 
 namespace AoCHelper.PoC
 {
-    public class Day03 : BaseDay
+    public class Day01 : BaseDay
     {
-        public Day03()
+        public Day01()
         {
             if (!File.Exists(InputFilePath))
             {
@@ -20,7 +20,6 @@ namespace AoCHelper.PoC
 
         public override string Solve_2()
         {
-            System.Threading.Thread.Sleep(66);
             return "Solution 2";
         }
     }
