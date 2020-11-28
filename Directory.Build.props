@@ -10,6 +10,7 @@
 
   <PropertyGroup Condition="'$(DeterministicBuild)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <DefineConstants>$(DefineConstants);CI_ENVIRONMENT</DefineConstants>
   </PropertyGroup>
 
 </Project>
