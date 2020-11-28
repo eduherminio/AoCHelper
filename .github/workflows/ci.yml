@@ -40,6 +40,8 @@ jobs:
 
     - name: Build
       run: dotnet build -c Release /p:DeterministicBuild=true
+      env:
+        CI: true
 
     - name: Run tests
       run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
