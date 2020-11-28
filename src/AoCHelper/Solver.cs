@@ -10,7 +10,7 @@ namespace AoCHelper
     public static class Solver
     {
         private static readonly bool IsInteractiveEnvironment =
-            Environment.UserInteractive && (!bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var ci) || !ci);
+            Environment.UserInteractive && !Console.IsOutputRedirected && (!bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var ci) || !ci);
 
         private static Table GetTable() => new Table()
                     .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
@@ -20,8 +20,8 @@ namespace AoCHelper
         #region Public methods
 
         /// <summary>
-        /// Solves both parts of a problem.
-        /// Prints the time consumed by each part next to the result produced by it
+        /// Solves a problem.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         public static void Solve<TProblem>()
@@ -33,8 +33,8 @@ namespace AoCHelper
         }
 
         /// <summary>
-        /// Solves all problems in the assembly
-        /// Prints the time consumed by each part next to the result produced by it
+        /// Solves all problems in the assembly.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         public static void SolveAll()
         {
@@ -51,7 +51,7 @@ namespace AoCHelper
 
         /// <summary>
         /// Solves the provided problems.
-        /// Prints the time consumed by each part next to the result produced by it
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         public static void Solve(params Type[] problems)
         {
@@ -60,7 +60,7 @@ namespace AoCHelper
 
         /// <summary>
         /// Solves the provided problems.
-        /// Prints the time consumed by each part next to the result produced by it
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         public static void Solve(IEnumerable<Type> problems)
         {
