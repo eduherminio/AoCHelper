@@ -33,10 +33,6 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <DefineConstants Condition="'$(WINDOWS_CI)' == true">$(DefineConstants);CI_ENVIRONMENT</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>

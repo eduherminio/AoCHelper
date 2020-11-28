@@ -40,8 +40,6 @@ jobs:
 
     - name: Build
       run: dotnet build -c Release /p:DeterministicBuild=true
-      env:
-        WINDOWS_CI: ${{ matrix.os == 'windows-latest' }}
 
     - name: Run tests
       run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
