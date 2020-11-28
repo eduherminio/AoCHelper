@@ -127,9 +127,10 @@ namespace AoCHelper
 
             table.AddRow(problemTitle, $"Part {part}", solution, $"[{color}]{elapsedTime}[/]");
 
-#if !CI_ENVIRONMENT
-            Console.Clear();
-#endif
+            if (Environment.UserInteractive)
+            {
+                Console.Clear();
+            }
 
             AnsiConsole.Render(table);
         }
