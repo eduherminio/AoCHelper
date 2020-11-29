@@ -32,23 +32,6 @@ namespace AoCHelper
         }
 
         /// <summary>
-        /// Solves all problems in the assembly.
-        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
-        /// </summary>
-        public static void SolveAll()
-        {
-            var table = GetTable();
-
-            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
-            {
-                if (Activator.CreateInstance(problemType) is BaseProblem problem)
-                {
-                    Solve(problem, table);
-                }
-            }
-        }
-
-        /// <summary>
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
@@ -71,6 +54,31 @@ namespace AoCHelper
                 {
                     Solve(problem, table);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Solves all problems in the assembly.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// </summary>
+        public static void SolveAll()
+        {
+            var table = GetTable();
+
+            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
+            {
+                if (Activator.CreateInstance(problemType) is BaseProblem problem)
+                {
+                    Solve(problem, table);
+                }
+            }
+        }
+
+        public static void SolveLast()
+        {
+            if (Activator.CreateInstance(LoadAllProblems(Assembly.GetEntryAssembly()!).Last()) is BaseProblem problem)
+            {
+                Solve(problem, GetTable());
             }
         }
 
