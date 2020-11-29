@@ -23,12 +23,27 @@ namespace AoCHelper
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
-        public static void Solve<TProblem>()
+        /// <param name="clearConsole"></param>
+        public static void Solve<TProblem>(bool clearConsole = true)
             where TProblem : BaseProblem, new()
         {
             TProblem problem = new TProblem();
 
-            Solve(problem, GetTable());
+            Solve(problem, GetTable(), clearConsole);
+        }
+
+        /// <summary>
+        /// Solves last problem.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// </summary>
+        /// <param name="clearConsole"></param>
+        public static void SolveLast(bool clearConsole = true)
+        {
+            var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
+            if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
+            {
+                Solve(problem, GetTable(), clearConsole);
+            }
         }
 
         /// <summary>
@@ -52,7 +67,7 @@ namespace AoCHelper
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table);
+                    Solve(problem, table, clearConsole: true);
                 }
             }
         }
@@ -69,17 +84,8 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table);
+                    Solve(problem, table, clearConsole: true);
                 }
-            }
-        }
-
-        public static void SolveLast()
-        {
-            var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
-            if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
-            {
-                Solve(problem, GetTable());
             }
         }
 
@@ -95,7 +101,7 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static void Solve(BaseProblem problem, Table table)
+        private static void Solve(BaseProblem problem, Table table, bool clearConsole)
         {
             var problemIndex = problem.CalculateIndex();
             var problemTitle = problemIndex != default
@@ -123,7 +129,7 @@ namespace AoCHelper
                 stopwatch.Stop();
             }
 
-            RenderRow(table, problemTitle, 1, solution1, stopwatch!);
+            RenderRow(table, problemTitle, 1, solution1, stopwatch!, clearConsole);
 
             var solution2 = string.Empty;
             try
@@ -145,12 +151,12 @@ namespace AoCHelper
                 stopwatch.Stop();
             }
 
-            RenderRow(table, problemTitle, 2, solution2, stopwatch);
+            RenderRow(table, problemTitle, 2, solution2, stopwatch, clearConsole);
 
             table.AddEmptyRow();
         }
 
-        private static void RenderRow(Table table, string problemTitle, int part, string solution, Stopwatch stopwatch)
+        private static void RenderRow(Table table, string problemTitle, int part, string solution, Stopwatch stopwatch, bool clearConsole)
         {
             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
 
@@ -174,7 +180,14 @@ namespace AoCHelper
 
             if (IsInteractiveEnvironment)
             {
-                Console.Clear();
+                if (clearConsole)
+                {
+                    Console.Clear();
+                }
+                else
+                {
+                    AnsiConsole.Console.Clear(true);
+                }
             }
 
             AnsiConsole.Render(table);
