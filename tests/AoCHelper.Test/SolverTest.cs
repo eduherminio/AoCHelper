@@ -35,6 +35,27 @@ namespace AoCHelper.Test
         }
 
         [Fact]
+        public void SolveParams()
+        {
+            Solver.Solve(typeof(Problem66));
+        }
+
+        [Fact]
+        public void SolveEnumerable()
+        {
+            Solver.Solve(new[] { typeof(Problem66) });
+        }
+
+        /// <summary>
+        /// AoCHelper isn't actually solving anything, since Assembly.GetEntryAssembly() returns xunit assembly.
+        /// </summary>
+        [Fact]
+        public void SolveLast()
+        {
+            Solver.SolveLast();
+        }
+
+        [Fact]
         public void ShouldNotThrowExceptionIfCantSolve()
         {
             Solver.Solve<IllCreatedCustomProblem>();

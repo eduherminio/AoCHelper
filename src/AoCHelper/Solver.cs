@@ -76,7 +76,8 @@ namespace AoCHelper
 
         public static void SolveLast()
         {
-            if (Activator.CreateInstance(LoadAllProblems(Assembly.GetEntryAssembly()!).Last()) is BaseProblem problem)
+            var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
+            if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
             {
                 Solve(problem, GetTable());
             }
