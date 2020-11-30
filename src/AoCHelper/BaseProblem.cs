@@ -44,10 +44,9 @@ namespace AoCHelper
         {
             get
             {
-                var index = CalculateIndex();
-                var leading0 = index < 10 ? "0" : "";
+                var index = CalculateIndex().ToString("D2");
 
-                return Path.Combine(InputFileDirPath, $"{leading0}{index}.{InputFileExtension.TrimStart('.')}");
+                return Path.Combine(InputFileDirPath, $"{index}.{InputFileExtension.TrimStart('.')}");
             }
         }
 

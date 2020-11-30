@@ -48,8 +48,9 @@ You can also:
   - Override `ClassPrefix` property, to be able to follow your own `$(ClassPrefix)XX` or `$(ClassPrefix)_XX` convention in each one of your problem classes.
   - Override `InputFileDirPath` to change the input files directory
   - Override `InputFileExtension` to change the input files extension.
-  - Override `CalculateIndex()` to follow a different `XX` or `_XX` convention in your classes and input files.
-- Override `InputFilePath` for each problem class, which will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant, since it's originally calculated using them.
+  - Override `CalculateIndex()` to follow a different `XX` or `_XX` convention in your class names.
+  - Override `InputFilePath` to follow a different naming convention in your input files. Check the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs) to understand how to reuse all the other properties and methods.
+- _[Not recommended]_ Override `InputFilePath` in any specific problem class to point to a concrete file. This will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant (see the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs)).
 
 ## Usage examples
 
