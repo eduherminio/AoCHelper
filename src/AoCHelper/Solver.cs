@@ -33,6 +33,31 @@ namespace AoCHelper
         }
 
         /// <summary>
+        /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
+        /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        public static void Solve(params uint[] problemNumbers) => Solve(problemNumbers.AsEnumerable());
+
+        /// <summary>
+        /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
+        /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        public static void Solve(IEnumerable<uint> problemNumbers)
+        {
+            var table = GetTable();
+
+            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
+            {
+                if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
+                {
+                    Solve(problem, table, clearConsole: true);
+                }
+            }
+        }
+
+        /// <summary>
         /// Solves last problem.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
@@ -50,10 +75,7 @@ namespace AoCHelper
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        public static void Solve(params Type[] problems)
-        {
-            Solve(problems.AsEnumerable());
-        }
+        public static void Solve(params Type[] problems) => Solve(problems.AsEnumerable());
 
         /// <summary>
         /// Solves the provided problems.

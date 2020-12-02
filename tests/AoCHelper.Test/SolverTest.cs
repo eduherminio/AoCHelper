@@ -35,13 +35,25 @@ namespace AoCHelper.Test
         }
 
         [Fact]
-        public void SolveParams()
+        public void SolveIntParams()
+        {
+            Solver.Solve(1, 2);
+        }
+
+        [Fact]
+        public void SolveIntEnumerable()
+        {
+            Solver.Solve(new uint[] { 1, 2 });
+        }
+
+        [Fact]
+        public void SolveTypeParams()
         {
             Solver.Solve(typeof(Problem66));
         }
 
         [Fact]
-        public void SolveEnumerable()
+        public void SolveTypeEnumerable()
         {
             Solver.Solve(new[] { typeof(Problem66) });
         }
