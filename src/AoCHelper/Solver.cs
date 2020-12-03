@@ -9,7 +9,10 @@ namespace AoCHelper
 {
     public static class Solver
     {
-        public static string? MillisecondsFormatSpecifier { get; set; } = null;
+        /// <summary>
+        /// Numeric format strings, see https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
+        /// </summary>
+        public static string? ElapsedTimeFormatSpecifier { get; set; } = null;
 
         private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
 
@@ -195,7 +198,7 @@ namespace AoCHelper
                 _ => Color.Red1
             };
 
-            var elapsedTime = MillisecondsFormatSpecifier is null
+            var elapsedTime = ElapsedTimeFormatSpecifier is null
                 ? elapsedMilliseconds switch
                 {
                     < 1 => $"{elapsedMilliseconds:F} ms",
@@ -205,10 +208,10 @@ namespace AoCHelper
                 }
                 : elapsedMilliseconds switch
                 {
-                    < 1 => $"{elapsedMilliseconds.ToString(MillisecondsFormatSpecifier)} ms",
-                    < 1_000 => $"{elapsedMilliseconds.ToString(MillisecondsFormatSpecifier)} ms",
-                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(MillisecondsFormatSpecifier)} s",
-                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(MillisecondsFormatSpecifier)} s",
+                    < 1 => $"{elapsedMilliseconds.ToString(ElapsedTimeFormatSpecifier)} ms",
+                    < 1_000 => $"{elapsedMilliseconds.ToString(ElapsedTimeFormatSpecifier)} ms",
+                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(ElapsedTimeFormatSpecifier)} s",
+                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(ElapsedTimeFormatSpecifier)} s",
                 };
 
             table.AddRow(problemTitle, $"Part {part}", solution, $"[{color}]{elapsedTime}[/]");
