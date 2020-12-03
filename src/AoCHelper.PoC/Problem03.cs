@@ -14,13 +14,13 @@ namespace AoCHelper.PoC
 
         public override string Solve_1()
         {
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(101);
             return "Solution 1";
         }
 
         public override string Solve_2()
         {
-            System.Threading.Thread.Sleep(1500);
+            System.Threading.Thread.Sleep(501);
             return "Solution 2";
         }
     }
