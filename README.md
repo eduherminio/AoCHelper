@@ -26,7 +26,7 @@ namespace AdventOfCode
 
 Output example:
 
-![image](https://user-images.githubusercontent.com/11148519/100517610-0987a880-318c-11eb-897d-6278a440fd44.png)
+![image](https://user-images.githubusercontent.com/11148519/101073364-a0df6800-359f-11eb-8dc8-5542ccc14120.png)
 
 ## :new: AdventOfCode.Template
 
@@ -39,6 +39,13 @@ Creating your Advent of Code repository from [AdventOfCode.Template](https://git
   - Name them `DayXX` or `Day_XX` and make them inherit `BaseDay`.
   - Name them `ProblemXX` or `Problem_XX`and make them inherit `BaseProblem`.
 - **Put your input files under `Inputs/` directory** and follow `XX.txt` naming convention for day `XX`. Make sure to copy those files to your output folder.
+- Choose your **solving strategy** in your `Main()` method:
+  - `Solver.SolveAll();`
+  - `Solver.SolveLast();`
+  - `Solver.SolveLast(clearConsole: false);`
+  - `Solver.Solve<Day_05>();`
+  - `Solver.Solve(5, 6);`
+  - `Solver.Solve(typeof(Day_05), typeof(Day_06));`
 
 ## Advanced usage
 
@@ -51,6 +58,7 @@ You can also:
   - Override `CalculateIndex()` to follow a different `XX` or `_XX` convention in your class names.
   - Override `InputFilePath` to follow a different naming convention in your input files. Check the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs) to understand how to reuse all the other properties and methods.
 - _[Not recommended]_ Override `InputFilePath` in any specific problem class to point to a concrete file. This will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant (see the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs)).
+- Override `Solver.MillisecondsFormatSpecifier` to provide custom [numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) for the elapsed milliseconds.
 
 ## Usage examples
 
@@ -59,6 +67,7 @@ Example projects can be found at:
 - [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template)
 - [AoCHelper.PoC](https://github.com/eduherminio/AoCHelper/tree/master/src/AoCHelper.PoC)
 - [AoC2020](https://github.com/eduherminio/AoC2020)
+- [All these repositories](https://github.com/eduherminio/AoCHelper/network/dependents)
 
 ## Tips
 

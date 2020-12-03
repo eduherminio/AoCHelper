@@ -19,7 +19,6 @@ namespace AoCHelper.PoC
 
         public override string Solve_2()
         {
-            System.Threading.Thread.Sleep(50);
             return "Solution 2";
         }
     }
