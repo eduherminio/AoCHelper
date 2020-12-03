@@ -58,7 +58,7 @@ You can also:
   - Override `CalculateIndex()` to follow a different `XX` or `_XX` convention in your class names.
   - Override `InputFilePath` to follow a different naming convention in your input files. Check the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs) to understand how to reuse all the other properties and methods.
 - _[Not recommended]_ Override `InputFilePath` in any specific problem class to point to a concrete file. This will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant (see the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs)).
-- Override `Solver.MillisecondsFormatSpecifier` to provide custom [numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) for the elapsed milliseconds.
+- Override `Solver.ElapsedTimeFormatSpecifier` to provide custom [numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) for the elapsed milliseconds.
 
 ## Usage examples
 
