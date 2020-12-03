@@ -9,6 +9,8 @@ namespace AoCHelper
 {
     public static class Solver
     {
+        public static string? MillisecondsFormatSpecifier { get; set; } = null;
+
         private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
 
         private static Table GetTable() => new Table()
@@ -193,13 +195,21 @@ namespace AoCHelper
                 _ => Color.Red1
             };
 
-            var elapsedTime = elapsedMilliseconds switch
-            {
-                < 1 => $"{elapsedMilliseconds:F} ms",
-                < 1_000 => $"{Math.Round(elapsedMilliseconds)} ms",
-                < 60_000 => $"{0.001 * elapsedMilliseconds:F} s",
-                _ => $"{elapsedMilliseconds / 60_000} min {Math.Round(0.001 * (elapsedMilliseconds % 60_000))} s",
-            };
+            var elapsedTime = MillisecondsFormatSpecifier is null
+                ? elapsedMilliseconds switch
+                {
+                    < 1 => $"{elapsedMilliseconds:F} ms",
+                    < 1_000 => $"{Math.Round(elapsedMilliseconds)} ms",
+                    < 60_000 => $"{0.001 * elapsedMilliseconds:F} s",
+                    _ => $"{elapsedMilliseconds / 60_000} min {Math.Round(0.001 * (elapsedMilliseconds % 60_000))} s",
+                }
+                : elapsedMilliseconds switch
+                {
+                    < 1 => $"{elapsedMilliseconds.ToString(MillisecondsFormatSpecifier)} ms",
+                    < 1_000 => $"{elapsedMilliseconds.ToString(MillisecondsFormatSpecifier)} ms",
+                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(MillisecondsFormatSpecifier)} s",
+                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(MillisecondsFormatSpecifier)} s",
+                };
 
             table.AddRow(problemTitle, $"Part {part}", solution, $"[{color}]{elapsedTime}[/]");
 
