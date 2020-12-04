@@ -34,7 +34,7 @@ namespace AoCHelper
         {
             TProblem problem = new TProblem();
 
-            Solve(problem, GetTable(), clearConsole);
+            SolveProblem(problem, GetTable(), clearConsole);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
                 {
-                    Solve(problem, table, clearConsole: true);
+                    SolveProblem(problem, table, clearConsole: true);
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace AoCHelper
             var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
             if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
             {
-                Solve(problem, GetTable(), clearConsole);
+                SolveProblem(problem, GetTable(), clearConsole);
             }
         }
 
@@ -94,7 +94,7 @@ namespace AoCHelper
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table, clearConsole: true);
+                    SolveProblem(problem, table, clearConsole: true);
                 }
             }
         }
@@ -105,15 +105,18 @@ namespace AoCHelper
         /// </summary>
         public static void SolveAll()
         {
+            var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
 
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table, clearConsole: true);
+                    totalElapsedTime.Add(SolveProblem(problem, table, clearConsole: true));
                 }
             }
+
+            RenderOverallResultsPanel(totalElapsedTime);
         }
 
         #endregion
@@ -128,77 +131,90 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static void Solve(BaseProblem problem, Table table, bool clearConsole)
+        private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, bool clearConsole)
         {
             var problemIndex = problem.CalculateIndex();
             var problemTitle = problemIndex != default
                 ? $"Day {problemIndex}"
                 : $"{problem.GetType().Name}";
 
-            Stopwatch stopwatch = null!;
+            (string solution1, double elapsedMillisecondsPart1) = SolvePart(isPart1: true, problem);
+            RenderRow(table, problemTitle, 1, solution1, elapsedMillisecondsPart1, clearConsole);
 
-            var solution1 = string.Empty;
-            try
-            {
-                stopwatch = Stopwatch.StartNew();
-                solution1 = problem.Solve_1();
-            }
-            catch (NotImplementedException)
-            {
-                solution1 = "[[Not implemented]]";
-            }
-            catch (Exception e)
-            {
-                solution1 = e.Message + Environment.NewLine + e.StackTrace;
-            }
-            finally
-            {
-                stopwatch.Stop();
-            }
-
-            RenderRow(table, problemTitle, 1, solution1, stopwatch!, clearConsole);
-
-            var solution2 = string.Empty;
-            try
-            {
-                stopwatch.Reset();
-                stopwatch.Restart();
-                solution2 = problem.Solve_2();
-            }
-            catch (NotImplementedException)
-            {
-                solution2 = "[[Not implemented]]";
-            }
-            catch (Exception e)
-            {
-                solution2 = e.Message + Environment.NewLine + e.StackTrace;
-            }
-            finally
-            {
-                stopwatch.Stop();
-            }
-
-            RenderRow(table, problemTitle, 2, solution2, stopwatch, clearConsole);
+            (string solution2, double elapsedMillisecondsPart2) = SolvePart(isPart1: false, problem);
+            RenderRow(table, problemTitle, 2, solution2, elapsedMillisecondsPart2, clearConsole);
 
             table.AddEmptyRow();
+
+            return (elapsedMillisecondsPart1, elapsedMillisecondsPart2);
         }
 
-        private static void RenderRow(Table table, string problemTitle, int part, string solution, Stopwatch stopwatch, bool clearConsole)
+        private static (string solution, double elapsedTime) SolvePart(bool isPart1, BaseProblem problem)
         {
-            var elapsedMilliseconds = 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+            Stopwatch stopwatch = new Stopwatch();
+            var solution = string.Empty;
 
-            var color = elapsedMilliseconds switch
+            try
             {
-                < 1 => Color.Blue,
-                < 10 => Color.Green1,
-                < 100 => Color.Lime,
-                < 500 => Color.GreenYellow,
-                < 1_000 => Color.Yellow1,
-                < 10_000 => Color.OrangeRed1,
-                _ => Color.Red1
-            };
+                Func<string> solve = isPart1
+                    ? problem.Solve_1
+                    : problem.Solve_2;
 
-            var elapsedTime = ElapsedTimeFormatSpecifier is null
+                stopwatch.Start();
+                solution = solve();
+            }
+            catch (NotImplementedException)
+            {
+                solution = "[[Not implemented]]";
+            }
+            catch (Exception e)
+            {
+                solution = e.Message + Environment.NewLine + e.StackTrace;
+            }
+            finally
+            {
+                stopwatch.Stop();
+            }
+
+            var elapsedMilliseconds = CalculateElapsedMilliseconds(stopwatch);
+
+            return (solution, elapsedMilliseconds);
+        }
+
+        /// <summary>
+        /// http://geekswithblogs.net/BlackRabbitCoder/archive/2012/01/12/c.net-little-pitfalls-stopwatch-ticks-are-not-timespan-ticks.aspx
+        /// </summary>
+        /// <param name="stopwatch"></param>
+        /// <returns></returns>
+        private static double CalculateElapsedMilliseconds(Stopwatch stopwatch)
+        {
+            return 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+        }
+
+        private static void RenderRow(Table table, string problemTitle, int part, string solution, double elapsedMilliseconds, bool clearConsole)
+        {
+            var formattedTime = FormatTime(elapsedMilliseconds);
+
+            table.AddRow(problemTitle, $"Part {part}", solution, formattedTime);
+
+            if (IsInteractiveEnvironment)
+            {
+                if (clearConsole)
+                {
+                    Console.Clear();
+                }
+                else
+                {
+                    AnsiConsole.Console.Clear(true);
+                }
+            }
+
+            AnsiConsole.Render(table);
+        }
+
+        private static string FormatTime(double elapsedMilliseconds, bool useColor = true)
+        {
+            var message = ElapsedTimeFormatSpecifier is null
                 ? elapsedMilliseconds switch
                 {
                     < 1 => $"{elapsedMilliseconds:F} ms",
@@ -214,21 +230,48 @@ namespace AoCHelper
                     _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(ElapsedTimeFormatSpecifier)} s",
                 };
 
-            table.AddRow(problemTitle, $"Part {part}", solution, $"[{color}]{elapsedTime}[/]");
-
-            if (IsInteractiveEnvironment)
+            if (useColor)
             {
-                if (clearConsole)
+                var color = elapsedMilliseconds switch
                 {
-                    Console.Clear();
-                }
-                else
-                {
-                    AnsiConsole.Console.Clear(true);
-                }
-            }
+                    < 1 => Color.Blue,
+                    < 10 => Color.Green1,
+                    < 100 => Color.Lime,
+                    < 500 => Color.GreenYellow,
+                    < 1_000 => Color.Yellow1,
+                    < 10_000 => Color.OrangeRed1,
+                    _ => Color.Red1
+                };
 
-            AnsiConsole.Render(table);
+                return $"[{color}]{message}[/]";
+            }
+            else
+            {
+                return message;
+            }
+        }
+
+        private static void RenderOverallResultsPanel(List<(double part1, double part2)> totalElapsedTime)
+        {
+            var totalPart1 = totalElapsedTime.Select(t => t.part1).Sum();
+            var totalPart2 = totalElapsedTime.Select(t => t.part2).Sum();
+            var total = totalPart1 + totalPart2;
+
+            var grid = new Grid()
+                .AddColumn(new GridColumn().NoWrap().PadRight(4))
+                .AddColumn()
+                .AddRow()
+                .AddRow($"Total ({totalElapsedTime.Count} days)", FormatTime(total, useColor: false))
+                .AddRow("Total parts 1", FormatTime(totalPart1, useColor: false))
+                .AddRow("Total parts 2", FormatTime(totalPart2, useColor: false))
+                .AddRow()
+                .AddRow("Mean  (per day)", FormatTime(total / totalElapsedTime.Count))
+                .AddRow("Mean  parts 1", FormatTime(totalElapsedTime.Select(t => t.part1).Average()))
+                .AddRow("Mean  parts 2", FormatTime(totalElapsedTime.Select(t => t.part2).Average()));
+
+            AnsiConsole.Render(
+                    new Panel(grid)
+                        .Header("[b] Overall results [/]", Justify.Center));
         }
     }
 }
