@@ -34,7 +34,7 @@ namespace AoCHelper
         {
             TProblem problem = new TProblem();
 
-            Solve(problem, GetTable(), clearConsole);
+            SolveProblem(problem, GetTable(), clearConsole);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
                 {
-                    Solve(problem, table, clearConsole: true);
+                    SolveProblem(problem, table, clearConsole: true);
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace AoCHelper
             var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
             if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
             {
-                Solve(problem, GetTable(), clearConsole);
+                SolveProblem(problem, GetTable(), clearConsole);
             }
         }
 
@@ -94,7 +94,7 @@ namespace AoCHelper
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table, clearConsole: true);
+                    SolveProblem(problem, table, clearConsole: true);
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    totalElapsedTime.Add(Solve(problem, table, clearConsole: true));
+                    totalElapsedTime.Add(SolveProblem(problem, table, clearConsole: true));
                 }
             }
 
@@ -131,7 +131,7 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static (double part1, double part2) Solve(BaseProblem problem, Table table, bool clearConsole)
+        private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, bool clearConsole)
         {
             var problemIndex = problem.CalculateIndex();
             var problemTitle = problemIndex != default
@@ -152,14 +152,16 @@ namespace AoCHelper
         private static (string solution, double elapsedTime) SolvePart(bool isPart1, BaseProblem problem)
         {
             Stopwatch stopwatch = new Stopwatch();
-
             var solution = string.Empty;
+
             try
             {
-                stopwatch.Restart();
-                solution = isPart1
-                    ? problem.Solve_1()
-                    : problem.Solve_2();
+                Func<string> solve = isPart1
+                    ? problem.Solve_1
+                    : problem.Solve_2;
+
+                stopwatch.Start();
+                solution = solve();
             }
             catch (NotImplementedException)
             {
@@ -263,7 +265,7 @@ namespace AoCHelper
                 .AddRow("Total parts 1", FormatTime(totalPart1, useColor: false))
                 .AddRow("Total parts 2", FormatTime(totalPart2, useColor: false))
                 .AddRow()
-                .AddRow("Mean  (full day)", FormatTime(total / totalElapsedTime.Count))
+                .AddRow("Mean  (per day)", FormatTime(total / totalElapsedTime.Count))
                 .AddRow("Mean  parts 1", FormatTime(totalElapsedTime.Select(t => t.part1).Average()))
                 .AddRow("Mean  parts 2", FormatTime(totalElapsedTime.Select(t => t.part2).Average()));
 
