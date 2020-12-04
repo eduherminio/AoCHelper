@@ -25,28 +25,30 @@ namespace AoCHelper
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
-        /// <param name="clearConsole"></param>
-        public static void Solve<TProblem>(bool clearConsole = true)
+        /// <param name="configuration"></param>
+        public static void Solve<TProblem>(SolverConfiguration? configuration = null)
             where TProblem : BaseProblem, new()
         {
             TProblem problem = new TProblem();
 
-            Solve(problem, GetTable(), clearConsole);
+            Solve(problem, GetTable(), configuration);
         }
 
         /// <summary>
         /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
         /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
         /// </summary>
+        /// <param name="configuration"></param>
         /// <param name="problemNumbers"></param>
-        public static void Solve(params uint[] problemNumbers) => Solve(problemNumbers.AsEnumerable());
+        public static void Solve(SolverConfiguration? configuration = null, params uint[] problemNumbers) => Solve(problemNumbers.AsEnumerable(), configuration);
 
         /// <summary>
         /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
         /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
         /// </summary>
         /// <param name="problemNumbers"></param>
-        public static void Solve(IEnumerable<uint> problemNumbers)
+        /// <param name="configuration"></param>
+        public static void Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration = null)
         {
             var table = GetTable();
 
@@ -54,7 +56,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
                 {
-                    Solve(problem, table, clearConsole: true);
+                    Solve(problem, table, configuration);
                 }
             }
         }
@@ -63,13 +65,13 @@ namespace AoCHelper
         /// Solves last problem.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        /// <param name="clearConsole"></param>
-        public static void SolveLast(bool clearConsole = true)
+        /// <param name="configuration"></param>
+        public static void SolveLast(SolverConfiguration? configuration = null)
         {
             var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
             if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
             {
-                Solve(problem, GetTable(), clearConsole);
+                Solve(problem, GetTable(), configuration);
             }
         }
 
@@ -77,13 +79,13 @@ namespace AoCHelper
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        public static void Solve(params Type[] problems) => Solve(problems.AsEnumerable());
+        public static void Solve(SolverConfiguration? configuration = null, params Type[] problems) => Solve(problems.AsEnumerable(), configuration);
 
         /// <summary>
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        public static void Solve(IEnumerable<Type> problems)
+        public static void Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
         {
             var table = GetTable();
 
@@ -91,7 +93,7 @@ namespace AoCHelper
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table, clearConsole: true);
+                    Solve(problem, table, configuration);
                 }
             }
         }
@@ -100,7 +102,8 @@ namespace AoCHelper
         /// Solves all problems in the assembly.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        public static void SolveAll()
+        /// <param name="configuration"></param>
+        public static void SolveAll(SolverConfiguration? configuration = null)
         {
             var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
@@ -109,7 +112,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    totalElapsedTime.Add(Solve(problem, table, clearConsole: true));
+                    totalElapsedTime.Add(Solve(problem, table, configuration));
                 }
             }
 
@@ -128,18 +131,19 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static (double part1, double part2) Solve(BaseProblem problem, Table table, bool clearConsole)
+        private static (double part1, double part2) Solve(BaseProblem problem, Table table, SolverConfiguration? configuration)
         {
+            configuration ??= new SolverConfiguration();
             var problemIndex = problem.CalculateIndex();
             var problemTitle = problemIndex != default
                 ? $"Day {problemIndex}"
                 : $"{problem.GetType().Name}";
 
             (string solution1, double elapsedMillisecondsPart1) = SolvePart(isPart1: true, problem);
-            RenderRow(table, problemTitle, 1, solution1, elapsedMillisecondsPart1, clearConsole);
+            RenderRow(table, problemTitle, 1, solution1, elapsedMillisecondsPart1, configuration.ClearConsole);
 
             (string solution2, double elapsedMillisecondsPart2) = SolvePart(isPart1: false, problem);
-            RenderRow(table, problemTitle, 2, solution2, elapsedMillisecondsPart2, clearConsole);
+            RenderRow(table, problemTitle, 2, solution2, elapsedMillisecondsPart2, configuration.ClearConsole);
 
             table.AddEmptyRow();
 
