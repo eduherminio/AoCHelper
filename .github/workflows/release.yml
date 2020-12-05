@@ -43,7 +43,7 @@ jobs:
     - name: Configure git user
       run: |
         git config --global user.name 'GitHub Actions'
-        git config --global user.email '<>'
+        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
     - name: Inject slug/short variables
       uses: rlespinasse/github-slug-action@v3.x
