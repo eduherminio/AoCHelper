@@ -94,6 +94,13 @@ namespace AoCHelper.Test
 #pragma warning disable CS0618 // Tests should include assertions
 
         [Fact]
+        public void ObsoleteElapsedTimeFormatSpecifier()
+        {
+            Solver.ElapsedTimeFormatSpecifier = "F3";
+            Solver.SolveLast(false);
+        }
+
+        [Fact]
         public void ObsoleteSolve()
         {
             Solver.Solve<Problem66>(true);
