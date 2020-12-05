@@ -24,7 +24,7 @@ namespace AoCHelper
         #region Obsolete methods
 
         /// <summary>
-        /// This method is obsolete. Use <see cref="Solve{TProblem}(SolverConfiguration?)"/> instead
+        /// This method is obsolete. Use <see cref="Solve{TProblem}(SolverConfiguration?)"/> instead.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
         /// <param name="clearConsole"></param>
@@ -36,7 +36,7 @@ namespace AoCHelper
         }
 
         /// <summary>
-        /// This method is obsolete. Use <see cref="SolveLast(SolverConfiguration?)"/> instead
+        /// This method is obsolete. Use <see cref="SolveLast(SolverConfiguration?)"/> instead.
         /// </summary>
         /// <param name="clearConsole"></param>
         [Obsolete("This method is obsolete. Use SolveLast(SolverConfiguration?) instead")]
@@ -44,6 +44,20 @@ namespace AoCHelper
         {
             SolveLast(new SolverConfiguration { ClearConsole = clearConsole });
         }
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, Type[])"/> instead or <see cref="Solve(IEnumerable{Type}, SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="problems"></param>
+        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params Type[]) or Solve(IEnumerable<Type>, SolverConfiguration?) instead")]
+        public static void Solve(params Type[] problems) => Solve(null, problems);
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, uint[])"/> or <see cref="Solve(IEnumerable{uint}, SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params uint[]) or Solve(IEnumerable<uint>, SolverConfiguration?) instead")]
+        public static void Solve(params uint[] problemNumbers) => Solve(null, problemNumbers);
 
         #endregion
 
@@ -187,8 +201,8 @@ namespace AoCHelper
         private static (string solution, double elapsedTime) SolvePart(bool isPart1, BaseProblem problem)
         {
             Stopwatch stopwatch = new Stopwatch();
-
             var solution = string.Empty;
+
             try
             {
                 Func<string> solve = isPart1
