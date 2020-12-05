@@ -16,51 +16,6 @@ namespace AoCHelper
 
         private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
 
-        private static Table GetTable() => new Table()
-                    .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
-                    .RoundedBorder()
-                    .BorderColor(Color.Grey);
-
-        #region Obsolete methods
-
-        /// <summary>
-        /// This method is obsolete. Use <see cref="Solve{TProblem}(SolverConfiguration?)"/> instead.
-        /// </summary>
-        /// <typeparam name="TProblem"></typeparam>
-        /// <param name="clearConsole"></param>
-        [Obsolete("This method is obsolete. Use Solve<TProblem>(SolverConfiguration?) instead")]
-        public static void Solve<TProblem>(bool clearConsole = true)
-             where TProblem : BaseProblem, new()
-        {
-            Solve<TProblem>(new SolverConfiguration { ClearConsole = clearConsole });
-        }
-
-        /// <summary>
-        /// This method is obsolete. Use <see cref="SolveLast(SolverConfiguration?)"/> instead.
-        /// </summary>
-        /// <param name="clearConsole"></param>
-        [Obsolete("This method is obsolete. Use SolveLast(SolverConfiguration?) instead")]
-        public static void SolveLast(bool clearConsole = true)
-        {
-            SolveLast(new SolverConfiguration { ClearConsole = clearConsole });
-        }
-
-        /// <summary>
-        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, Type[])"/> instead or <see cref="Solve(IEnumerable{Type}, SolverConfiguration?)"/> instead.
-        /// </summary>
-        /// <param name="problems"></param>
-        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params Type[]) or Solve(IEnumerable<Type>, SolverConfiguration?) instead")]
-        public static void Solve(params Type[] problems) => Solve(null, problems);
-
-        /// <summary>
-        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, uint[])"/> or <see cref="Solve(IEnumerable{uint}, SolverConfiguration?)"/> instead.
-        /// </summary>
-        /// <param name="problemNumbers"></param>
-        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params uint[]) or Solve(IEnumerable<uint>, SolverConfiguration?) instead")]
-        public static void Solve(params uint[] problemNumbers) => Solve(null, problemNumbers);
-
-        #endregion
-
         #region Public methods
 
         /// <summary>
@@ -168,6 +123,43 @@ namespace AoCHelper
 
         #endregion
 
+        #region Obsolete methods
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve{TProblem}(SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <typeparam name="TProblem"></typeparam>
+        /// <param name="clearConsole"></param>
+        [Obsolete("This method is obsolete. Use Solve<TProblem>(SolverConfiguration?) instead")]
+        public static void Solve<TProblem>(bool clearConsole)
+             where TProblem : BaseProblem, new()
+        {
+            Solve<TProblem>(new SolverConfiguration { ClearConsole = clearConsole });
+        }
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="SolveLast(SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="clearConsole"></param>
+        [Obsolete("This method is obsolete. Use SolveLast(SolverConfiguration?) instead")]
+        public static void SolveLast(bool clearConsole) => SolveLast(new SolverConfiguration { ClearConsole = clearConsole });
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, Type[])"/> instead or <see cref="Solve(IEnumerable{Type}, SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="problems"></param>
+        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params Type[]) or Solve(IEnumerable<Type>, SolverConfiguration?) instead")]
+        public static void Solve(params Type[] problems) => Solve(null, problems);
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, uint[])"/> or <see cref="Solve(IEnumerable{uint}, SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params uint[]) or Solve(IEnumerable<uint>, SolverConfiguration?) instead")]
+        public static void Solve(params uint[] problemNumbers) => Solve(null, problemNumbers);
+
+        #endregion
+
         /// <summary>
         /// Loads all <see cref="BaseProblem"/> in the given assembly
         /// </summary>
@@ -177,6 +169,14 @@ namespace AoCHelper
         {
             return assembly.GetTypes()
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+        }
+
+        private static Table GetTable()
+        {
+            return new Table()
+                .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
+                .RoundedBorder()
+                .BorderColor(Color.Grey);
         }
 
         private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, SolverConfiguration? configuration)

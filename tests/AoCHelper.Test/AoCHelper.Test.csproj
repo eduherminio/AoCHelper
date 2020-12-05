@@ -22,6 +22,10 @@
     <ProjectReference Include="..\..\src\AoCHelper\AoCHelper.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <NoWarn>S2699</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Update="Inputs\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
