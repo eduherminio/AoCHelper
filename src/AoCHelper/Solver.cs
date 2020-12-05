@@ -70,7 +70,7 @@ namespace AoCHelper
         /// <param name="configuration"></param>
         public static void Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration = null)
         {
-            configuration ??= new() { ShowOverallResults = problemNumbers.Count() > 1 };
+            configuration ??= new();
 
             var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
@@ -94,7 +94,7 @@ namespace AoCHelper
         /// <param name="configuration"></param>
         public static void Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
         {
-            configuration ??= new() { ShowOverallResults = true };
+            configuration ??= new();
 
             var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
@@ -117,7 +117,7 @@ namespace AoCHelper
         /// <param name="configuration"></param>
         public static void SolveAll(SolverConfiguration? configuration = null)
         {
-            configuration ??= new() { ShowOverallResults = true };
+            configuration ??= new();
 
             var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
@@ -323,7 +323,7 @@ namespace AoCHelper
 
         private static void RenderOverallResultsPanel(List<(double part1, double part2)> totalElapsedTime, SolverConfiguration configuration)
         {
-            if (configuration?.ShowOverallResults != true)
+            if (configuration?.ShowOverallResults != true || totalElapsedTime.Count <= 1)
             {
                 return;
             }

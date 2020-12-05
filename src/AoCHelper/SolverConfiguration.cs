@@ -23,6 +23,7 @@
         public SolverConfiguration()
         {
             ClearConsole = true;
+            ShowOverallResults = true;
         }
     }
 }
