@@ -9,7 +9,10 @@ namespace AoCHelper
 {
     public static class Solver
     {
-        public static string? MillisecondsFormatSpecifier { get; set; } = null;
+        /// <summary>
+        /// Numeric format strings, see https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
+        /// </summary>
+        public static string? ElapsedTimeFormatSpecifier { get; set; } = null;
 
         private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
 
@@ -57,7 +60,7 @@ namespace AoCHelper
         {
             TProblem problem = new TProblem();
 
-            Solve(problem, GetTable(), configuration);
+            SolveProblem(problem, GetTable(), configuration);
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
                 {
-                    Solve(problem, table, configuration);
+                    SolveProblem(problem, table, configuration);
                 }
             }
         }
@@ -97,7 +100,7 @@ namespace AoCHelper
             var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
             if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
             {
-                Solve(problem, GetTable(), configuration);
+                SolveProblem(problem, GetTable(), configuration);
             }
         }
 
@@ -105,12 +108,16 @@ namespace AoCHelper
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="problems"></param>
         public static void Solve(SolverConfiguration? configuration = null, params Type[] problems) => Solve(problems.AsEnumerable(), configuration);
 
         /// <summary>
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
+        /// <param name="problems"></param>
+        /// <param name="configuration"></param>
         public static void Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
         {
             var table = GetTable();
@@ -119,7 +126,7 @@ namespace AoCHelper
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    Solve(problem, table, configuration);
+                    SolveProblem(problem, table, configuration);
                 }
             }
         }
@@ -138,7 +145,7 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    totalElapsedTime.Add(Solve(problem, table, configuration));
+                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
                 }
             }
 
@@ -148,8 +155,9 @@ namespace AoCHelper
         #endregion
 
         /// <summary>
-        /// Loads all <see cref="BaseProblem"/> in the entry assembly
+        /// Loads all <see cref="BaseProblem"/> in the given assembly
         /// </summary>
+        /// <param name="assembly"></param>
         /// <returns></returns>
         internal static IEnumerable<Type> LoadAllProblems(Assembly assembly)
         {
@@ -157,7 +165,7 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static (double part1, double part2) Solve(BaseProblem problem, Table table, SolverConfiguration? configuration)
+        private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, SolverConfiguration? configuration)
         {
             configuration ??= new SolverConfiguration();
             var problemIndex = problem.CalculateIndex();
@@ -183,10 +191,12 @@ namespace AoCHelper
             var solution = string.Empty;
             try
             {
-                stopwatch.Restart();
-                solution = isPart1
-                    ? problem.Solve_1()
-                    : problem.Solve_2();
+                Func<string> solve = isPart1
+                    ? problem.Solve_1
+                    : problem.Solve_2;
+
+                stopwatch.Start();
+                solution = solve();
             }
             catch (NotImplementedException)
             {
@@ -239,7 +249,7 @@ namespace AoCHelper
 
         private static string FormatTime(double elapsedMilliseconds, bool useColor = true)
         {
-            var message = MillisecondsFormatSpecifier is null
+            var message = ElapsedTimeFormatSpecifier is null
                 ? elapsedMilliseconds switch
                 {
                     < 1 => $"{elapsedMilliseconds:F} ms",
@@ -249,10 +259,10 @@ namespace AoCHelper
                 }
                 : elapsedMilliseconds switch
                 {
-                    < 1 => $"{elapsedMilliseconds.ToString(MillisecondsFormatSpecifier)} ms",
-                    < 1_000 => $"{elapsedMilliseconds.ToString(MillisecondsFormatSpecifier)} ms",
-                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(MillisecondsFormatSpecifier)} s",
-                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(MillisecondsFormatSpecifier)} s",
+                    < 1 => $"{elapsedMilliseconds.ToString(ElapsedTimeFormatSpecifier)} ms",
+                    < 1_000 => $"{elapsedMilliseconds.ToString(ElapsedTimeFormatSpecifier)} ms",
+                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(ElapsedTimeFormatSpecifier)} s",
+                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(ElapsedTimeFormatSpecifier)} s",
                 };
 
             if (useColor)

@@ -9,6 +9,10 @@
     <ProjectReference Include="..\AoCHelper\AoCHelper.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <NoWarn>S101</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Update="Inputs\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
