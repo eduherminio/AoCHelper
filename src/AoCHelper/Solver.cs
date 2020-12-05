@@ -18,6 +18,32 @@ namespace AoCHelper
                     .RoundedBorder()
                     .BorderColor(Color.Grey);
 
+        #region Obsolete methods
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve{TProblem}(SolverConfiguration?)"/> instead
+        /// </summary>
+        /// <typeparam name="TProblem"></typeparam>
+        /// <param name="clearConsole"></param>
+        [Obsolete("This method is obsolete. Use Solve<TProblem>(SolverConfiguration?) instead")]
+        public static void Solve<TProblem>(bool clearConsole = true)
+             where TProblem : BaseProblem, new()
+        {
+            Solve<TProblem>(new SolverConfiguration { ClearConsole = clearConsole });
+        }
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="SolveLast(SolverConfiguration?)"/> instead
+        /// </summary>
+        /// <param name="clearConsole"></param>
+        [Obsolete("This method is obsolete. Use SolveLast(SolverConfiguration?) instead")]
+        public static void SolveLast(bool clearConsole = true)
+        {
+            SolveLast(new SolverConfiguration { ClearConsole = clearConsole });
+        }
+
+        #endregion
+
         #region Public methods
 
         /// <summary>
