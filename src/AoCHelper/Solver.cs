@@ -149,7 +149,7 @@ namespace AoCHelper
                 }
             }
 
-            RenderAggregatedResultsGrid(totalElapsedTime);
+            RenderOverallResultsPanel(totalElapsedTime);
         }
 
         #endregion
@@ -286,7 +286,7 @@ namespace AoCHelper
             }
         }
 
-        private static void RenderAggregatedResultsGrid(List<(double part1, double part2)> totalElapsedTime)
+        private static void RenderOverallResultsPanel(List<(double part1, double part2)> totalElapsedTime)
         {
             var totalPart1 = totalElapsedTime.Select(t => t.part1).Sum();
             var totalPart2 = totalElapsedTime.Select(t => t.part2).Sum();
@@ -300,7 +300,7 @@ namespace AoCHelper
                 .AddRow("Total parts 1", FormatTime(totalPart1, useColor: false))
                 .AddRow("Total parts 2", FormatTime(totalPart2, useColor: false))
                 .AddRow()
-                .AddRow("Mean  (full day)", FormatTime(total / totalElapsedTime.Count))
+                .AddRow("Mean  (per day)", FormatTime(total / totalElapsedTime.Count))
                 .AddRow("Mean  parts 1", FormatTime(totalElapsedTime.Select(t => t.part1).Average()))
                 .AddRow("Mean  parts 2", FormatTime(totalElapsedTime.Select(t => t.part2).Average()));
 
