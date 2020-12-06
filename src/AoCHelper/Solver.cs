@@ -9,17 +9,7 @@ namespace AoCHelper
 {
     public static class Solver
     {
-        /// <summary>
-        /// Numeric format strings, see https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
-        /// </summary>
-        public static string? ElapsedTimeFormatSpecifier { get; set; } = null;
-
         private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
-
-        private static Table GetTable() => new Table()
-                    .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
-                    .RoundedBorder()
-                    .BorderColor(Color.Grey);
 
         #region Public methods
 
@@ -28,83 +18,107 @@ namespace AoCHelper
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
-        /// <param name="clearConsole"></param>
-        public static void Solve<TProblem>(bool clearConsole = true)
+        /// <param name="configuration"></param>
+        public static void Solve<TProblem>(SolverConfiguration? configuration = null)
             where TProblem : BaseProblem, new()
         {
+            configuration ??= new();
             TProblem problem = new TProblem();
 
-            SolveProblem(problem, GetTable(), clearConsole);
-        }
-
-        /// <summary>
-        /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
-        /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
-        /// </summary>
-        /// <param name="problemNumbers"></param>
-        public static void Solve(params uint[] problemNumbers) => Solve(problemNumbers.AsEnumerable());
-
-        /// <summary>
-        /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
-        /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
-        /// </summary>
-        /// <param name="problemNumbers"></param>
-        public static void Solve(IEnumerable<uint> problemNumbers)
-        {
-            var table = GetTable();
-
-            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
-            {
-                if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
-                {
-                    SolveProblem(problem, table, clearConsole: true);
-                }
-            }
+            SolveProblem(problem, GetTable(), configuration);
         }
 
         /// <summary>
         /// Solves last problem.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        /// <param name="clearConsole"></param>
-        public static void SolveLast(bool clearConsole = true)
+        /// <param name="configuration"></param>
+        public static void SolveLast(SolverConfiguration? configuration = null)
         {
+            configuration ??= new();
+
             var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
             if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
             {
-                SolveProblem(problem, GetTable(), clearConsole);
+                SolveProblem(problem, GetTable(), configuration);
             }
+        }
+
+        /// <summary>
+        /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
+        /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="problemNumbers"></param>
+        public static void Solve(SolverConfiguration? configuration = null, params uint[] problemNumbers)
+            => Solve(problemNumbers.AsEnumerable(), configuration);
+
+        /// <summary>
+        /// Solves the provided problems.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="problems"></param>
+        public static void Solve(SolverConfiguration? configuration = null, params Type[] problems)
+            => Solve(problems.AsEnumerable(), configuration);
+
+        /// <summary>
+        /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
+        /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        /// <param name="configuration"></param>
+        public static void Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration = null)
+        {
+            configuration ??= new();
+
+            var totalElapsedTime = new List<(double part1, double part2)>();
+            var table = GetTable();
+
+            foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
+            {
+                if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
+                {
+                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
+                }
+            }
+
+            RenderOverallResultsPanel(totalElapsedTime, configuration);
         }
 
         /// <summary>
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        public static void Solve(params Type[] problems) => Solve(problems.AsEnumerable());
-
-        /// <summary>
-        /// Solves the provided problems.
-        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
-        /// </summary>
-        public static void Solve(IEnumerable<Type> problems)
+        /// <param name="problems"></param>
+        /// <param name="configuration"></param>
+        public static void Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
         {
+            configuration ??= new();
+
+            var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
 
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
                 if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    SolveProblem(problem, table, clearConsole: true);
+                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
                 }
             }
+
+            RenderOverallResultsPanel(totalElapsedTime, configuration);
         }
 
         /// <summary>
         /// Solves all problems in the assembly.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        public static void SolveAll()
+        /// <param name="configuration"></param>
+        public static void SolveAll(SolverConfiguration? configuration = null)
         {
+            configuration ??= new();
+
             var totalElapsedTime = new List<(double part1, double part2)>();
             var table = GetTable();
 
@@ -112,18 +126,62 @@ namespace AoCHelper
             {
                 if (Activator.CreateInstance(problemType) is BaseProblem problem)
                 {
-                    totalElapsedTime.Add(SolveProblem(problem, table, clearConsole: true));
+                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
                 }
             }
 
-            RenderOverallResultsPanel(totalElapsedTime);
+            RenderOverallResultsPanel(totalElapsedTime, configuration);
         }
 
         #endregion
 
+        #region Obsolete methods and properties
+
         /// <summary>
-        /// Loads all <see cref="BaseProblem"/> in the entry assembly
+        /// This property is obsolete. Use <see cref="SolverConfiguration.ElapsedTimeFormatSpecifier"/> instead
         /// </summary>
+        [Obsolete("This property is obsolete. Use SolverConfiguration.ElapsedTimeFormatSpecifier instead")]
+        public static string? ElapsedTimeFormatSpecifier { get; set; }
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve{TProblem}(SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <typeparam name="TProblem"></typeparam>
+        /// <param name="clearConsole"></param>
+        [Obsolete("This method is obsolete. Use Solve<TProblem>(SolverConfiguration?) instead")]
+        public static void Solve<TProblem>(bool clearConsole)
+             where TProblem : BaseProblem, new()
+        {
+            Solve<TProblem>(new SolverConfiguration { ClearConsole = clearConsole });
+        }
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="SolveLast(SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="clearConsole"></param>
+        [Obsolete("This method is obsolete. Use SolveLast(SolverConfiguration?) instead")]
+        public static void SolveLast(bool clearConsole) => SolveLast(new SolverConfiguration { ClearConsole = clearConsole });
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, Type[])"/> instead or <see cref="Solve(IEnumerable{Type}, SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="problems"></param>
+        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params Type[]) or Solve(IEnumerable<Type>, SolverConfiguration?) instead")]
+        public static void Solve(params Type[] problems) => Solve(null, problems);
+
+        /// <summary>
+        /// This method is obsolete. Use <see cref="Solve(SolverConfiguration?, uint[])"/> or <see cref="Solve(IEnumerable{uint}, SolverConfiguration?)"/> instead.
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        [Obsolete("This method is obsolete. Use Solve(SolverConfiguration?, params uint[]) or Solve(IEnumerable<uint>, SolverConfiguration?) instead")]
+        public static void Solve(params uint[] problemNumbers) => Solve(null, problemNumbers);
+
+        #endregion
+
+        /// <summary>
+        /// Loads all <see cref="BaseProblem"/> in the given assembly
+        /// </summary>
+        /// <param name="assembly"></param>
         /// <returns></returns>
         internal static IEnumerable<Type> LoadAllProblems(Assembly assembly)
         {
@@ -131,7 +189,15 @@ namespace AoCHelper
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
         }
 
-        private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, bool clearConsole)
+        private static Table GetTable()
+        {
+            return new Table()
+                .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
+                .RoundedBorder()
+                .BorderColor(Color.Grey);
+        }
+
+        private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, SolverConfiguration configuration)
         {
             var problemIndex = problem.CalculateIndex();
             var problemTitle = problemIndex != default
@@ -139,10 +205,10 @@ namespace AoCHelper
                 : $"{problem.GetType().Name}";
 
             (string solution1, double elapsedMillisecondsPart1) = SolvePart(isPart1: true, problem);
-            RenderRow(table, problemTitle, 1, solution1, elapsedMillisecondsPart1, clearConsole);
+            RenderRow(table, problemTitle, 1, solution1, elapsedMillisecondsPart1, configuration);
 
             (string solution2, double elapsedMillisecondsPart2) = SolvePart(isPart1: false, problem);
-            RenderRow(table, problemTitle, 2, solution2, elapsedMillisecondsPart2, clearConsole);
+            RenderRow(table, problemTitle, 2, solution2, elapsedMillisecondsPart2, configuration);
 
             table.AddEmptyRow();
 
@@ -191,15 +257,15 @@ namespace AoCHelper
             return 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
         }
 
-        private static void RenderRow(Table table, string problemTitle, int part, string solution, double elapsedMilliseconds, bool clearConsole)
+        private static void RenderRow(Table table, string problemTitle, int part, string solution, double elapsedMilliseconds, SolverConfiguration configuration)
         {
-            var formattedTime = FormatTime(elapsedMilliseconds);
+            var formattedTime = FormatTime(elapsedMilliseconds, configuration);
 
             table.AddRow(problemTitle, $"Part {part}", solution, formattedTime);
 
             if (IsInteractiveEnvironment)
             {
-                if (clearConsole)
+                if (configuration?.ClearConsole == true)
                 {
                     Console.Clear();
                 }
@@ -212,9 +278,13 @@ namespace AoCHelper
             AnsiConsole.Render(table);
         }
 
-        private static string FormatTime(double elapsedMilliseconds, bool useColor = true)
+        private static string FormatTime(double elapsedMilliseconds, SolverConfiguration configuration, bool useColor = true)
         {
-            var message = ElapsedTimeFormatSpecifier is null
+#pragma warning disable CS0618 // Type or member is obsolete - Needed to keep compatibility
+            var customFormatSpecifier = configuration?.ElapsedTimeFormatSpecifier ?? ElapsedTimeFormatSpecifier;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            var message = customFormatSpecifier is null
                 ? elapsedMilliseconds switch
                 {
                     < 1 => $"{elapsedMilliseconds:F} ms",
@@ -224,10 +294,10 @@ namespace AoCHelper
                 }
                 : elapsedMilliseconds switch
                 {
-                    < 1 => $"{elapsedMilliseconds.ToString(ElapsedTimeFormatSpecifier)} ms",
-                    < 1_000 => $"{elapsedMilliseconds.ToString(ElapsedTimeFormatSpecifier)} ms",
-                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(ElapsedTimeFormatSpecifier)} s",
-                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(ElapsedTimeFormatSpecifier)} s",
+                    < 1 => $"{elapsedMilliseconds.ToString(customFormatSpecifier)} ms",
+                    < 1_000 => $"{elapsedMilliseconds.ToString(customFormatSpecifier)} ms",
+                    < 60_000 => $"{(0.001 * elapsedMilliseconds).ToString(customFormatSpecifier)} s",
+                    _ => $"{elapsedMilliseconds / 60_000} min {(0.001 * (elapsedMilliseconds % 60_000)).ToString(customFormatSpecifier)} s",
                 };
 
             if (useColor)
@@ -251,8 +321,13 @@ namespace AoCHelper
             }
         }
 
-        private static void RenderOverallResultsPanel(List<(double part1, double part2)> totalElapsedTime)
+        private static void RenderOverallResultsPanel(List<(double part1, double part2)> totalElapsedTime, SolverConfiguration configuration)
         {
+            if (configuration?.ShowOverallResults != true || totalElapsedTime.Count <= 1)
+            {
+                return;
+            }
+
             var totalPart1 = totalElapsedTime.Select(t => t.part1).Sum();
             var totalPart2 = totalElapsedTime.Select(t => t.part2).Sum();
             var total = totalPart1 + totalPart2;
@@ -261,13 +336,13 @@ namespace AoCHelper
                 .AddColumn(new GridColumn().NoWrap().PadRight(4))
                 .AddColumn()
                 .AddRow()
-                .AddRow($"Total ({totalElapsedTime.Count} days)", FormatTime(total, useColor: false))
-                .AddRow("Total parts 1", FormatTime(totalPart1, useColor: false))
-                .AddRow("Total parts 2", FormatTime(totalPart2, useColor: false))
+                .AddRow($"Total ({totalElapsedTime.Count} days)", FormatTime(total, configuration, useColor: false))
+                .AddRow("Total parts 1", FormatTime(totalPart1, configuration, useColor: false))
+                .AddRow("Total parts 2", FormatTime(totalPart2, configuration, useColor: false))
                 .AddRow()
-                .AddRow("Mean  (per day)", FormatTime(total / totalElapsedTime.Count))
-                .AddRow("Mean  parts 1", FormatTime(totalElapsedTime.Select(t => t.part1).Average()))
-                .AddRow("Mean  parts 2", FormatTime(totalElapsedTime.Select(t => t.part2).Average()));
+                .AddRow("Mean  (per day)", FormatTime(total / totalElapsedTime.Count, configuration))
+                .AddRow("Mean  parts 1", FormatTime(totalElapsedTime.Select(t => t.part1).Average(), configuration))
+                .AddRow("Mean  parts 2", FormatTime(totalElapsedTime.Select(t => t.part2).Average(), configuration));
 
             AnsiConsole.Render(
                     new Panel(grid)

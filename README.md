@@ -39,13 +39,13 @@ Creating your Advent of Code repository from [AdventOfCode.Template](https://git
   - Name them `DayXX` or `Day_XX` and make them inherit `BaseDay`.
   - Name them `ProblemXX` or `Problem_XX`and make them inherit `BaseProblem`.
 - **Put your input files under `Inputs/` directory** and follow `XX.txt` naming convention for day `XX`. Make sure to copy those files to your output folder.
-- Choose your **solving strategy** in your `Main()` method:
+- Choose your **solving strategy** in your `Main()` method, adjusting it with your custom `SolverConfiguration` if needed:
   - `Solver.SolveAll();`
   - `Solver.SolveLast();`
-  - `Solver.SolveLast(clearConsole: false);`
+  - `Solver.SolveLast(new SolverConfiguration { ClearConsole = false });`
   - `Solver.Solve<Day_05>();`
-  - `Solver.Solve(5, 6);`
-  - `Solver.Solve(typeof(Day_05), typeof(Day_06));`
+  - `Solver.Solve(new List<uint>{ 5, 6 });`
+  - `Solver.Solve(new List<Type> { typeof(Day_05), typeof(Day_06) });`
 
 ## Advanced usage
 
@@ -58,7 +58,7 @@ You can also:
   - Override `CalculateIndex()` to follow a different `XX` or `_XX` convention in your class names.
   - Override `InputFilePath` to follow a different naming convention in your input files. Check the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs) to understand how to reuse all the other properties and methods.
 - _[Not recommended]_ Override `InputFilePath` in any specific problem class to point to a concrete file. This will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant (see the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs)).
-- Override `Solver.ElapsedTimeFormatSpecifier` to provide custom [numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) for the elapsed milliseconds.
+- ~~Override `Solver.ElapsedTimeFormatSpecifier`~~ Configure `SolverConfiguration.ElapsedTimeFormatSpecifier` to provide custom [numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) for the elapsed milliseconds.
 
 ## Usage examples
 
