@@ -10,6 +10,7 @@ namespace AoCHelper
     public static class Solver
     {
         private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
+        private record ElapsedTime(double Constructor, double Part1, double Part2);
 
         #region Public methods
 
@@ -23,9 +24,13 @@ namespace AoCHelper
             where TProblem : BaseProblem, new()
         {
             configuration ??= new();
-            TProblem problem = new TProblem();
 
-            SolveProblem(problem, GetTable(), configuration);
+            var sw = new Stopwatch();
+            sw.Start();
+            TProblem problem = new TProblem();
+            sw.Stop();
+
+            SolveProblem(problem, GetTable(), CalculateElapsedMilliseconds(sw), configuration);
         }
 
         /// <summary>
@@ -38,9 +43,17 @@ namespace AoCHelper
             configuration ??= new();
 
             var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
-            if (lastProblem is not null && Activator.CreateInstance(lastProblem) is BaseProblem problem)
+            if (lastProblem is not null)
             {
-                SolveProblem(problem, GetTable(), configuration);
+                var sw = new Stopwatch();
+                sw.Start();
+                var potentialProblem = Activator.CreateInstance(lastProblem);
+                sw.Stop();
+
+                if (potentialProblem is BaseProblem problem)
+                {
+                    SolveProblem(problem, GetTable(), CalculateElapsedMilliseconds(sw), configuration);
+                }
             }
         }
 
@@ -72,14 +85,19 @@ namespace AoCHelper
         {
             configuration ??= new();
 
-            var totalElapsedTime = new List<(double part1, double part2)>();
+            var totalElapsedTime = new List<ElapsedTime>();
             var table = GetTable();
 
+            var sw = new Stopwatch();
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
-                if (Activator.CreateInstance(problemType) is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
+                sw.Restart();
+                var potentialProblem = Activator.CreateInstance(problemType);
+                sw.Stop();
+
+                if (potentialProblem is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
                 {
-                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
+                    totalElapsedTime.Add(SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
                 }
             }
 
@@ -96,14 +114,22 @@ namespace AoCHelper
         {
             configuration ??= new();
 
-            var totalElapsedTime = new List<(double part1, double part2)>();
+            var totalElapsedTime = new List<ElapsedTime>();
             var table = GetTable();
 
+            var sw = new Stopwatch();
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
-                if (problems.Contains(problemType) && Activator.CreateInstance(problemType) is BaseProblem problem)
+                if (problems.Contains(problemType))
                 {
-                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
+                    sw.Restart();
+                    var potentialProblem = Activator.CreateInstance(problemType);
+                    sw.Stop();
+
+                    if (potentialProblem is BaseProblem problem)
+                    {
+                        totalElapsedTime.Add(SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
+                    }
                 }
             }
 
@@ -119,14 +145,19 @@ namespace AoCHelper
         {
             configuration ??= new();
 
-            var totalElapsedTime = new List<(double part1, double part2)>();
+            var totalElapsedTime = new List<ElapsedTime>();
             var table = GetTable();
 
+            var sw = new Stopwatch();
             foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
             {
-                if (Activator.CreateInstance(problemType) is BaseProblem problem)
+                sw.Restart();
+                var potentialProblem = Activator.CreateInstance(problemType);
+                sw.Stop();
+
+                if (potentialProblem is BaseProblem problem)
                 {
-                    totalElapsedTime.Add(SolveProblem(problem, table, configuration));
+                    totalElapsedTime.Add(SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
                 }
             }
 
@@ -192,27 +223,41 @@ namespace AoCHelper
         private static Table GetTable()
         {
             return new Table()
-                .AddColumns("[bold white]Day[/]", "[bold white]Part[/]", "[bold white]Solution[/]", "[bold white]Elapsed time[/]")
+                .AddColumns(
+                    "[bold]Day[/]",
+                    "[bold]Part[/]",
+                    "[bold]Solution[/]",
+                    "[bold]Elapsed time[/]")
                 .RoundedBorder()
                 .BorderColor(Color.Grey);
         }
 
-        private static (double part1, double part2) SolveProblem(BaseProblem problem, Table table, SolverConfiguration configuration)
+        private static ElapsedTime SolveProblem(BaseProblem problem, Table table, double constructorElapsedTime, SolverConfiguration configuration)
         {
             var problemIndex = problem.CalculateIndex();
             var problemTitle = problemIndex != default
                 ? $"Day {problemIndex}"
                 : $"{problem.GetType().Name}";
 
+            if (configuration.ShowConstructorElapsedTime)
+            {
+                RenderRow(table, problemTitle, $"{problem.GetType().Name}()", "-----------", constructorElapsedTime, configuration);
+            }
+
             (string solution1, double elapsedMillisecondsPart1) = SolvePart(isPart1: true, problem);
-            RenderRow(table, problemTitle, 1, solution1, elapsedMillisecondsPart1, configuration);
+            RenderRow(table, problemTitle, "Part 1", solution1, elapsedMillisecondsPart1, configuration);
 
             (string solution2, double elapsedMillisecondsPart2) = SolvePart(isPart1: false, problem);
-            RenderRow(table, problemTitle, 2, solution2, elapsedMillisecondsPart2, configuration);
+            RenderRow(table, problemTitle, "Part 2", solution2, elapsedMillisecondsPart2, configuration);
+
+            if (configuration.ShowTotalElapsedTimePerDay)
+            {
+                RenderRow(table, problemTitle, "[bold]Total[/]", "-----------", constructorElapsedTime + elapsedMillisecondsPart1 + elapsedMillisecondsPart2, configuration);
+            }
 
             table.AddEmptyRow();
 
-            return (elapsedMillisecondsPart1, elapsedMillisecondsPart2);
+            return new ElapsedTime(constructorElapsedTime, elapsedMillisecondsPart1, elapsedMillisecondsPart2);
         }
 
         private static (string solution, double elapsedTime) SolvePart(bool isPart1, BaseProblem problem)
@@ -257,11 +302,11 @@ namespace AoCHelper
             return 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
         }
 
-        private static void RenderRow(Table table, string problemTitle, int part, string solution, double elapsedMilliseconds, SolverConfiguration configuration)
+        private static void RenderRow(Table table, string problemTitle, string part, string solution, double elapsedMilliseconds, SolverConfiguration configuration)
         {
             var formattedTime = FormatTime(elapsedMilliseconds, configuration);
 
-            table.AddRow(problemTitle, $"Part {part}", solution, formattedTime);
+            table.AddRow(problemTitle, part, solution, formattedTime);
 
             if (IsInteractiveEnvironment)
             {
@@ -321,28 +366,43 @@ namespace AoCHelper
             }
         }
 
-        private static void RenderOverallResultsPanel(List<(double part1, double part2)> totalElapsedTime, SolverConfiguration configuration)
+        private static void RenderOverallResultsPanel(List<ElapsedTime> totalElapsedTime, SolverConfiguration configuration)
         {
             if (configuration?.ShowOverallResults != true || totalElapsedTime.Count <= 1)
             {
                 return;
             }
 
-            var totalPart1 = totalElapsedTime.Select(t => t.part1).Sum();
-            var totalPart2 = totalElapsedTime.Select(t => t.part2).Sum();
-            var total = totalPart1 + totalPart2;
+            var totalConstructors = totalElapsedTime.Select(t => t.Constructor).Sum();
+            var totalPart1 = totalElapsedTime.Select(t => t.Part1).Sum();
+            var totalPart2 = totalElapsedTime.Select(t => t.Part2).Sum();
+            var total = totalPart1 + totalPart2 + (configuration.ShowConstructorElapsedTime ? totalConstructors : 0);
 
             var grid = new Grid()
                 .AddColumn(new GridColumn().NoWrap().PadRight(4))
                 .AddColumn()
                 .AddRow()
-                .AddRow($"Total ({totalElapsedTime.Count} days)", FormatTime(total, configuration, useColor: false))
+                .AddRow($"[bold]Total ({totalElapsedTime.Count} days[/])", FormatTime(total, configuration, useColor: false));
+
+            if (configuration.ShowConstructorElapsedTime)
+            {
+                grid.AddRow("Total constructors", FormatTime(totalConstructors, configuration, useColor: false));
+            }
+
+            grid
                 .AddRow("Total parts 1", FormatTime(totalPart1, configuration, useColor: false))
                 .AddRow("Total parts 2", FormatTime(totalPart2, configuration, useColor: false))
                 .AddRow()
-                .AddRow("Mean  (per day)", FormatTime(total / totalElapsedTime.Count, configuration))
-                .AddRow("Mean  parts 1", FormatTime(totalElapsedTime.Select(t => t.part1).Average(), configuration))
-                .AddRow("Mean  parts 2", FormatTime(totalElapsedTime.Select(t => t.part2).Average(), configuration));
+                .AddRow("[bold]Mean (per day)[/]", FormatTime(total / totalElapsedTime.Count, configuration));
+
+            if (configuration.ShowConstructorElapsedTime)
+            {
+                grid.AddRow("Mean constructors", FormatTime(totalElapsedTime.Select(t => t.Constructor).Average(), configuration));
+            }
+
+            grid
+                .AddRow("Mean parts 1", FormatTime(totalElapsedTime.Select(t => t.Part1).Average(), configuration))
+                .AddRow("Mean parts 2", FormatTime(totalElapsedTime.Select(t => t.Part2).Average(), configuration));
 
             AnsiConsole.Render(
                     new Panel(grid)
