@@ -38,7 +38,7 @@ jobs:
       PROJECT_NAME: AoCHelper
 
     steps:
-    - uses: actions/checkout@v2.3.3
+    - uses: actions/checkout@v2.3.4
 
     - name: Configure git user
       run: |
