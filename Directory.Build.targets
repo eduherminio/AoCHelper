@@ -1,4 +1,0 @@
-<Project>
-  <!-- Workaround for deterministic build and coverlet (https://github.com/dotnet/sourcelink/issues/572), see https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/DeterministicBuild.md -->
-  <Import Project="$(MSBuildThisFileDirectory)DeterministicBuild.targets" />
-</Project>
