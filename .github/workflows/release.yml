@@ -38,7 +38,7 @@ jobs:
       PROJECT_NAME: AoCHelper
 
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2
 
     - name: Configure git user
       run: |
@@ -49,7 +49,7 @@ jobs:
       uses: rlespinasse/github-slug-action@v3.x
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1.8.0
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
 
