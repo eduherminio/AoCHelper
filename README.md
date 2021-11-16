@@ -26,7 +26,7 @@ namespace AdventOfCode
 
 Output example:
 
-![image](https://user-images.githubusercontent.com/11148519/101073364-a0df6800-359f-11eb-8dc8-5542ccc14120.png)
+![aochelper](https://user-images.githubusercontent.com/11148519/142051856-16d9d5bf-885c-44cd-94ae-6f678bcbc04f.gif)
 
 ## AdventOfCode.Template
 
@@ -109,7 +109,7 @@ public class Day_01 : BaseDay
 }
 ```
 
-or in case we prefer async-await over returning the task, as recommended [here](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#prefer-asyncawait-over-directly-returning-task):
+or in case we prefer `async`/`await` over returning the task, as recommended [here](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#prefer-asyncawait-over-directly-returning-task):
 
 ```csharp
 public class Day_01 : BaseDay
