@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <Nullable>Enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>

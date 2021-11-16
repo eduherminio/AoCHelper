@@ -11,15 +11,15 @@ Problem example:
 
 ```csharp
 using AoCHelper;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace AdventOfCode
 {
     public class Day_01 : BaseDay
     {
-        public override string Solve_1() => $"Solution 1";
+        public override ValueTask<string> Solve_1() => new($"Solution 1");
 
-        public override string Solve_2() => $"Solution 2";
+        public override ValueTask<string> Solve_2() => new($"Solution 2");
     }
 }
 ```
@@ -28,7 +28,7 @@ Output example:
 
 ![image](https://user-images.githubusercontent.com/11148519/101073364-a0df6800-359f-11eb-8dc8-5542ccc14120.png)
 
-## :new: AdventOfCode.Template
+## AdventOfCode.Template
 
 Creating your Advent of Code repository from [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template) is the quickest way to get up and running with `AoCHelper`.
 
@@ -68,6 +68,63 @@ Example projects can be found at:
 - [AoCHelper.PoC](https://github.com/eduherminio/AoCHelper/tree/master/src/AoCHelper.PoC)
 - [AoC2020](https://github.com/eduherminio/AoC2020)
 - [All these repositories](https://github.com/eduherminio/AoCHelper/network/dependents)
+
+## 🆕 v0.x to v1.x migration
+
+`BaseProblem.Solve_1()` and `BaseProblem.Solve_2()` signature has changed: they must return `ValueTask<string>` now.
+
+`ValueTask<T>` has constructors that accept both `T` and `Task<T>`, so:
+
+v0.x:
+
+```csharp
+public class Day_01 : BaseDay
+{
+    public override string Solve_1() => $"Solution 2";
+
+    public override string Solve_2() => FooAsync().Result;
+
+    private async Task<string> FooAsync()
+    {
+        await Task.Delay(1000);
+        return "Solution 2";
+    }
+}
+```
+
+becomes now in v1.x:
+
+```csharp
+public class Day_01 : BaseDay
+{
+    public override ValueTask<string> Solve_1() => new($"Solution 2");
+
+    public override ValueTask<string> Solve_2() => new(FooAsync());
+
+    private async Task<string> FooAsync()
+    {
+        await Task.Delay(1000);
+        return "Solution 2";
+    }
+}
+```
+
+or in case we prefer async-await over returning the task, as recommended [here](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#prefer-asyncawait-over-directly-returning-task):
+
+```csharp
+public class Day_01 : BaseDay
+{
+    public override ValueTask<string> Solve_1() => new($"Solution 2");
+
+    public override async ValueTask<string> Solve_2() => new(await FooAsync());
+
+    private async Task<string> FooAsync()
+    {
+        await Task.Delay(1000);
+        return "Solution 2";
+    }
+}
+```
 
 ## Tips
 

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Xunit;
+﻿using Xunit;
 
 namespace AoCHelper.Test
 {
@@ -9,18 +8,18 @@ namespace AoCHelper.Test
         {
             protected override string InputFileExtension => nameof(OverrideInputFileDirPathTests);
 
-            public override string Solve_1() => Solve();
+            public override ValueTask<string> Solve_1() => Solve();
 
-            public override string Solve_2() => Solve();
+            public override ValueTask<string> Solve_2() => Solve();
 
-            private string Solve()
+            private ValueTask<string> Solve()
             {
                 if (!File.Exists(InputFilePath))
                 {
                     throw new FileNotFoundException(InputFilePath);
                 }
 
-                return string.Empty;
+                return new(string.Empty);
             }
         }
 
@@ -28,10 +27,10 @@ namespace AoCHelper.Test
         private class Problem_33 : BaseProblemFixture { protected override string InputFileDirPath { get; } = "AlternativeInputs"; }
 
         [Fact]
-        public void OverrideInputFilePathDir()
+        public async Task OverrideInputFilePathDir()
         {
-            Solver.Solve<Problem33>();
-            Solver.Solve<Problem_33>();
+            await Solver.Solve<Problem33>();
+            await Solver.Solve<Problem_33>();
         }
     }
 }

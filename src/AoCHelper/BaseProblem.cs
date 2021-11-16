@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AoCHelper
+﻿namespace AoCHelper
 {
     public abstract class BaseProblem
     {
@@ -50,8 +48,8 @@ namespace AoCHelper
             }
         }
 
-        public abstract string Solve_1();
+        public abstract ValueTask<string> Solve_1();
 
-        public abstract string Solve_2();
+        public abstract ValueTask<string> Solve_2();
     }
 }
