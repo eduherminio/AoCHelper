@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AoCHelper.PoC
+﻿namespace AoCHelper.PoC
 {
     internal class Problem03 : BaseProblem
     {
@@ -12,16 +10,16 @@ namespace AoCHelper.PoC
             }
         }
 
-        public override string Solve_1()
+        public override ValueTask<string> Solve_1()
         {
-            System.Threading.Thread.Sleep(101);
-            return "Solution 1";
+            Thread.Sleep(101);
+            return new("Solution 1");
         }
 
-        public override string Solve_2()
+        public override ValueTask<string> Solve_2()
         {
-            System.Threading.Thread.Sleep(501);
-            return "Solution 2";
+            Thread.Sleep(501);
+            return new("Solution 2");
         }
     }
 }

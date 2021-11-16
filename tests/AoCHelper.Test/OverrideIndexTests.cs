@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Xunit;
+﻿using Xunit;
 
 namespace AoCHelper.Test
 {
@@ -7,28 +6,28 @@ namespace AoCHelper.Test
     {
         private abstract class ProblemFixture : BaseProblem
         {
-            public override string Solve_1() => Solve();
+            public override ValueTask<string> Solve_1() => Solve();
 
-            public override string Solve_2() => Solve();
+            public override ValueTask<string> Solve_2() => Solve();
 
-            private string Solve()
+            private ValueTask<string> Solve()
             {
                 if (!File.Exists(InputFilePath))
                 {
                     throw new FileNotFoundException(InputFilePath);
                 }
 
-                return string.Empty;
+                return new(string.Empty);
             }
         }
 
         private class CustomProblem : ProblemFixture { public override uint CalculateIndex() => 69; }
 
         [Fact]
-        public void OverrideIndex()
+        public async Task OverrideIndex()
         {
-            Solver.Solve<CustomProblem>();
-            Solver.Solve<CustomProblem>();
+            await Solver.Solve<CustomProblem>();
+            await Solver.Solve<CustomProblem>();
         }
     }
 }

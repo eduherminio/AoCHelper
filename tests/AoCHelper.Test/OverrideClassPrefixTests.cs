@@ -9,24 +9,24 @@ namespace AoCHelper.Test
             protected override string ClassPrefix => nameof(GreatName);
         }
 
-        private class GreatName01 : GreatName { public override string Solve_1() => ""; public override string Solve_2() => ""; }
-        private class GreatName_01 : GreatName { public override string Solve_1() => ""; public override string Solve_2() => ""; }
+        private class GreatName01 : GreatName { public override ValueTask<string> Solve_1() => new(""); public override ValueTask<string> Solve_2() => new(""); }
+        private class GreatName_01 : GreatName { public override ValueTask<string> Solve_1() => new(""); public override ValueTask<string> Solve_2() => new(""); }
 
         [Fact]
-        public void OverrideClassPrefix()
+        public async Task OverrideClassPrefix()
         {
-            Solver.Solve<GreatName01>();
-            Solver.Solve<GreatName_01>();
+            await Solver.Solve<GreatName01>();
+            await Solver.Solve<GreatName_01>();
         }
 
-        private class Day11 : BaseDay { public override string Solve_1() => ""; public override string Solve_2() => ""; }
-        private class Day_11 : BaseDay { public override string Solve_1() => ""; public override string Solve_2() => ""; }
+        private class Day11 : BaseDay { public override ValueTask<string> Solve_1() => new(""); public override ValueTask<string> Solve_2() => new(""); }
+        private class Day_11 : BaseDay { public override ValueTask<string> Solve_1() => new(""); public override ValueTask<string> Solve_2() => new(""); }
 
         [Fact]
-        public void BaseDay()
+        public async Task BaseDay()
         {
-            Solver.Solve<Day11>();
-            Solver.Solve<Day_11>();
+            await Solver.Solve<Day11>();
+            await Solver.Solve<Day_11>();
         }
     }
 }

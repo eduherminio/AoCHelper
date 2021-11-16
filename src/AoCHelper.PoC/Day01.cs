@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AoCHelper.PoC
+﻿namespace AoCHelper.PoC
 {
     public class Day01 : BaseDay
     {
@@ -12,14 +10,14 @@ namespace AoCHelper.PoC
             }
         }
 
-        public override string Solve_1()
+        public override ValueTask<string> Solve_1()
         {
-            return "Solution 1";
+            return new("Solution 1");
         }
 
-        public override string Solve_2()
+        public override ValueTask<string> Solve_2()
         {
-            return "Solution 2";
+            return new("Solution 2");
         }
     }
 }
