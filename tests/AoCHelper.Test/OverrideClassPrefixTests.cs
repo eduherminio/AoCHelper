@@ -2,6 +2,7 @@
 
 namespace AoCHelper.Test
 {
+    [Collection("Sequential")]
     public class OverrideClassPrefixTests
     {
         private abstract class GreatName : BaseProblem

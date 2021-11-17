@@ -6,6 +6,8 @@ namespace AoCHelper
 {
     public static class Solver
     {
+        private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
+
         private record ElapsedTime(double Constructor, double Part1, double Part2);
 
         /// <summary>
@@ -16,7 +18,7 @@ namespace AoCHelper
         public static async Task SolveLast(SolverConfiguration? configuration = null)
         {
             configuration ??= new();
-            if (configuration.ClearConsole)
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
             }
@@ -56,7 +58,7 @@ namespace AoCHelper
             where TProblem : BaseProblem, new()
         {
             configuration ??= new();
-            if (configuration.ClearConsole)
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
             }
@@ -106,7 +108,7 @@ namespace AoCHelper
         public static async Task Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration = null)
         {
             configuration ??= new();
-            if (configuration.ClearConsole)
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
             }
@@ -147,7 +149,7 @@ namespace AoCHelper
         public static async Task Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
         {
             configuration ??= new();
-            if (configuration.ClearConsole)
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
             }
@@ -190,7 +192,7 @@ namespace AoCHelper
         public static async Task SolveAll(SolverConfiguration? configuration = null)
         {
             configuration ??= new();
-            if (configuration.ClearConsole)
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
             }

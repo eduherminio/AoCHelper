@@ -2,6 +2,7 @@
 
 namespace AoCHelper.Test
 {
+    [Collection("Sequential")]
     public class OverrideIndexTests
     {
         private abstract class ProblemFixture : BaseProblem
