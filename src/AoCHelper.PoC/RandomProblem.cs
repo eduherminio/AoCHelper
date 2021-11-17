@@ -22,7 +22,7 @@
 
         public override ValueTask<string> Solve_2()
         {
-            Thread.Sleep(1234);
+            Thread.Sleep(10_000);
             return new("Solution 2");
         }
     }
