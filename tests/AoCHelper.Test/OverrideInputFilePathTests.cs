@@ -2,6 +2,7 @@
 
 namespace AoCHelper.Test
 {
+    [Collection("Sequential")]
     public class OverrideInputFilePathTests
     {
         private abstract class BaseProblemFixture : BaseProblem

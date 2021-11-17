@@ -1,4 +1,6 @@
-﻿namespace AoCHelper
+﻿using Spectre.Console;
+
+namespace AoCHelper
 {
     public class SolverConfiguration
     {
@@ -31,12 +33,27 @@
         /// </summary>
         public string? ElapsedTimeFormatSpecifier { get; set; }
 
+        /// <summary>
+        /// Represents vertical overflow.
+        /// <see href="https://spectreconsole.net/live/live-display"/>
+        /// </summary>
+        internal VerticalOverflow VerticalOverflow { get; set; }
+
+        /// <summary>
+        /// Represents vertical overflow cropping.
+        /// <see href="https://spectreconsole.net/live/live-display"/>
+        /// </summary>
+        internal VerticalOverflowCropping VerticalOverflowCropping { get; set; }
+
         public SolverConfiguration()
         {
             ClearConsole = true;
             ShowOverallResults = true;
             ShowConstructorElapsedTime = false;
             ShowTotalElapsedTimePerDay = false;
+
+            VerticalOverflow = VerticalOverflow.Ellipsis;
+            VerticalOverflowCropping = VerticalOverflowCropping.Top;
         }
     }
 }

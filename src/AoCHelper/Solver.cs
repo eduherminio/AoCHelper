@@ -6,6 +6,8 @@ namespace AoCHelper
 {
     public static class Solver
     {
+        private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
+
         private record ElapsedTime(double Constructor, double Part1, double Part2);
 
         /// <summary>
@@ -16,20 +18,34 @@ namespace AoCHelper
         public static async Task SolveLast(SolverConfiguration? configuration = null)
         {
             configuration ??= new();
-
-            var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
-            if (lastProblem is not null)
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
-                var sw = new Stopwatch();
-                sw.Start();
-                var potentialProblem = Activator.CreateInstance(lastProblem);
-                sw.Stop();
-
-                if (potentialProblem is BaseProblem problem)
-                {
-                    await SolveProblem(problem, GetTable(), CalculateElapsedMilliseconds(sw), configuration);
-                }
+                AnsiConsole.Clear();
             }
+
+            var table = GetTable();
+
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
+                    if (lastProblem is not null)
+                    {
+                        var sw = new Stopwatch();
+                        sw.Start();
+                        var potentialProblem = Activator.CreateInstance(lastProblem);
+                        sw.Stop();
+
+                        if (potentialProblem is BaseProblem problem)
+                        {
+                            await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
+                            ctx.Refresh();
+                        }
+                    }
+                });
         }
 
         /// <summary>
@@ -42,13 +58,27 @@ namespace AoCHelper
             where TProblem : BaseProblem, new()
         {
             configuration ??= new();
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
 
-            var sw = new Stopwatch();
-            sw.Start();
-            TProblem problem = new();
-            sw.Stop();
+            var table = GetTable();
 
-            await SolveProblem(problem, GetTable(), CalculateElapsedMilliseconds(sw), configuration);
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    TProblem problem = new();
+                    sw.Stop();
+
+                    await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
+                    ctx.Refresh();
+                });
         }
 
         /// <summary>
@@ -78,14 +108,18 @@ namespace AoCHelper
         public static async Task Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration = null)
         {
             configuration ??= new();
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
 
             var totalElapsedTime = new List<ElapsedTime>();
             var table = GetTable();
 
             await AnsiConsole.Live(table)
-                .AutoClear(false)   // Do not remove when done
-                .Overflow(VerticalOverflow.Ellipsis) // Show ellipsis when overflowing
-                .Cropping(VerticalOverflowCropping.Top) // Crop overflow at top
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
                 .StartAsync(async ctx =>
                 {
                     var sw = new Stopwatch();
@@ -115,14 +149,18 @@ namespace AoCHelper
         public static async Task Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
         {
             configuration ??= new();
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
 
             var totalElapsedTime = new List<ElapsedTime>();
             var table = GetTable();
 
             await AnsiConsole.Live(table)
-                .AutoClear(false)   // Do not remove when done
-                .Overflow(VerticalOverflow.Ellipsis) // Show ellipsis when overflowing
-                .Cropping(VerticalOverflowCropping.Top) // Crop overflow at top
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
                 .StartAsync(async ctx =>
                 {
                     var sw = new Stopwatch();
@@ -154,14 +192,18 @@ namespace AoCHelper
         public static async Task SolveAll(SolverConfiguration? configuration = null)
         {
             configuration ??= new();
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
 
             var totalElapsedTime = new List<ElapsedTime>();
             var table = GetTable();
 
             await AnsiConsole.Live(table)
-                .AutoClear(false)   // Do not remove when done
-                .Overflow(VerticalOverflow.Ellipsis) // Show ellipsis when overflowing
-                .Cropping(VerticalOverflowCropping.Top) // Crop overflow at top
+                .AutoClear(true)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
                 .StartAsync(async ctx =>
                 {
                     var sw = new Stopwatch();

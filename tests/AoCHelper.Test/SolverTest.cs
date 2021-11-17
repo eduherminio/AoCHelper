@@ -3,6 +3,7 @@ using Xunit;
 
 namespace AoCHelper.Test
 {
+    [Collection("Sequential")]
     public class SolverTest
     {
         private abstract class ProblemFixture : BaseProblem
