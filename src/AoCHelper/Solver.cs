@@ -201,7 +201,7 @@ namespace AoCHelper
             var table = GetTable();
 
             await AnsiConsole.Live(table)
-                .AutoClear(true)
+                .AutoClear(false)
                 .Overflow(configuration.VerticalOverflow)
                 .Cropping(configuration.VerticalOverflowCropping)
                 .StartAsync(async ctx =>
