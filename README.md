@@ -17,9 +17,9 @@ namespace AdventOfCode
 {
     public class Day_01 : BaseDay
     {
-        public override ValueTask<string> Solve_1() => new($"Solution 1");
+        public override ValueTask<string> Solve_1() => new("Solution 1");
 
-        public override ValueTask<string> Solve_2() => new($"Solution 2");
+        public override ValueTask<string> Solve_2() => new("Solution 2");
     }
 }
 ```
@@ -80,7 +80,7 @@ v0.x:
 ```csharp
 public class Day_01 : BaseDay
 {
-    public override string Solve_1() => $"Solution 2";
+    public override string Solve_1() => "Solution 2";
 
     public override string Solve_2() => FooAsync().Result;
 
@@ -97,7 +97,7 @@ becomes now in v1.x:
 ```csharp
 public class Day_01 : BaseDay
 {
-    public override ValueTask<string> Solve_1() => new($"Solution 2");
+    public override ValueTask<string> Solve_1() => new("Solution 2");
 
     public override ValueTask<string> Solve_2() => new(FooAsync());
 
@@ -114,7 +114,7 @@ or in case we prefer `async`/`await` over returning the task, as recommended [he
 ```csharp
 public class Day_01 : BaseDay
 {
-    public override ValueTask<string> Solve_1() => new($"Solution 2");
+    public override ValueTask<string> Solve_1() => new("Solution 2");
 
     public override async ValueTask<string> Solve_2() => new(await FooAsync());
 
