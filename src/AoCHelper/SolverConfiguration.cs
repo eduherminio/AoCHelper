@@ -28,7 +28,7 @@ namespace AoCHelper
         public bool ShowTotalElapsedTimePerDay { get; set; }
 
         /// <summary>
-        /// Custom numeric format strings used when .
+        /// Custom numeric format strings used for elapsed millisecods.
         /// See https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
         /// </summary>
         public string? ElapsedTimeFormatSpecifier { get; set; }

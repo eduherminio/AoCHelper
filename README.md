@@ -47,6 +47,16 @@ Creating your Advent of Code repository from [AdventOfCode.Template](https://git
   - `Solver.Solve(new List<uint>{ 5, 6 });`
   - `Solver.Solve(new List<Type> { typeof(Day_05), typeof(Day_06) });`
 
+## Customization
+
+A **custom `SolverConfiguration`** instance can be provided to any of the `Solver` methods. These are the configurable parameters (`false` or `null` by default unless otherwise specified).
+
+- **`bool ClearConsole`**: Clears previous runs information from the console. True by default.
+- **`bool ShowOverallResults`**: Shows a panel at the end of the run with aggregated stats of the solved problems. True by default when solving multiple problems, false otherwise.
+- **`bool ShowConstructorElapsedTime`**: Shows the time elapsed during the instantiation of a `BaseProblem`. This normally reflects the elapsed time while parsing the input data.
+- **`bool ShowTotalElapsedTimePerDay`**: Shows total elapsed time per day. This includes constructor time + part 1 + part 2.
+- **`string? ElapsedTimeFormatSpecifier`**: Custom numeric format strings used for elapsed milliseconds. See [Standard numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings).
+
 ## Advanced usage
 
 You can also:
@@ -58,15 +68,15 @@ You can also:
   - Override `CalculateIndex()` to follow a different `XX` or `_XX` convention in your class names.
   - Override `InputFilePath` to follow a different naming convention in your input files. Check the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs) to understand how to reuse all the other properties and methods.
 - _[Not recommended]_ Override `InputFilePath` in any specific problem class to point to a concrete file. This will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant (see the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs)).
-- ~~Override `Solver.ElapsedTimeFormatSpecifier`~~ Configure `SolverConfiguration.ElapsedTimeFormatSpecifier` to provide custom [numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) for the elapsed milliseconds.
 
 ## Usage examples
 
 Example projects can be found at:
 
+- [AoC2021](https://github.com/eduherminio/AoC2021)
 - [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template)
 - [AoCHelper.PoC](https://github.com/eduherminio/AoCHelper/tree/master/src/AoCHelper.PoC)
-- [AoC2020](https://github.com/eduherminio/AoC2020)
+- [AoC2020](https://github.com/eduherminio/AoC2020) (v0.x)
 - [All these repositories](https://github.com/eduherminio/AoCHelper/network/dependents)
 
 ## 🆕 v0.x to v1.x migration
@@ -131,7 +141,9 @@ public class Day_01 : BaseDay
 Your problem classes are instantiated only once, so parsing the input file (`InputFilePath`) in your class constructor allows you to:
 
 - Avoid executing parsing logic twice per problem.
-- Measure more accurately your part 1 and part 2 solutions performance.
+- Measure more accurately your part 1 and part 2 solutions performance*.
+
+\* Consider enabling `ShowConstructorElapsedTime` and `ShowTotalElapsedTimePerDay` in `SolverConfiguration`.
 
 [githubactionslogo]: https://github.com/eduherminio/AoCHelper/workflows/CI/badge.svg
 [githubactionslink]: https://github.com/eduherminio/AoCHelper/actions?query=workflow%3ACI
