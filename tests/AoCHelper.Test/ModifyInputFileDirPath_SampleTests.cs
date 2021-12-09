@@ -3,18 +3,18 @@ using NUnit.Framework;
 
 public class ModifyInputFileDirPathTests
 {
-    abstract class SimpleCustomDirBaseDay : BaseDay
+    abstract class CustomDirBaseDay : BaseDay
     {
         public string TestInputFileDirPath { private get; set; }
         protected override string InputFileDirPath => TestInputFileDirPath;
 
-        protected SimpleCustomDirBaseDay()
+        protected CustomDirBaseDay()
         {
             TestInputFileDirPath = base.InputFileDirPath;
         }
     }
 
-    class Day_99 : SimpleCustomDirBaseDay
+    class Day_99 : CustomDirBaseDay
     {
         public override ValueTask<string> Solve_1() => new($"Custom file path: {InputFilePath}");
         public override ValueTask<string> Solve_2() => new($"Custom dir path: {InputFileDirPath}");
@@ -23,7 +23,7 @@ public class ModifyInputFileDirPathTests
     [TestCase(typeof(Day_99), "CustomInputDir/", "Custom file path: CustomInputDir/99.txt", "Custom dir path: CustomInputDir/")]
     public async Task ModifyInputFileDirPath(Type type, string inputFileDirPath, string sol1, string sol2)
     {
-        if (Activator.CreateInstance(type) is SimpleCustomDirBaseDay instance)
+        if (Activator.CreateInstance(type) is CustomDirBaseDay instance)
         {
             instance.TestInputFileDirPath = inputFileDirPath;
 
