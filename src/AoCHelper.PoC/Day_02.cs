@@ -13,13 +13,13 @@
         public override ValueTask<string> Solve_1()
         {
             Thread.Sleep(1);
-            return new("Solution 1");
+            return new("Solution 2.1");
         }
 
         public override ValueTask<string> Solve_2()
         {
             Thread.Sleep(11);
-            return new("Solution 2");
+            return new("Solution 2.2");
         }
     }
 }

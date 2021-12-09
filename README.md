@@ -61,7 +61,7 @@ A **custom `SolverConfiguration`** instance can be provided to any of the `Solve
 
 You can also:
 
-- Create your own abstract base class that inherits `BaseProblem`, make all your problem classes inherit it and use this custom base class to:
+- Create your own abstract base class tha(t inherits `BaseProblem`, make all your problem classes inherit it and use this custom base class to:
   - Override `ClassPrefix` property, to be able to follow your own `$(ClassPrefix)XX` or `$(ClassPrefix)_XX` convention in each one of your problem classes.
   - Override `InputFileDirPath` to change the input files directory
   - Override `InputFileExtension` to change the input files extension.
@@ -69,13 +69,20 @@ You can also:
   - Override `InputFilePath` to follow a different naming convention in your input files. Check the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs) to understand how to reuse all the other properties and methods.
 - _[Not recommended]_ Override `InputFilePath` in any specific problem class to point to a concrete file. This will make the values of `ClassPrefix`, `InputFileDirPath` and `InputFileExtension` and the implementation of `CalculateIndex()` irrelevant (see the [current implementation](https://github.com/eduherminio/AoCHelper/blob/master/src/AoCHelper/BaseProblem.cs)).
 
+## Testing
+
+- Example of simple AoC solutions testing: [SampleTests](tests/AoCHelper.Test/SampleTests.cs)
+- Example of advanced AoC solutions testing by providing a custom input test filepath:  [ModifyInputFilePathTests_SampleTests](tests/AoCHelper.Test/ModifyInputFilePathTests_SampleTests.cs)
+- Example of advanced AoC solutions testing by providing a custom input test dir path:  [ModifyInputFileDirPath_SampleTests](tests/AoCHelper.Test/ModifyInputFileDirPath_SampleTests.cs)
+
 ## Usage examples
 
 Example projects can be found at:
 
-- [AoC2021](https://github.com/eduherminio/AoC2021)
+- [AoC2021](https://github.com/eduherminio/AoC2021) (v1.x)
 - [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template)
-- [AoCHelper.PoC](https://github.com/eduherminio/AoCHelper/tree/master/src/AoCHelper.PoC)
+- [AoCHelper.PoC](src/AoCHelper.PoC)
+- [AoCHelper.Test](tests/AoCHelper.Test)
 - [AoC2020](https://github.com/eduherminio/AoC2020) (v0.x)
 - [All these repositories](https://github.com/eduherminio/AoCHelper/network/dependents)
 

@@ -17,13 +17,13 @@
 
         public override ValueTask<string> Solve_1()
         {
-            return new("Solution 1");
+            return new("Solution Random.1");
         }
 
         public override ValueTask<string> Solve_2()
         {
             Thread.Sleep(10_000);
-            return new("Solution 2");
+            return new("Solution Random.2");
         }
     }
 }
