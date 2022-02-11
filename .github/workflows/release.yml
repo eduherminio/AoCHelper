@@ -68,7 +68,7 @@ jobs:
 
     - name: 'Generate test coverage report'
       continue-on-error: true
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.0.3
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.0.4
       with:
         reports: 'tests/**/*.cobertura.xml'
         targetdir: 'coveragereport'
