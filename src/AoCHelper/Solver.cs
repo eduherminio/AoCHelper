@@ -14,10 +14,11 @@ namespace AoCHelper
         /// Solves last problem.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        /// <param name="configuration"></param>
-        public static async Task SolveLast(SolverConfiguration? configuration = null)
+        /// <param name="options"></param>
+        public static async Task SolveLast(Action<SolverConfiguration>? options = null)
         {
-            configuration ??= new();
+            var configuration = PopulateConfiguration(options);
+
             if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
@@ -53,11 +54,12 @@ namespace AoCHelper
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
         /// <typeparam name="TProblem"></typeparam>
-        /// <param name="configuration"></param>
-        public static async Task Solve<TProblem>(SolverConfiguration? configuration = null)
+        /// <param name="options"></param>
+        public static async Task Solve<TProblem>(Action<SolverConfiguration>? options = null)
             where TProblem : BaseProblem, new()
         {
-            configuration ??= new();
+            var configuration = PopulateConfiguration(options);
+
             if (IsInteractiveEnvironment && configuration.ClearConsole)
             {
                 AnsiConsole.Clear();
@@ -85,27 +87,271 @@ namespace AoCHelper
         /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
         /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="options"></param>
         /// <param name="problemNumbers"></param>
-        public static async Task Solve(SolverConfiguration? configuration = null, params uint[] problemNumbers)
-            => await Solve(problemNumbers.AsEnumerable(), configuration);
+        public static async Task Solve(Action<SolverConfiguration>? options = null, params uint[] problemNumbers)
+            => await Solve(problemNumbers.AsEnumerable(), options);
 
         /// <summary>
         /// Solves the provided problems.
         /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="options"></param>
         /// <param name="problems"></param>
-        public static async Task Solve(SolverConfiguration? configuration = null, params Type[] problems)
-            => await Solve(problems.AsEnumerable(), configuration);
+        public static async Task Solve(Action<SolverConfiguration>? options = null, params Type[] problems)
+            => await Solve(problems.AsEnumerable(), options);
+
+        /// <summary>
+        /// Solves the provided problems.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// </summary>
+        /// <param name="problems"></param>
+        /// <param name="options"></param>
+        public static async Task Solve(IEnumerable<Type> problems, Action<SolverConfiguration>? options = null)
+        {
+            var configuration = PopulateConfiguration(options);
+
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
+
+            var totalElapsedTime = new List<ElapsedTime>();
+            var table = GetTable();
+
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var sw = new Stopwatch();
+                    foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
+                    {
+                        if (problems.Contains(problemType))
+                        {
+                            sw.Restart();
+                            var potentialProblem = Activator.CreateInstance(problemType);
+                            sw.Stop();
+
+                            if (potentialProblem is BaseProblem problem)
+                            {
+                                totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
+                                ctx.Refresh();
+                            }
+                        }
+                    }
+                });
+
+            RenderOverallResultsPanel(totalElapsedTime, configuration);
+        }
 
         /// <summary>
         /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
         /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
         /// </summary>
         /// <param name="problemNumbers"></param>
+        /// <param name="options"></param>
+        public static async Task Solve(IEnumerable<uint> problemNumbers, Action<SolverConfiguration>? options = null)
+        {
+            var configuration = PopulateConfiguration(options);
+
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
+
+            var totalElapsedTime = new List<ElapsedTime>();
+            var table = GetTable();
+
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var sw = new Stopwatch();
+                    foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
+                    {
+                        sw.Restart();
+                        var potentialProblem = Activator.CreateInstance(problemType);
+                        sw.Stop();
+
+                        if (potentialProblem is BaseProblem problem && problemNumbers.Contains(problem.CalculateIndex()))
+                        {
+                            totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
+                            ctx.Refresh();
+                        }
+                    }
+                });
+
+            RenderOverallResultsPanel(totalElapsedTime, configuration);
+        }
+
+        /// <summary>
+        /// Solves all problems in the assembly.
+        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// </summary>
+        /// <param name="options"></param>
+        public static async Task SolveAll(Action<SolverConfiguration>? options = null)
+        {
+            var configuration = PopulateConfiguration(options);
+
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
+
+            var totalElapsedTime = new List<ElapsedTime>();
+            var table = GetTable();
+
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var sw = new Stopwatch();
+                    foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
+                    {
+                        sw.Restart();
+                        var potentialProblem = Activator.CreateInstance(problemType);
+                        sw.Stop();
+
+                        if (potentialProblem is BaseProblem problem)
+                        {
+                            totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
+                            ctx.Refresh();
+                        }
+                    }
+                });
+
+            RenderOverallResultsPanel(totalElapsedTime, configuration);
+        }
+
+        #region Obsolete
+
+        /// <summary>
+        /// Use <see cref="SolveLast(Action{SolverConfiguration}?)"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.SolveLast(opt => opt.ShowConstructorElapsedTime = true);
+        /// </code>
+        /// </example>
+        /// </summary>
         /// <param name="configuration"></param>
-        public static async Task Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration = null)
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task SolveLast(SolverConfiguration configuration)
+        {
+            configuration ??= new();
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
+
+            var table = GetTable();
+
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var lastProblem = LoadAllProblems(Assembly.GetEntryAssembly()!).LastOrDefault();
+                    if (lastProblem is not null)
+                    {
+                        var sw = new Stopwatch();
+                        sw.Start();
+                        var potentialProblem = Activator.CreateInstance(lastProblem);
+                        sw.Stop();
+
+                        if (potentialProblem is BaseProblem problem)
+                        {
+                            await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
+                            ctx.Refresh();
+                        }
+                    }
+                });
+        }
+
+        /// <summary>
+        /// Use <see cref="Solve{TProblem}(Action{SolverConfiguration}?)"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.Solve{Day01}(opt => opt.ShowConstructorElapsedTime = true);
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <typeparam name="TProblem"></typeparam>
+        /// <param name="configuration"></param>
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task Solve<TProblem>(SolverConfiguration configuration)
+            where TProblem : BaseProblem, new()
+        {
+            configuration ??= new();
+            if (IsInteractiveEnvironment && configuration.ClearConsole)
+            {
+                AnsiConsole.Clear();
+            }
+
+            var table = GetTable();
+
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(configuration.VerticalOverflow)
+                .Cropping(configuration.VerticalOverflowCropping)
+                .StartAsync(async ctx =>
+                {
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    TProblem problem = new();
+                    sw.Stop();
+
+                    await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
+                    ctx.Refresh();
+                });
+        }
+
+        /// <summary>
+        /// Use <see cref="Solve(Action{SolverConfiguration}?, uint[])"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.Solve(opt => opt.ShowConstructorElapsedTime = true, 1, 2);
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="problemNumbers"></param>
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task Solve(SolverConfiguration configuration, params uint[] problemNumbers)
+            => await Solve(problemNumbers.AsEnumerable(), configuration);
+
+        /// <summary>
+        /// Use <see cref="Solve(Action{SolverConfiguration}?, Type[])"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.Solve(opt => opt.ShowConstructorElapsedTime = true, typeof(Problem66));
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="problems"></param>
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task Solve(SolverConfiguration configuration, params Type[] problems)
+            => await Solve(problems.AsEnumerable(), configuration);
+
+        /// <summary>
+        /// Use <see cref="Solve(IEnumerable{uint}, Action{SolverConfiguration}?)"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.Solve(new uint[] { 1 }, opt => opt.ShowConstructorElapsedTime = true);
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="problemNumbers"></param>
+        /// <param name="configuration"></param>
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task Solve(IEnumerable<uint> problemNumbers, SolverConfiguration configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
@@ -141,12 +387,17 @@ namespace AoCHelper
         }
 
         /// <summary>
-        /// Solves the provided problems.
-        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// Use <see cref="Solve(IEnumerable{Type}, Action{SolverConfiguration}?)"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.Solve(new [] { typeof(Day10) }, opt => opt.ShowConstructorElapsedTime = true);
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="problems"></param>
         /// <param name="configuration"></param>
-        public static async Task Solve(IEnumerable<Type> problems, SolverConfiguration? configuration = null)
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task Solve(IEnumerable<Type> problems, SolverConfiguration configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
@@ -185,11 +436,21 @@ namespace AoCHelper
         }
 
         /// <summary>
-        /// Solves all problems in the assembly.
-        /// It also prints the elapsed time in <see cref="BaseProblem.Solve_1"/> and <see cref="BaseProblem.Solve_2"/> methods.
+        /// Use <see cref="SolveAll(Action{SolverConfiguration}?)"/> instead
+        /// <example>
+        /// <code>
+        /// await Solver.SolveAll(options =>
+        /// {
+        ///     options.ShowConstructorElapsedTime = true;
+        ///     options.ShowOverallResults = true;
+        ///     options.ClearConsole = false;
+        /// });
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="configuration"></param>
-        public static async Task SolveAll(SolverConfiguration? configuration = null)
+        [Obsolete("Use Action<SolverConfiguration>? overload instead")]
+        public static async Task SolveAll(SolverConfiguration configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
@@ -224,6 +485,8 @@ namespace AoCHelper
             RenderOverallResultsPanel(totalElapsedTime, configuration);
         }
 
+        #endregion
+
         /// <summary>
         /// Loads all <see cref="BaseProblem"/> in the given assembly
         /// </summary>
@@ -233,6 +496,14 @@ namespace AoCHelper
         {
             return assembly.GetTypes()
                 .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+        }
+
+        private static SolverConfiguration PopulateConfiguration(Action<SolverConfiguration>? options)
+        {
+            var configuration = new SolverConfiguration();
+            options?.Invoke(configuration);
+
+            return configuration;
         }
 
         private static async Task<ElapsedTime> SolveProblem(BaseProblem problem, Table table, double constructorElapsedTime, SolverConfiguration configuration)

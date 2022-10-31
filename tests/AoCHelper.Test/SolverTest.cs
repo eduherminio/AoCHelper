@@ -31,13 +31,14 @@ namespace AoCHelper.Test
         public async Task Solve()
         {
             await Solver.Solve<Problem66>();
+            await Solver.Solve<Problem66>(_ => { });
             await Solver.Solve<Problem66>(new SolverConfiguration());
         }
 
         [Fact]
         public async Task SolveIntParams()
         {
-            await Solver.Solve(null, 1, 2);
+            await Solver.Solve(options: null, 1, 2);
             await Solver.Solve(new SolverConfiguration(), 1, 2);
         }
 
@@ -45,14 +46,14 @@ namespace AoCHelper.Test
         public async Task SolveIntEnumerable()
         {
             await Solver.Solve(new List<uint> { 1, 2 });
+            await Solver.Solve(new List<uint> { 1, 2 }, _ => { });
             await Solver.Solve(new List<uint> { 1, 2 }, new SolverConfiguration());
         }
 
         [Fact]
         public async Task SolveTypeParams()
         {
-            SolverConfiguration? nullConfig = null;
-            await Solver.Solve(nullConfig, typeof(Problem66));
+            await Solver.Solve(_ => { }, typeof(Problem66));
             await Solver.Solve(new SolverConfiguration(), typeof(Problem66));
         }
 
@@ -60,6 +61,7 @@ namespace AoCHelper.Test
         public async Task SolveTypeEnumerable()
         {
             await Solver.Solve(new List<Type> { typeof(Problem66) });
+            await Solver.Solve(new List<Type> { typeof(Problem66) }, _ => { });
             await Solver.Solve(new List<Type> { typeof(Problem66) }, new SolverConfiguration());
         }
 
@@ -70,6 +72,7 @@ namespace AoCHelper.Test
         public async Task SolveLast()
         {
             await Solver.SolveLast();
+            await Solver.SolveLast(_ => { });
             await Solver.SolveLast(new SolverConfiguration());
         }
 

@@ -1,3 +1,8 @@
 ﻿using AoCHelper;
 
-await Solver.SolveAll(new SolverConfiguration{ ShowConstructorElapsedTime = true, ShowOverallResults = true, ClearConsole = false });
+await Solver.SolveAll(options =>
+{
+    options.ShowConstructorElapsedTime = true;
+    options.ShowOverallResults = true;
+    options.ClearConsole = false;
+});
