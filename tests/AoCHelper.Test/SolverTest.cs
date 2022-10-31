@@ -79,6 +79,17 @@ namespace AoCHelper.Test
             await Solver.SolveLast(new SolverConfiguration());
         }
 
+        /// <summary>
+        /// AoCHelper isn't actually solving anything, since Assembly.GetEntryAssembly() returns xunit assembly.
+        /// </summary>
+        [Fact]
+        public async Task SolveAll()
+        {
+            await Solver.SolveAll();
+            await Solver.SolveAll(_ => { });
+            await Solver.SolveAll(new SolverConfiguration());
+        }
+
         [Fact]
         public async Task ShouldNotThrowExceptionIfCantSolve()
         {
