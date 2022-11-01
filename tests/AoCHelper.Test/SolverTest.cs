@@ -32,6 +32,7 @@ namespace AoCHelper.Test
         {
             await Solver.Solve<Problem66>();
             await Solver.Solve<Problem66>(_ => { });
+            await Solver.Solve<Problem66>(options: null);
             await Solver.Solve<Problem66>(new SolverConfiguration());
         }
 
@@ -54,6 +55,8 @@ namespace AoCHelper.Test
         public async Task SolveTypeParams()
         {
             await Solver.Solve(_ => { }, typeof(Problem66));
+            await Solver.Solve(configuration: null, typeof(Problem66));
+            await Solver.Solve(options: null, typeof(Problem66));
             await Solver.Solve(new SolverConfiguration(), typeof(Problem66));
         }
 

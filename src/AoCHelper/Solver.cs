@@ -241,7 +241,7 @@ namespace AoCHelper
         /// </summary>
         /// <param name="configuration"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task SolveLast(SolverConfiguration configuration)
+        public static async Task SolveLast(SolverConfiguration? configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
@@ -285,7 +285,7 @@ namespace AoCHelper
         /// <typeparam name="TProblem"></typeparam>
         /// <param name="configuration"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task Solve<TProblem>(SolverConfiguration configuration)
+        public static async Task Solve<TProblem>(SolverConfiguration? configuration)
             where TProblem : BaseProblem, new()
         {
             configuration ??= new();
@@ -323,7 +323,7 @@ namespace AoCHelper
         /// <param name="configuration"></param>
         /// <param name="problemNumbers"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task Solve(SolverConfiguration configuration, params uint[] problemNumbers)
+        public static async Task Solve(SolverConfiguration? configuration, params uint[] problemNumbers)
             => await Solve(problemNumbers.AsEnumerable(), configuration);
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace AoCHelper
         /// <param name="configuration"></param>
         /// <param name="problems"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task Solve(SolverConfiguration configuration, params Type[] problems)
+        public static async Task Solve(SolverConfiguration? configuration, params Type[] problems)
             => await Solve(problems.AsEnumerable(), configuration);
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace AoCHelper
         /// <param name="problemNumbers"></param>
         /// <param name="configuration"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task Solve(IEnumerable<uint> problemNumbers, SolverConfiguration configuration)
+        public static async Task Solve(IEnumerable<uint> problemNumbers, SolverConfiguration? configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
@@ -397,7 +397,7 @@ namespace AoCHelper
         /// <param name="problems"></param>
         /// <param name="configuration"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task Solve(IEnumerable<Type> problems, SolverConfiguration configuration)
+        public static async Task Solve(IEnumerable<Type> problems, SolverConfiguration? configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
@@ -450,7 +450,7 @@ namespace AoCHelper
         /// </summary>
         /// <param name="configuration"></param>
         [Obsolete("Use Action<SolverConfiguration>? overload instead")]
-        public static async Task SolveAll(SolverConfiguration configuration)
+        public static async Task SolveAll(SolverConfiguration? configuration)
         {
             configuration ??= new();
             if (IsInteractiveEnvironment && configuration.ClearConsole)
