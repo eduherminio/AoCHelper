@@ -39,17 +39,17 @@ Creating your Advent of Code repository from [AdventOfCode.Template](https://git
   - Name them `DayXX` or `Day_XX` and make them inherit `BaseDay`.
   - Name them `ProblemXX` or `Problem_XX`and make them inherit `BaseProblem`.
 - **Put your input files under `Inputs/` directory** and follow `XX.txt` naming convention for day `XX`. Make sure to copy those files to your output folder.
-- Choose your **solving strategy** in your `Main()` method, adjusting it with your custom `SolverConfiguration` if needed:
+- Choose your **solving strategy** in your `Main()` method, adjusting it with your custom `Action<SolverConfiguration>` if needed:
   - `Solver.SolveAll();`
   - `Solver.SolveLast();`
-  - `Solver.SolveLast(new SolverConfiguration { ClearConsole = false });`
+  - `Solver.SolveLast(opt => opt.ClearConsole = false);`
   - `Solver.Solve<Day_05>();`
   - `Solver.Solve(new List<uint>{ 5, 6 });`
   - `Solver.Solve(new List<Type> { typeof(Day_05), typeof(Day_06) });`
 
 ## Customization
 
-A **custom `SolverConfiguration`** instance can be provided to any of the `Solver` methods. These are the configurable parameters (`false` or `null` by default unless otherwise specified).
+A **custom `Action<SolverConfiguration>`** can be provided to any of the `Solver` methods. It has the following configurable options (`false` or `null` by default unless otherwise specified):
 
 - **`bool ClearConsole`**: Clears previous runs information from the console. True by default.
 - **`bool ShowOverallResults`**: Shows a panel at the end of the run with aggregated stats of the solved problems. True by default when solving multiple problems, false otherwise.
@@ -150,7 +150,7 @@ Your problem classes are instantiated only once, so parsing the input file (`Inp
 - Avoid executing parsing logic twice per problem.
 - Measure more accurately your part 1 and part 2 solutions performance*.
 
-\* Consider enabling `ShowConstructorElapsedTime` and `ShowTotalElapsedTimePerDay` in `SolverConfiguration`.
+\* Consider enabling `ShowConstructorElapsedTime` and `ShowTotalElapsedTimePerDay` in `Action<SolverConfiguration>`.
 
 [githubactionslogo]: https://github.com/eduherminio/AoCHelper/workflows/CI/badge.svg
 [githubactionslink]: https://github.com/eduherminio/AoCHelper/actions?query=workflow%3ACI
