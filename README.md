@@ -79,6 +79,7 @@ You can also:
 
 Example projects can be found at:
 
+- [AoC2022](https://github.com/eduherminio/AoC2022) (v2.x)
 - [AoC2021](https://github.com/eduherminio/AoC2021) (v1.x)
 - [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template)
 - [AoCHelper.PoC](src/AoCHelper.PoC)
@@ -86,13 +87,41 @@ Example projects can be found at:
 - [AoC2020](https://github.com/eduherminio/AoC2020) (v0.x)
 - [All these repositories](https://github.com/eduherminio/AoCHelper/network/dependents)
 
-## 🆕 v0.x to v1.x migration
+## `v1` to `v2` migration
+
+Methods that accept an instance of `SolverConfiguration` are deprecated in `v2` and can expected to be removed in the next major version.
+
+They have been replaced by methods that accept `Action<SolverConfiguration>` overrides.
+
+`v1`:
+
+```csharp
+await Solver.SolveAll(new SolverConfiguration
+{
+    ShowConstructorElapsedTime = true,
+    ShowOverallResults = true,
+    ClearConsole = false
+});
+```
+
+`v2`:
+
+```csharp
+await Solver.SolveAll(options =>
+{
+    options.ShowConstructorElapsedTime = true;
+    options.ShowOverallResults = true;
+    options.ClearConsole = false;
+});
+```
+
+## `v0.x` to `v1.x` migration
 
 `BaseProblem.Solve_1()` and `BaseProblem.Solve_2()` signature has changed: they must return `ValueTask<string>` now.
 
 `ValueTask<T>` has constructors that accept both `T` and `Task<T>`, so:
 
-v0.x:
+`v0.x`:
 
 ```csharp
 public class Day_01 : BaseDay
@@ -109,7 +138,7 @@ public class Day_01 : BaseDay
 }
 ```
 
-becomes now in v1.x:
+becomes now in `v1.x`:
 
 ```csharp
 public class Day_01 : BaseDay
