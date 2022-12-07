@@ -633,7 +633,7 @@ namespace AoCHelper
         {
             var formattedTime = FormatTime(elapsedMilliseconds, configuration);
 
-            table.AddRow(problemTitle, part, solution, formattedTime);
+            table.AddRow(problemTitle, part, solution.EscapeMarkup(), formattedTime);
         }
 
         private static void RenderOverallResultsPanel(List<ElapsedTime> totalElapsedTime, SolverConfiguration configuration)
