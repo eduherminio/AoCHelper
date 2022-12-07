@@ -36,16 +36,3 @@ public class ModifyInputFilePathTests
         }
     }
 }
-
-/*
-    Hi Mael,
-
-    First of all, thanks for using AoCHelper and for your kind words. And apologies for the delay, it's being a hectic week.
-
-    I can think of two ways of making this work: changing `InputFilePath` or `InputFileDirPath` to accomodate test files/dirs.
-    As you probably noticed, those properties don't have a setter, and therefore cannot be modified in an obvious way from a external test method.
-
-    Since the beginning of this library I've wanted to give a proper thought to testing solutions 
-    
-    I'll note your suggestion down
-*/

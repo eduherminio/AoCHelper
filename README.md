@@ -71,8 +71,8 @@ You can also:
 ## Testing
 
 - Example of simple AoC solutions testing: [SampleTests](tests/AoCHelper.Test/SampleTests.cs)
-- Example of advanced AoC solutions testing by providing a custom input test filepath:  [ModifyInputFilePathTests_SampleTests](tests/AoCHelper.Test/ModifyInputFilePathTests_SampleTests.cs)
-- Example of advanced AoC solutions testing by providing a custom input test dir path:  [ModifyInputFileDirPath_SampleTests](tests/AoCHelper.Test/ModifyInputFileDirPath_SampleTests.cs)
+- Example of advanced AoC solutions testing by providing a custom input test filepath: [ModifyInputFilePathTests_SampleTests](tests/AoCHelper.Test/ModifyInputFilePathTests_SampleTests.cs)
+- Example of advanced AoC solutions testing by providing a custom input test dir path: [ModifyInputFileDirPath_SampleTests](tests/AoCHelper.Test/ModifyInputFileDirPath_SampleTests.cs)
 
 ## Usage examples
 
@@ -85,6 +85,11 @@ Example projects can be found at:
 - [AoCHelper.Test](tests/AoCHelper.Test)
 - [AoC2020](https://github.com/eduherminio/AoC2020) (v0.x)
 - [All these repositories](https://github.com/eduherminio/AoCHelper/network/dependents)
+
+Some cool repositories that add their own abstractions/customizations on top of `AocHelper`:
+
+- [RachaelBooth/AdventOfCode2022](https://github.com/RachaelBooth/AdventOfCode2022/): `BaseSolver<U>` and `BaseSolver<U, V>` wrappers around `BaseProblem` to have `U Solve1()` and `V Solve2` methods.
+- [Morphix84/AdventOfCode](https://github.com/Morphix84/AdventOfCode/): input fetching and same-repository-multi-year support.
 
 ## `v1` to `v2` migration
 
@@ -176,7 +181,7 @@ public class Day_01 : BaseDay
 Your problem classes are instantiated only once, so parsing the input file (`InputFilePath`) in your class constructor allows you to:
 
 - Avoid executing parsing logic twice per problem.
-- Measure more accurately your part 1 and part 2 solutions performance*.
+- Measure more accurately your part 1 and part 2 solutions performance\*.
 
 \* Consider enabling `ShowConstructorElapsedTime` and `ShowTotalElapsedTimePerDay` in `Action<SolverConfiguration>`.
 
