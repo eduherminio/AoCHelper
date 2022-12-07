@@ -6,7 +6,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>AoCHelper</Title>
     <PackageId>AoCHelper</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <PackageTags>AoC, AdventOfCode, Advent, Code</PackageTags>
     <Tags>$(PackageTags)</Tags>
     <Authors>Eduardo Cáceres</Authors>
