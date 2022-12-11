@@ -495,7 +495,8 @@ namespace AoCHelper
         internal static IEnumerable<Type> LoadAllProblems(Assembly assembly)
         {
             return assembly.GetTypes()
-                .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
+                .Where(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                .OrderBy(t => t.FullName);
         }
 
         private static SolverConfiguration PopulateConfiguration(Action<SolverConfiguration>? options)

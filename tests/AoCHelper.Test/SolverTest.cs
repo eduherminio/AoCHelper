@@ -1,12 +1,30 @@
 ﻿using System.Reflection;
 using Xunit;
 
+namespace AdventOfCode.Days._01
+{
+    class Day01 : AoCHelper.Test.SolverTest.ProblemFixture { }
+
+}
+
+namespace AdventOfCode.Days._02
+{
+    class Day02 : AoCHelper.Test.SolverTest.ProblemFixture { }
+
+}
+
+namespace AdventOfCode.Days._10
+{
+    class Day10 : AoCHelper.Test.SolverTest.ProblemFixture { }
+
+}
+
 namespace AoCHelper.Test
 {
     [Collection("Sequential")]
     public class SolverTest
     {
-        private abstract class ProblemFixture : BaseProblem
+        internal abstract class ProblemFixture : BaseProblem
         {
             public override ValueTask<string> Solve_1() => Solve();
 
@@ -102,6 +120,18 @@ namespace AoCHelper.Test
             Assert.Equal(
                 Assembly.GetExecutingAssembly()!.GetTypes().Count(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsAbstract),
                 Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
+        }
+
+        [Fact]
+        public void LoadAllProblems_OrderedByFullName()
+        {
+            var orderedTypes = Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).OrderBy(t => t.FullName);
+            var types = Solver.LoadAllProblems(Assembly.GetExecutingAssembly());
+
+            foreach (var (First, Second) in orderedTypes.Zip(types))
+            {
+                Assert.Equal(First, Second);
+            }
         }
     }
 }
