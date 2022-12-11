@@ -37,13 +37,17 @@ namespace AoCHelper
                     {
                         var sw = new Stopwatch();
                         sw.Start();
-                        var potentialProblem = Activator.CreateInstance(lastProblem);
+                        var potentialProblem = InstantiateProblem(lastProblem);
                         sw.Stop();
 
                         if (potentialProblem is BaseProblem problem)
                         {
                             await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
                             ctx.Refresh();
+                        }
+                        else
+                        {
+                            RenderEmptyProblem(lastProblem, potentialProblem as string, table, CalculateElapsedMilliseconds(sw), configuration);
                         }
                     }
                 });
@@ -75,10 +79,17 @@ namespace AoCHelper
                 {
                     var sw = new Stopwatch();
                     sw.Start();
-                    TProblem problem = new();
-                    sw.Stop();
+                    try
+                    {
+                        TProblem problem = new();
+                        sw.Stop();
 
-                    await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
+                        await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration);
+                    }
+                    catch (Exception e)
+                    {
+                        RenderEmptyProblem(typeof(TProblem), e.Message + Environment.NewLine + e.StackTrace, table, CalculateElapsedMilliseconds(sw), configuration);
+                    }
                     ctx.Refresh();
                 });
         }
@@ -131,13 +142,17 @@ namespace AoCHelper
                         if (problems.Contains(problemType))
                         {
                             sw.Restart();
-                            var potentialProblem = Activator.CreateInstance(problemType);
+                            var potentialProblem = InstantiateProblem(problemType);
                             sw.Stop();
 
                             if (potentialProblem is BaseProblem problem)
                             {
                                 totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
                                 ctx.Refresh();
+                            }
+                            else
+                            {
+                                totalElapsedTime.Add(RenderEmptyProblem(problemType, potentialProblem as string, table, CalculateElapsedMilliseconds(sw), configuration));
                             }
                         }
                     }
@@ -149,6 +164,7 @@ namespace AoCHelper
         /// <summary>
         /// Solves those problems whose <see cref="BaseProblem.CalculateIndex"/> method matches one of the provided numbers.
         /// 0 can be used for those problems whose <see cref="BaseProblem.CalculateIndex"/> returns the default value due to not being able to deduct the index.
+        /// This method might not work correctly if any of the problems in the assembly throws an exception in its constructor.
         /// </summary>
         /// <param name="problemNumbers"></param>
         /// <param name="options"></param>
@@ -174,6 +190,9 @@ namespace AoCHelper
                     foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
                     {
                         sw.Restart();
+                        // Since we're trying to instantiate them all, we don't want to show unrelated errors or render unrelated problem rows
+                        // However, without the index, calculated once the constructor success, we can't separate those unrelated errors from
+                        // our desired problems' ones. So there's a limitation when using this method if other constructors are failing
                         var potentialProblem = Activator.CreateInstance(problemType);
                         sw.Stop();
 
@@ -215,13 +234,17 @@ namespace AoCHelper
                     foreach (Type problemType in LoadAllProblems(Assembly.GetEntryAssembly()!))
                     {
                         sw.Restart();
-                        var potentialProblem = Activator.CreateInstance(problemType);
+                        var potentialProblem = InstantiateProblem(problemType);
                         sw.Stop();
 
                         if (potentialProblem is BaseProblem problem)
                         {
                             totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
                             ctx.Refresh();
+                        }
+                        else
+                        {
+                            totalElapsedTime.Add(RenderEmptyProblem(problemType, potentialProblem as string, table, CalculateElapsedMilliseconds(sw), configuration));
                         }
                     }
                 });
@@ -507,6 +530,18 @@ namespace AoCHelper
             return configuration;
         }
 
+        private static object? InstantiateProblem(Type problemType)
+        {
+            try
+            {
+                return Activator.CreateInstance(problemType);
+            }
+            catch (Exception e)
+            {
+                return e.InnerException?.Message + Environment.NewLine + e.InnerException?.StackTrace;
+            }
+        }
+
         private static async Task<ElapsedTime> SolveProblem(BaseProblem problem, Table table, double constructorElapsedTime, SolverConfiguration configuration)
         {
             var problemIndex = problem.CalculateIndex();
@@ -524,6 +559,27 @@ namespace AoCHelper
 
             (string solution2, double elapsedMillisecondsPart2) = await SolvePart(isPart1: false, problem);
             RenderRow(table, problemTitle, "Part 2", solution2, elapsedMillisecondsPart2, configuration);
+
+            if (configuration.ShowTotalElapsedTimePerDay)
+            {
+                RenderRow(table, problemTitle, "[bold]Total[/]", "-----------", constructorElapsedTime + elapsedMillisecondsPart1 + elapsedMillisecondsPart2, configuration);
+            }
+
+            table.AddEmptyRow();
+
+            return new ElapsedTime(constructorElapsedTime, elapsedMillisecondsPart1, elapsedMillisecondsPart2);
+        }
+
+        private static ElapsedTime RenderEmptyProblem(Type problemType, string? exceptionString, Table table, double constructorElapsedTime, SolverConfiguration configuration)
+        {
+            var problemTitle = problemType.Name;
+
+            RenderRow(table, problemTitle, $"{problemTitle}()", exceptionString ?? "Unhandled exception during constructor", constructorElapsedTime, configuration);
+
+            const double elapsedMillisecondsPart1 = 0;
+            const double elapsedMillisecondsPart2 = 0;
+            RenderRow(table, problemTitle, "Part 1", "-----------", elapsedMillisecondsPart1, configuration);
+            RenderRow(table, problemTitle, "Part 2", "-----------", elapsedMillisecondsPart2, configuration);
 
             if (configuration.ShowTotalElapsedTimePerDay)
             {
