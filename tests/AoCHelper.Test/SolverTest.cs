@@ -43,7 +43,13 @@ namespace AoCHelper.Test
 
         private class Problem66 : ProblemFixture { }
 
-        private class IllCreatedCustomProblem : ProblemFixture { }
+        private class IllCreatedCustomProblem : ProblemFixture
+        {
+            public IllCreatedCustomProblem()
+            {
+                throw new Exception();
+            }
+        }
 
         [Fact]
         public async Task Solve()
