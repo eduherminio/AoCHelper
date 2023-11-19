@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace AoCHelper
+﻿namespace AoCHelper
 {
     public class SolvingException : Exception
     {

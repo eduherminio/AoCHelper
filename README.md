@@ -95,7 +95,7 @@ Some cool repositories that add their own abstractions/customizations on top of 
 
 Methods that accept an instance of `SolverConfiguration` were deprecated in `v2` and removed in `v3`.
 
-They have been replaced by methods that accept `Action<SolverConfiguration>` overrides.
+They have been replaced by methods that accept `Action<SolverConfiguration>`.
 
 `v1`:
 
@@ -178,7 +178,7 @@ public class Day_01 : BaseDay
 
 ## Tips
 
-Your problem classes are instantiated only once, so parsing the input file (`InputFilePath`) in your class constructor allows you to:
+Your problem/day classes are instantiated only once, so parsing the input file (`InputFilePath`) in your class constructor allows you to:
 
 - Avoid executing parsing logic twice per problem.
 - Measure more accurately your part 1 and part 2 solutions performance\*.
