@@ -91,9 +91,9 @@ Some cool repositories that add their own abstractions/customizations on top of 
 - [RachaelBooth/AdventOfCode2022](https://github.com/RachaelBooth/AdventOfCode2022/): `BaseSolver<U>` and `BaseSolver<U, V>` wrappers around `BaseProblem` to have `U Solve1()` and `V Solve2` methods.
 - [Morphix84/AdventOfCode](https://github.com/Morphix84/AdventOfCode/): input fetching and same-repository-multi-year support.
 
-## `v1` to `v2` migration
+## `v1` to `v2+` migration
 
-Methods that accept an instance of `SolverConfiguration` are deprecated in `v2` and can expected to be removed in the next major version.
+Methods that accept an instance of `SolverConfiguration` were deprecated in `v2` and removed in `v3`.
 
 They have been replaced by methods that accept `Action<SolverConfiguration>` overrides.
 
@@ -108,7 +108,7 @@ await Solver.SolveAll(new SolverConfiguration
 });
 ```
 
-`v2`:
+`v2+`:
 
 ```csharp
 await Solver.SolveAll(options =>
