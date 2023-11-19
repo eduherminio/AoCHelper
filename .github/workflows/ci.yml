@@ -28,7 +28,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
 
     - name: '[Ubuntu] Set version to -ci-${{ github.run_number }}'
       if: matrix.os == 'ubuntu-latest'

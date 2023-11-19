@@ -2,7 +2,6 @@
 
 namespace AoCHelper
 {
-    [Serializable]
     public class SolvingException : Exception
     {
         public SolvingException()
@@ -14,10 +13,6 @@ namespace AoCHelper
         }
 
         public SolvingException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected SolvingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
