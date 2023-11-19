@@ -17,10 +17,17 @@
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup Label="https://github.com/dotnet/roslyn/issues/45510">
     <Compile Remove="IsExternalInit.cs" Condition="'$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="">
+      <Link>Properties\README.md</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
