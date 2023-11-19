@@ -37,6 +37,11 @@ jobs:
       ARTIFACT_DIR: ./artifacts
       PROJECT_NAME: AoCHelper
 
+    - name: Install hub tool
+      if: github.event.inputs.should_create_github_release == 'true'
+      run: |
+        sudo apt-get update && sudo apt-get install -y hub
+
     steps:
     - uses: actions/checkout@v4
 
@@ -51,7 +56,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
 
     - name: Set version to ${{ github.event.inputs.new_package_version }}
       shell: pwsh
