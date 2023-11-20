@@ -37,12 +37,12 @@ jobs:
       ARTIFACT_DIR: ./artifacts
       PROJECT_NAME: AoCHelper
 
+    steps:
     - name: Install hub tool
       if: github.event.inputs.should_create_github_release == 'true'
       run: |
         sudo apt-get update && sudo apt-get install -y hub
 
-    steps:
     - uses: actions/checkout@v4
 
     - name: Configure git user
