@@ -78,6 +78,7 @@ You can also:
 
 Example projects can be found at:
 
+- [AoC2023](https://github.com/eduherminio/AoC2023) (v3.x)
 - [AoC2022](https://github.com/eduherminio/AoC2022) (v2.x)
 - [AoC2021](https://github.com/eduherminio/AoC2021) (v1.x)
 - [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template)
