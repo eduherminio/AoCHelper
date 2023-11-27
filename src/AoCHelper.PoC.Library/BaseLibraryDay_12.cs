@@ -1,8 +1,8 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    public class BaseLibraryDay_02 : BaseDay
+    public class BaseLibraryDay_12 : BaseDay
     {
-        public BaseLibraryDay_02()
+        public BaseLibraryDay_12()
         {
             if (!File.Exists(InputFilePath))
             {

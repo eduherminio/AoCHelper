@@ -1,8 +1,8 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    public class BaseLibraryDay05 : BaseProblem
+    public class BaseLibraryDay15 : BaseProblem
     {
-        public BaseLibraryDay05()
+        public BaseLibraryDay15()
         {
             throw new SolvingException("Exception in constructor");
         }

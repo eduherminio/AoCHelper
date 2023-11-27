@@ -5,7 +5,7 @@
         /// <summary>
         /// Overriding FilePath, due to problem not following any convention (not even index one).
         /// </summary>
-        public override string InputFilePath => "Inputs/RandomInput.random";
+        public override string InputFilePath => "Inputs/LibraryRandomInput.random";
 
         public RandomProblem()
         {

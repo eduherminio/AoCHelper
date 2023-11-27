@@ -1,6 +1,6 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    public class BaseLibraryDay07 : BaseDay
+    public class BaseLibraryDay17 : BaseDay
     {
         public override ValueTask<string> Solve_1()
         {
