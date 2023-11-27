@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using System.Reflection;
+using Spectre.Console;
 
 namespace AoCHelper
 {
@@ -34,6 +35,11 @@ namespace AoCHelper
         public string? ElapsedTimeFormatSpecifier { get; set; }
 
         /// <summary>
+        /// Additional assemblies to load when searching for problems.
+        /// </summary>
+        public List<Assembly> AdditionalAssemblies { get; set; }
+
+        /// <summary>
         /// Represents vertical overflow.
         /// <see href="https://spectreconsole.net/live/live-display"/>
         /// </summary>
@@ -51,6 +57,7 @@ namespace AoCHelper
             ShowOverallResults = true;
             ShowConstructorElapsedTime = false;
             ShowTotalElapsedTimePerDay = false;
+            AdditionalAssemblies = [];
 
             VerticalOverflow = VerticalOverflow.Ellipsis;
             VerticalOverflowCropping = VerticalOverflowCropping.Top;
