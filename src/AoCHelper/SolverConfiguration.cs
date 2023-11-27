@@ -35,9 +35,10 @@ namespace AoCHelper
         public string? ElapsedTimeFormatSpecifier { get; set; }
 
         /// <summary>
-        /// Additional assemblies to load when searching for problems.
+        /// Assemblies where the problems are located.
+        /// Defaults to the entry assembly: [Assembly.GetEntryAssembly()!]
         /// </summary>
-        public List<Assembly> AdditionalAssemblies { get; set; }
+        public List<Assembly> ProblemAssemblies { get; set; }
 
         /// <summary>
         /// Represents vertical overflow.
@@ -53,11 +54,12 @@ namespace AoCHelper
 
         public SolverConfiguration()
         {
+            ProblemAssemblies = [Assembly.GetEntryAssembly()!];
+
             ClearConsole = true;
             ShowOverallResults = true;
             ShowConstructorElapsedTime = false;
             ShowTotalElapsedTimePerDay = false;
-            AdditionalAssemblies = [];
 
             VerticalOverflow = VerticalOverflow.Ellipsis;
             VerticalOverflowCropping = VerticalOverflowCropping.Top;

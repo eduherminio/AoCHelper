@@ -32,7 +32,7 @@ namespace AoCHelper
                 .Cropping(configuration.VerticalOverflowCropping)
                 .StartAsync(async ctx =>
                 {
-                    var lastProblem = LoadAllProblems([.. configuration.AdditionalAssemblies, Assembly.GetEntryAssembly()!]).LastOrDefault();
+                    var lastProblem = LoadAllProblems(configuration.ProblemAssemblies).LastOrDefault();
                     if (lastProblem is not null)
                     {
                         var sw = new Stopwatch();
@@ -137,7 +137,7 @@ namespace AoCHelper
                 .StartAsync(async ctx =>
                 {
                     var sw = new Stopwatch();
-                    foreach (Type problemType in LoadAllProblems([.. configuration.AdditionalAssemblies, Assembly.GetEntryAssembly()!]))
+                    foreach (Type problemType in LoadAllProblems(configuration.ProblemAssemblies))
                     {
                         if (problems.Contains(problemType))
                         {
@@ -187,7 +187,7 @@ namespace AoCHelper
                 .StartAsync(async ctx =>
                 {
                     var sw = new Stopwatch();
-                    foreach (Type problemType in LoadAllProblems([.. configuration.AdditionalAssemblies, Assembly.GetEntryAssembly()!]))
+                    foreach (Type problemType in LoadAllProblems(configuration.ProblemAssemblies))
                     {
                         sw.Restart();
                         // Since we're trying to instantiate them all, we don't want to show unrelated errors or render unrelated problem rows
@@ -231,7 +231,7 @@ namespace AoCHelper
                 .StartAsync(async ctx =>
                 {
                     var sw = new Stopwatch();
-                    foreach (Type problemType in LoadAllProblems([.. configuration.AdditionalAssemblies, Assembly.GetEntryAssembly()!]))
+                    foreach (Type problemType in LoadAllProblems(configuration.ProblemAssemblies))
                     {
                         sw.Restart();
                         var potentialProblem = InstantiateProblem(problemType);
