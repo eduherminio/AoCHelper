@@ -1,8 +1,8 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    public class BaseLibraryDay11 : BaseDay
+    public class LibraryDay_12 : BaseDay
     {
-        public BaseLibraryDay11()
+        public LibraryDay_12()
         {
             if (!File.Exists(InputFilePath))
             {
@@ -12,12 +12,14 @@
 
         public override ValueTask<string> Solve_1()
         {
-            return new("Solution Library 1.1");
+            Thread.Sleep(1);
+            return new("Solution Library 2.1");
         }
 
         public override ValueTask<string> Solve_2()
         {
-            return new("Solution Library 1.2");
+            Thread.Sleep(11);
+            return new("Solution Library 2.2");
         }
     }
 }
