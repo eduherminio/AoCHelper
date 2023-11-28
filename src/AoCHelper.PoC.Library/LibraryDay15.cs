@@ -1,6 +1,6 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    public class LibraryDay15 : BaseProblem
+    public class LibraryDay15 : BaseLibraryDay
     {
         public LibraryDay15()
         {

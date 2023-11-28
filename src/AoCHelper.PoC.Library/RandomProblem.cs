@@ -1,11 +1,16 @@
-﻿namespace AoCHelper.PoC.Library
+﻿using System.Reflection;
+
+namespace AoCHelper.PoC.Library
 {
-    internal class RandomProblem : BaseProblem
+    internal class RandomProblem : BaseLibraryProblem
     {
         /// <summary>
         /// Overriding FilePath, due to problem not following any convention (not even index one).
         /// </summary>
-        public override string InputFilePath => "Inputs/LibraryRandomInput.random";
+        public override string InputFilePath =>
+            Path.Combine(
+                Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!,
+                "Inputs/LibraryRandomInput.random");
 
         public RandomProblem()
         {

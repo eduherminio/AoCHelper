@@ -1,6 +1,6 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    internal class Problem13 : BaseProblem
+    internal class Problem13 : BaseLibraryProblem
     {
         public Problem13()
         {

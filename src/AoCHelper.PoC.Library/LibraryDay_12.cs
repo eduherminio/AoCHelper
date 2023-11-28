@@ -1,6 +1,6 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    public class LibraryDay_12 : BaseDay
+    public class LibraryDay_12 : BaseLibraryDay
     {
         public LibraryDay_12()
         {

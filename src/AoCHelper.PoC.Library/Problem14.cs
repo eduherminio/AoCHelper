@@ -1,6 +1,6 @@
 ﻿namespace AoCHelper.PoC.Library
 {
-    internal class Problem14 : BaseProblem
+    internal class Problem14 : BaseLibraryProblem
     {
         protected override string InputFileExtension => ".in";
 
