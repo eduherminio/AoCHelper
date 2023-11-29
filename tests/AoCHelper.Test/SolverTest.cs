@@ -117,14 +117,14 @@ namespace AoCHelper.Test
         {
             Assert.Equal(
                 Assembly.GetExecutingAssembly()!.GetTypes().Count(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsAbstract),
-                Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).Count());
+                Solver.LoadAllProblems([Assembly.GetExecutingAssembly()]).Count());
         }
 
         [Fact]
         public void LoadAllProblems_OrderedByFullName()
         {
-            var orderedTypes = Solver.LoadAllProblems(Assembly.GetExecutingAssembly()).OrderBy(t => t.FullName);
-            var types = Solver.LoadAllProblems(Assembly.GetExecutingAssembly());
+            var orderedTypes = Solver.LoadAllProblems([Assembly.GetExecutingAssembly()]).OrderBy(t => t.FullName);
+            var types = Solver.LoadAllProblems([Assembly.GetExecutingAssembly()]);
 
             foreach (var (First, Second) in orderedTypes.Zip(types))
             {

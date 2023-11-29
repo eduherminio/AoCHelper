@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using System.Reflection;
+using Spectre.Console;
 
 namespace AoCHelper
 {
@@ -34,6 +35,12 @@ namespace AoCHelper
         public string? ElapsedTimeFormatSpecifier { get; set; }
 
         /// <summary>
+        /// Assemblies where the problems are located.
+        /// Defaults to the entry assembly: [Assembly.GetEntryAssembly()!]
+        /// </summary>
+        public List<Assembly> ProblemAssemblies { get; set; }
+
+        /// <summary>
         /// Represents vertical overflow.
         /// <see href="https://spectreconsole.net/live/live-display"/>
         /// </summary>
@@ -47,6 +54,8 @@ namespace AoCHelper
 
         public SolverConfiguration()
         {
+            ProblemAssemblies = [Assembly.GetEntryAssembly()!];
+
             ClearConsole = true;
             ShowOverallResults = true;
             ShowConstructorElapsedTime = false;
