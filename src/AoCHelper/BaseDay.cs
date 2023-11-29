@@ -1,7 +1,7 @@
 ﻿namespace AoCHelper
 {
     /// <summary>
-    /// <see cref="BaseProblem  "/> with custom <see cref="BaseProblem.ClassPrefix"/> ("Day") and <see cref="BaseProblem.InputFileExtension"/> (".txt")
+    /// <see cref="BaseProblem"/> with custom <see cref="BaseProblem.ClassPrefix"/> ("Day")
     /// </summary>
     public abstract class BaseDay : BaseProblem
     {
