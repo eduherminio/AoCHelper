@@ -29,7 +29,9 @@ Output example:
 
 ## AdventOfCode.Template
 
-Creating your Advent of Code repository from [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template) is the quickest way to get up and running with `AoCHelper`.
+Creating your Advent of Code repository from [**AdventOfCode.Template**](https://github.com/eduherminio/AdventOfCode.Template) is the quickest way to get up and running with `AoCHelper`.
+
+There's also [AdventOfCode.MultiYearTemplate](https://github.com/eduherminio/AdventOfCode.MultiYearTemplate) available of you want to keep all the years in the same repository, but I'd recommend to use the former one if you're participating in Advent of Code or using AoCHelper for the first time.
 
 ## Simple usage
 
