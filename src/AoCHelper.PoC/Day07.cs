@@ -9,7 +9,7 @@
 
         public override ValueTask<string> Solve_2()
         {
-            throw new SolvingException("Exception in part 2");
+            throw new SolvingException("Exception in 7 part 2");
         }
     }
 }

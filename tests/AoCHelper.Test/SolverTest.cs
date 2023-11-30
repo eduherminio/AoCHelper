@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using AoCHelper.PoC;
+using System.Diagnostics;
+using System.Reflection;
 using Xunit;
 
 namespace AdventOfCode.Days._01
@@ -86,24 +88,39 @@ namespace AoCHelper.Test
             await Solver.Solve(new List<Type> { typeof(Problem66) }, _ => { });
         }
 
-        /// <summary>
-        /// AoCHelper isn't actually solving anything, since Assembly.GetEntryAssembly() returns xunit assembly.
-        /// </summary>
         [Fact]
         public async Task SolveLast()
         {
-            await Solver.SolveLast();
+            var sp = Stopwatch.StartNew();
+            await Solver.SolveLast(opt => opt.ProblemAssemblies = [Assembly.GetAssembly(typeof(RandomProblem))!, .. opt.ProblemAssemblies]);
+            sp.Stop();
+
+            Assert.True(sp.ElapsedMilliseconds > 10_000);
+
+            sp.Restart();
+            // AoCHelper isn't actually solving anything here, since Assembly.GetEntryAssembly() returns xunit assembly
             await Solver.SolveLast(_ => { });
+            sp.Stop();
+
+            Assert.True(sp.ElapsedMilliseconds < 1_000);
         }
 
-        /// <summary>
-        /// AoCHelper isn't actually solving anything, since Assembly.GetEntryAssembly() returns xunit assembly.
-        /// </summary>
         [Fact]
         public async Task SolveAll()
         {
-            await Solver.SolveAll();
+            var sp = Stopwatch.StartNew();
+            await Solver.SolveAll(opt => opt.ProblemAssemblies = [Assembly.GetAssembly(typeof(RandomProblem))!, .. opt.ProblemAssemblies]);
+            sp.Stop();
+
+            Assert.True(sp.ElapsedMilliseconds > 14_000);
+
+            sp.Restart();
+            // AoCHelper isn't actually solving anything here, since Assembly.GetEntryAssembly() returns xunit assembly
             await Solver.SolveAll(_ => { });
+
+            sp.Stop();
+
+            Assert.True(sp.ElapsedMilliseconds < 1_000);
         }
 
         [Fact]

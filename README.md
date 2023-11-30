@@ -29,7 +29,9 @@ Output example:
 
 ## AdventOfCode.Template
 
-Creating your Advent of Code repository from [AdventOfCode.Template](https://github.com/eduherminio/AdventOfCode.Template) is the quickest way to get up and running with `AoCHelper`.
+Creating your Advent of Code repository from [**AdventOfCode.Template**](https://github.com/eduherminio/AdventOfCode.Template) is the quickest way to get up and running with `AoCHelper`.
+
+There's also [AdventOfCode.MultiYearTemplate](https://github.com/eduherminio/AdventOfCode.MultiYearTemplate) available of you want to keep all the years in the same repository, but I'd recommend to use the former one if you're participating in Advent of Code or using AoCHelper for the first time.
 
 ## Simple usage
 
@@ -55,6 +57,7 @@ A **custom `Action<SolverConfiguration>`** can be provided to any of the `Solver
 - **`bool ShowConstructorElapsedTime`**: Shows the time elapsed during the instantiation of a `BaseProblem`. This normally reflects the elapsed time while parsing the input data.
 - **`bool ShowTotalElapsedTimePerDay`**: Shows total elapsed time per day. This includes constructor time + part 1 + part 2.
 - **`string? ElapsedTimeFormatSpecifier`**: Custom numeric format strings used for elapsed milliseconds. See [Standard numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings).
+- **`List<Assembly>`**: Assembly/Assemblies where the problems are located. Defaults to `Assembly.GetEntryAssembly()`, which assumes the problems are in the same project where `Solver` is invoked.
 
 ## Advanced usage
 
@@ -91,6 +94,7 @@ Some cool repositories that add their own abstractions/customizations on top of 
 
 - [RachaelBooth/AdventOfCode2022](https://github.com/RachaelBooth/AdventOfCode2022/): `BaseSolver<U>` and `BaseSolver<U, V>` wrappers around `BaseProblem` to have `U Solve1()` and `V Solve2` methods.
 - [Morphix84/AdventOfCode](https://github.com/Morphix84/AdventOfCode/): input fetching and same-repository-multi-year support.
+- [codemonkey85/Advent-of-Code-2023](https://github.com/codemonkey85/Advent-of-Code-2023): problems located in a library project and `Solver` invoked from both a CLI and a Web project.
 
 ## `v1` to `v2+` migration
 
