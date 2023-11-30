@@ -3,8 +3,8 @@
 namespace AoCHelper.PoC.Library;
 internal abstract class BaseLibraryProblem : BaseProblem
 {
-    public override string InputFilePath =>
+    protected override string InputFileDirPath =>
         Path.Combine(
             Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!,
-            base.InputFilePath);
+            base.InputFileDirPath);
 }
