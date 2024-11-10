@@ -132,7 +132,7 @@ namespace AoCHelper.Test
         [Fact]
         public void LoadAllProblems()
         {
-            Assert.Equal(
+            Xunit.Assert.Equal(
                 Assembly.GetExecutingAssembly()!.GetTypes().Count(type => typeof(BaseProblem).IsAssignableFrom(type) && !type.IsAbstract),
                 Solver.LoadAllProblems([Assembly.GetExecutingAssembly()]).Count());
         }
@@ -145,7 +145,7 @@ namespace AoCHelper.Test
 
             foreach (var (First, Second) in orderedTypes.Zip(types))
             {
-                Assert.Equal(First, Second);
+                Xunit.Assert.Equal(First, Second);
             }
         }
     }
