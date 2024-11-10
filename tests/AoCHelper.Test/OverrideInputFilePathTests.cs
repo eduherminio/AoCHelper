@@ -1,35 +1,34 @@
 ﻿using Xunit;
 
-namespace AoCHelper.Test
+namespace AoCHelper.Test;
+
+[Collection("Sequential")]
+public class OverrideInputFilePathTests
 {
-    [Collection("Sequential")]
-    public class OverrideInputFilePathTests
+    private abstract class BaseProblemFixture : BaseProblem
     {
-        private abstract class BaseProblemFixture : BaseProblem
+        protected override string InputFileExtension => nameof(OverrideInputFilePathTests);
+
+        public override ValueTask<string> Solve_1() => Solve();
+
+        public override ValueTask<string> Solve_2() => Solve();
+
+        private ValueTask<string> Solve()
         {
-            protected override string InputFileExtension => nameof(OverrideInputFilePathTests);
-
-            public override ValueTask<string> Solve_1() => Solve();
-
-            public override ValueTask<string> Solve_2() => Solve();
-
-            private ValueTask<string> Solve()
+            if (!File.Exists(InputFilePath))
             {
-                if (!File.Exists(InputFilePath))
-                {
-                    throw new FileNotFoundException(InputFilePath);
-                }
-
-                return new(string.Empty);
+                throw new FileNotFoundException(InputFilePath);
             }
-        }
 
-        private class CustomProblem : BaseProblemFixture { public override string InputFilePath => $"AlternativeInputs/43.{nameof(OverrideInputFilePathTests)}"; }
-
-        [Fact]
-        public async Task OverrideInputFilePath()
-        {
-            await Solver.Solve<CustomProblem>();
+            return new(string.Empty);
         }
+    }
+
+    private class CustomProblem : BaseProblemFixture { public override string InputFilePath => $"AlternativeInputs/43.{nameof(OverrideInputFilePathTests)}"; }
+
+    [Fact]
+    public async Task OverrideInputFilePath()
+    {
+        await Solver.Solve<CustomProblem>();
     }
 }
