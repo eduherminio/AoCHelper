@@ -1,5 +1,6 @@
-using AoCHelper;
 using NUnit.Framework;
+
+namespace AoCHelper.Test;
 
 public class ModifyInputFileDirPathTests
 {

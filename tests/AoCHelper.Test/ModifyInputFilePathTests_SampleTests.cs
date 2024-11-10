@@ -1,5 +1,6 @@
-using AoCHelper;
 using NUnit.Framework;
+
+namespace AoCHelper.Test;
 
 public class ModifyInputFilePathTests
 {
@@ -20,7 +21,7 @@ public class ModifyInputFilePathTests
         public override ValueTask<string> Solve_2() => new($"No longer useful InputFileDirPath: {InputFileDirPath}");
     }
 
-    [TestCase(typeof(Day_99), "TestInputs/Day_1234.txt", "Custom file path: TestInputs/Day_1234.txt", $"No longer useful InputFileDirPath: Inputs")]
+    [TestCase(typeof(Day_99), "TestInputs/Day_1234.txt", "Custom file path: TestInputs/Day_1234.txt", "No longer useful InputFileDirPath: Inputs")]
     public async Task ModifyInputFilePath(Type type, string inputFilePath, string sol1, string sol2)
     {
         if (Activator.CreateInstance(type) is CustomInputPathBaseDay instance)

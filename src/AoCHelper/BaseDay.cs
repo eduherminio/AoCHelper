@@ -1,13 +1,12 @@
-﻿namespace AoCHelper
+﻿namespace AoCHelper;
+
+/// <summary>
+/// <see cref="BaseProblem"/> with custom <see cref="BaseProblem.ClassPrefix"/> ("Day")
+/// </summary>
+public abstract class BaseDay : BaseProblem
 {
     /// <summary>
-    /// <see cref="BaseProblem"/> with custom <see cref="BaseProblem.ClassPrefix"/> ("Day")
+    /// <inheritdoc/>
     /// </summary>
-    public abstract class BaseDay : BaseProblem
-    {
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        protected override string ClassPrefix { get; } = "Day";
-    }
+    protected override string ClassPrefix { get; } = "Day";
 }

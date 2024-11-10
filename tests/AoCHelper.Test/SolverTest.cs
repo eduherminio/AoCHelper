@@ -5,20 +5,17 @@ using Xunit;
 
 namespace AdventOfCode.Days._01
 {
-    class Day01 : AoCHelper.Test.SolverTest.ProblemFixture { }
-
+    class Day01 : AoCHelper.Test.SolverTest.ProblemFixture;
 }
 
 namespace AdventOfCode.Days._02
 {
-    class Day02 : AoCHelper.Test.SolverTest.ProblemFixture { }
-
+    class Day02 : AoCHelper.Test.SolverTest.ProblemFixture;
 }
 
 namespace AdventOfCode.Days._10
 {
-    class Day10 : AoCHelper.Test.SolverTest.ProblemFixture { }
-
+    class Day10 : AoCHelper.Test.SolverTest.ProblemFixture;
 }
 
 namespace AoCHelper.Test
@@ -43,7 +40,7 @@ namespace AoCHelper.Test
             }
         }
 
-        private class Problem66 : ProblemFixture { }
+        private class Problem66 : ProblemFixture;
 
         private class IllCreatedCustomProblem : ProblemFixture
         {
