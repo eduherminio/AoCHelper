@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using Spectre.Console;
+using System.Linq;
 
 namespace AoCHelper;
 
@@ -8,7 +9,7 @@ public static class Solver
 {
     private static readonly bool IsInteractiveEnvironment = Environment.UserInteractive && !Console.IsOutputRedirected;
 
-    private record ElapsedTime(double Constructor, double Part1, double Part2);
+    private sealed record ElapsedTime(double Constructor, double Part1, double Part2);
 
     /// <summary>
     /// Solves last problem.
@@ -137,23 +138,19 @@ public static class Solver
             .StartAsync(async ctx =>
             {
                 var sw = new Stopwatch();
-                foreach (Type problemType in LoadAllProblems(configuration.ProblemAssemblies))
+                foreach (var problemType in LoadAllProblems(configuration.ProblemAssemblies).Where(problemType => problems.Contains(problemType)))
                 {
-                    if (problems.Contains(problemType))
+                    sw.Restart();
+                    var potentialProblem = InstantiateProblem(problemType);
+                    sw.Stop();
+                    if (potentialProblem is BaseProblem problem)
                     {
-                        sw.Restart();
-                        var potentialProblem = InstantiateProblem(problemType);
-                        sw.Stop();
-
-                        if (potentialProblem is BaseProblem problem)
-                        {
-                            totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
-                            ctx.Refresh();
-                        }
-                        else
-                        {
-                            totalElapsedTime.Add(RenderEmptyProblem(problemType, potentialProblem as string, table, CalculateElapsedMilliseconds(sw), configuration));
-                        }
+                        totalElapsedTime.Add(await SolveProblem(problem, table, CalculateElapsedMilliseconds(sw), configuration));
+                        ctx.Refresh();
+                    }
+                    else
+                    {
+                        totalElapsedTime.Add(RenderEmptyProblem(problemType, potentialProblem as string, table, CalculateElapsedMilliseconds(sw), configuration));
                     }
                 }
             });
@@ -442,9 +439,9 @@ public static class Solver
             return;
         }
 
-        var totalConstructors = totalElapsedTime.Select(t => t.Constructor).Sum();
-        var totalPart1 = totalElapsedTime.Select(t => t.Part1).Sum();
-        var totalPart2 = totalElapsedTime.Select(t => t.Part2).Sum();
+        var totalConstructors = totalElapsedTime.Sum(t => t.Constructor);
+        var totalPart1 = totalElapsedTime.Sum(t => t.Part1);
+        var totalPart2 = totalElapsedTime.Sum(t => t.Part2);
         var total = totalPart1 + totalPart2 + (configuration.ShowConstructorElapsedTime ? totalConstructors : 0);
 
         var grid = new Grid()
@@ -466,12 +463,12 @@ public static class Solver
 
         if (configuration.ShowConstructorElapsedTime)
         {
-            grid.AddRow("Mean constructors", FormatTime(totalElapsedTime.Select(t => t.Constructor).Average(), configuration));
+            grid.AddRow("Mean constructors", FormatTime(totalElapsedTime.Average(t => t.Constructor), configuration));
         }
 
         grid
-            .AddRow("Mean parts 1", FormatTime(totalElapsedTime.Select(t => t.Part1).Average(), configuration))
-            .AddRow("Mean parts 2", FormatTime(totalElapsedTime.Select(t => t.Part2).Average(), configuration));
+            .AddRow("Mean parts 1", FormatTime(totalElapsedTime.Average(t => t.Part1), configuration))
+            .AddRow("Mean parts 2", FormatTime(totalElapsedTime.Average(t => t.Part2), configuration));
 
         AnsiConsole.Write(
                 new Panel(grid)

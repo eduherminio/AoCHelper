@@ -67,8 +67,8 @@ namespace AoCHelper.Test
         [Fact]
         public async Task SolveIntEnumerable()
         {
-            await Solver.Solve(new List<uint> { 1, 2 });
-            await Solver.Solve(new List<uint> { 1, 2 }, _ => { });
+            await Solver.Solve([1, 2]);
+            await Solver.Solve([1, 2], _ => { });
         }
 
         [Fact]
@@ -81,8 +81,8 @@ namespace AoCHelper.Test
         [Fact]
         public async Task SolveTypeEnumerable()
         {
-            await Solver.Solve(new List<Type> { typeof(Problem66) });
-            await Solver.Solve(new List<Type> { typeof(Problem66) }, _ => { });
+            await Solver.Solve([typeof(Problem66)]);
+            await Solver.Solve([typeof(Problem66)], _ => { });
         }
 
         [Fact]
