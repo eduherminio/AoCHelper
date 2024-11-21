@@ -28,7 +28,7 @@ public abstract class BaseProblem
     {
         var typeName = GetType().Name;
 
-        return uint.TryParse(typeName.Substring(typeName.IndexOf(ClassPrefix) + ClassPrefix.Length).TrimStart('_'), out var index)
+        return uint.TryParse(typeName[(typeName.IndexOf(ClassPrefix) + ClassPrefix.Length)..].TrimStart('_'), out var index)
             ? index
             : default;
     }
