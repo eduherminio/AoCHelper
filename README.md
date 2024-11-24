@@ -194,3 +194,16 @@ Your problem/day classes are instantiated only once, so parsing the input file (
 [githubactionslink]: https://github.com/eduherminio/AoCHelper/actions?query=workflow%3ACI
 [nugetlogo]: https://img.shields.io/nuget/v/AocHelper.svg?style=flat-square&label=nuget
 [nugetlink]: https://www.nuget.org/packages/AocHelper
+
+## Other libraries templates and projects
+
+Feel free to experiment with this project and the related templates I provide to create your own thing. There are a few examples under [Usage examples](#usage-examples) that show how to create your custom framework on top of `AoCHelper`.
+
+If there's something in this project that just doesn't click for you, there are dozens of alternatives out there that you can explore instead. These are some well-known examples:
+
+- [viceroypenguin/adventofcode.template](https://github.com/viceroypenguin/adventofcode.template): supports more accurate benchmarks using `BenchmarkDotNet`.
+- [Zaneris/AdventOfCodeSupport](https://github.com/Zaneris/AdventOfCodeSupport): supports automatic input downloading and solution submitting.
+
+I would also like to encourage anyone to create their own libraries or templates. Nothing like building your own!
+
+But beware, you might spend more time working on the template than on the problems themselves (been there, done that, would do it again!).
