@@ -43,7 +43,7 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get install -y hub
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Configure git user
       run: |
