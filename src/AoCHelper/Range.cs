@@ -270,7 +270,8 @@ namespace System.Runtime.CompilerServices
             else
             {
                 // The array is actually a U[] where U:T.
-                var dest = (T[])Array.CreateInstance(array.GetType().GetElementType(), length);
+                // TODO: Better null reference type handling when array.GetType().GetElementType() can be null.
+                var dest = (T[])Array.CreateInstance(array.GetType().GetElementType()!, length);
                 Array.Copy(array, offset, dest, 0, length);
                 return dest;
             }
