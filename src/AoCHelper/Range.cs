@@ -5,6 +5,7 @@
 
 using System.Runtime.CompilerServices;
 
+#pragma warning disable CS0436 // Type conflicts with imported type
 namespace System
 {
     /// <summary>Represent a type can be used to index a collection either from the start or the end.</summary>
@@ -279,3 +280,4 @@ namespace System.Runtime.CompilerServices
         }
     }
 }
+#pragma warning restore CS0436 // Type conflicts with imported type
