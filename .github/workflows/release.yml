@@ -8,23 +8,28 @@ on:
         required: true
       should_push_nuget:
         description: 'Push to NuGet'
-        default: 'true'
+        type: boolean
+        default: true
         required: false
       should_push_github:
         description: 'Push to GitHub package registry'
-        default: 'true'
+        type: boolean
+        default: true
         required: false
       should_commit_new_version:
         description: 'Commit and push version increment'
-        default: 'true'
+        type: boolean
+        default: true
         required: false
       should_tag_new_version:
         description: 'Tag version release'
-        default: 'true'
+        type: boolean
+        default: true
         required: false
       should_create_github_release:
         description: 'Create GitHub Release'
-        default: 'true'
+        type: boolean
+        default: true
         required: false
 
 jobs:
