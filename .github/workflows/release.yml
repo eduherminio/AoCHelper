@@ -63,6 +63,9 @@ jobs:
       with:
         dotnet-version: 10.0.x
 
+    - name: Install NuGet
+      uses: nuget/setup-nuget@v2
+
     - name: Set version to ${{ github.event.inputs.new_package_version }}
       shell: pwsh
       run: |
