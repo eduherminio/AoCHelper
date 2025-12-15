@@ -51,7 +51,7 @@ jobs:
 
     - name: '[Ubuntu] Upload Artifact'
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ env.PROJECT_NAME }}-ci-${{ github.run_number }}
         path: |
@@ -76,7 +76,7 @@ jobs:
 
     - name: '[Ubuntu] Upload test coverage report'
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ env.PROJECT_NAME }}-coverage-ci-${{ github.run_number }}
         path: coveragereport/

@@ -96,7 +96,7 @@ jobs:
 
     - name: 'Upload test coverage report'
       continue-on-error: true
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ env.PROJECT_NAME }}.${{ github.event.inputs.new_package_version }}-coverage-${{ env.GITHUB_REF_SLUG }}-${{ github.run_number }}
         path: coveragereport/
@@ -107,7 +107,7 @@ jobs:
         dotnet pack -c Release --no-build src/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --include-symbols -o ${{ env.ARTIFACT_DIR }}
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ env.PROJECT_NAME }}.${{ github.event.inputs.new_package_version }}-${{ env.GITHUB_REF_SLUG }}-${{ github.run_number }}
         path: |
