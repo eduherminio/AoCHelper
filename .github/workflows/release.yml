@@ -39,8 +39,9 @@ jobs:
     runs-on: ubuntu-22.04
 
     permissions:
-      id-token: write
-      packages: write
+      contents: write   # push commit and tag, create GitHub release
+      id-token: write   # NuGet Trusted Publishing (OIDC)
+      packages: write   # GitHub Packages push
 
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
