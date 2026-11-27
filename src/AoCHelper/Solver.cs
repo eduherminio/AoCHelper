@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using Spectre.Console;
-using System.Linq;
 
 namespace AoCHelper;
 
